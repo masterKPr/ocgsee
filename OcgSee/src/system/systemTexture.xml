@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:cec9fa67a43f47eb98dc43e229f0fd9c:0ef6cbec2d06c789e43a5ac61e0a5230:70be83acf5641115a8c9f70fa747ae76$ -->
+<TextureAtlas imagePath="systemTexture.png">
+    <SubTexture name="forbidden" x="2" y="2" width="64" height="64"/>
+    <SubTexture name="ground" x="68" y="2" width="44" height="64"/>
+    <SubTexture name="limit" x="114" y="2" width="64" height="64"/>
+    <SubTexture name="semi_limit" x="2" y="68" width="64" height="64"/>
+    <SubTexture name="unloading" x="2" y="134" width="177" height="254"/>
+</TextureAtlas>

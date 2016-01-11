@@ -1,0 +1,18 @@
+package com.application.engine.load
+{
+	import com.greensock.loading.LoaderMax;
+	
+	import mvclite.proxys.Proxy_Lite;
+	
+	public class ContentProxy extends Proxy_Lite
+	{
+		public var model:*;
+		public function ContentProxy(data:Object=null)
+		{
+			super(data);
+		}
+		public function getContent(url:String):*{
+			return LoaderMax.getContent(url);
+		}
+	}
+}

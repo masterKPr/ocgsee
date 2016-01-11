@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<item type="" prompt="卡片类型">
+		<child label="无限制" value="" />
+		<child label="怪兽" value="(datas.type%2)=1" />
+		<child label="魔法" value="((datas.type>>1)&1)=1" />
+		<child label="陷阱" value="((datas.type>>2)&1)=1" />
+	</item>
+	<item type="" prompt="怪兽属性">
+		<child label="无限制" value="" />
+		<child label="地" value="datas.attribute=1" />
+		<child label="水" value="datas.attribute=2" />
+		<child label="炎" value="datas.attribute=4" />
+		<child label="风" value="datas.attribute=8" />
+		<child label="光" value="datas.attribute=16" />
+		<child label="暗" value="datas.attribute=32" />
+		<child label="神" value="datas.attribute=64" />
+	</item>
+	<item type="" prompt="卡片归属">
+		<child label="无限制" value="" />
+		<child label="OCG卡" value="datas.ot=1" />
+		<child label="TCG卡" value="datas.ot=2" />
+		<child label="通用卡" value="datas.ot=3" />
+		<child label="OCG环境" value="datas.ot in (1,3)" />
+		<child label="TCG环境" value="datas.ot in (2,3)" />
+	</item>
+	<item type="" prompt="怪兽等级">
+		<child label="无限制" value="" />
+		<child label="1→4" value="(datas.level%16) in (1,2,3,4)"/>
+		<child label="5→6" value="(datas.level%16) in (5,6)"/>
+		<child label="7→12" value="(datas.level%16) in (7,8,9,10,11,12)"/>
+		<child label="1" value="(datas.level%16)=1" />
+		<child label="2" value="(datas.level%16)=2" />
+		<child label="3" value="(datas.level%16)=3" />
+		<child label="4" value="(datas.level%16)=4" />
+		<child label="5" value="(datas.level%16)=5" />
+		<child label="6" value="(datas.level%16)=6" />
+		<child label="7" value="(datas.level%16)=7" />
+		<child label="8" value="(datas.level%16)=8" />
+		<child label="9" value="(datas.level%16)=9" />
+		<child label="10" value="(datas.level%16)=10" />
+		<child label="11" value="(datas.level%16)=11" />
+		<child label="12" value="(datas.level%16)=12" />
+	</item>
+	<item type="" prompt="怪兽种族">
+		<child label="无限制" value="" />
+		<child label="战士" value="datas.race=1" />
+		<child label="魔法使" value="datas.race=2" />
+		<child label="天使" value="datas.race=4" />
+		<child label="恶魔" value="datas.race=8" />
+		<child label="不死" value="datas.race=16" />
+		<child label="机械" value="datas.race=32" />
+		<child label="水" value="datas.race=64" />
+		<child label="炎" value="datas.race=128" />
+		<child label="岩石" value="datas.race=256" />
+		<child label="鸟兽" value="datas.race=512" />
+		<child label="植物" value="datas.race=1024" />
+		<child label="昆虫" value="datas.race=2048" />
+		<child label="雷" value="datas.race=4096" />
+		<child label="龙" value="datas.race=8192" />
+		<child label="兽" value="datas.race=16384" />
+		<child label="兽战士" value="datas.race=32768" />
+		<child label="恐龙" value="datas.race=65536" />
+		<child label="鱼" value="datas.race=131072" />
+		<child label="海龙" value="datas.race=262144" />
+		<child label="爬虫" value="datas.race=524288" />
+		<child label="念动力" value="datas.race=1048576" />
+		<child label="幻神兽" value="datas.race=2097152" />
+		<child label="创世神" value="datas.race=4194304" />
+		<child label="幻龙" value="datas.race=8388608" />
+		
+	</item>
+	<item type="" prompt="卡片归类">
+		<child label="无限制" value="" />
+		<child label="通常魔法" value="datas.type=2" />
+		<child label="通常陷阱" value="datas.type=4" />
+		<child label="通常怪兽" value="datas.type=17" />
+		<child label="效果怪兽" value="datas.type=33" />
+		<child label="融合通常" value="datas.type=65" />
+		<child label="融合效果" value="datas.type=97" />
+		<child label="仪式通常" value="datas.type=129" />
+		<child label="仪式魔法" value="datas.type=130" />
+		<child label="仪式效果" value="datas.type=161" />
+		<child label="灵魂怪兽" value="datas.type=545" />
+		<child label="同盟怪兽" value="datas.type=1057" />
+		<child label="二重怪兽" value="datas.type=2081" />
+		<child label="调整通常" value="datas.type=4113" />
+		<child label="调整效果" value="datas.type=4129" />
+		<child label="同调通常" value="datas.type=8193" />
+		<child label="同调效果" value="datas.type=8225" />
+		<child label="同调调整" value="datas.type=12321" />
+		<!-- <child label="衍生物" value="datas.type=16401"/> -->
+		<child label="速攻魔法" value="datas.type=65538" />
+		<child label="永续魔法" value="datas.type=131074" />
+		<child label="永续陷阱" value="datas.type=131076" />
+		<child label="装备魔法" value="datas.type=262146" />
+		<child label="场地魔法" value="datas.type=524290" />
+		<child label="反击陷阱" value="datas.type=1048580" />
+		<child label="反转怪兽" value="datas.type=2097185" />
+		<child label="卡通怪兽" value="datas.type=4194337" />
+		<child label="超量通常" value="datas.type=8388609" />
+		<child label="超量效果" value="datas.type=8388641" />
+		<child label="灵摆通常" value="datas.type=16777233" />
+		<child label="灵摆效果" value="datas.type=16777249" />
+	</item>
+</root>

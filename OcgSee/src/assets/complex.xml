@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <item texture="assets/CardsTexture_0.jpg" config="assets/CardsTexture_0.xml"/>
+  <item texture="assets/CardsTexture_1.jpg" config="assets/CardsTexture_1.xml"/>
+  <item texture="assets/CardsTexture_2.jpg" config="assets/CardsTexture_2.xml"/>
+  <item texture="assets/CardsTexture_3.jpg" config="assets/CardsTexture_3.xml"/>
+  <item texture="assets/CardsTexture_4.jpg" config="assets/CardsTexture_4.xml"/>
+  <item texture="assets/CardsTexture_5.jpg" config="assets/CardsTexture_5.xml"/>
+  <item texture="assets/CardsTexture_6.jpg" config="assets/CardsTexture_6.xml"/>
+  <item texture="assets/CardsTexture_7.jpg" config="assets/CardsTexture_7.xml"/>
+  <item texture="assets/CardsTexture_8.jpg" config="assets/CardsTexture_8.xml"/>
+  <item texture="assets/CardsTexture_9.jpg" config="assets/CardsTexture_9.xml"/>
+  <item texture="assets/CardsTexture_10.jpg" config="assets/CardsTexture_10.xml"/>
+</root>

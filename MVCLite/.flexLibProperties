@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="mvclite.unit.event.IListenerData"/>
+    <classEntry path="mvclite.Facade_Lite"/>
+    <classEntry path="mvclite.notification.MVCLiteEvents"/>
+    <classEntry path="mvclite.contorl.SimpleCommand_Lite"/>
+    <classEntry path="mvclite.commands.LogCommand_Lite"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
