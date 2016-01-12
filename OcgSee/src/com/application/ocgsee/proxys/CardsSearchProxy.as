@@ -5,6 +5,8 @@ package com.application.ocgsee.proxys
 	
 	import flash.utils.ByteArray;
 	
+	import framework.log.LogUtils;
+	
 	import mvclite.notification.LogEvents;
 	import mvclite.proxys.Proxy_Lite;
 	
@@ -39,7 +41,7 @@ package com.application.ocgsee.proxys
 			
 			var result:Array=model.getResult().data;
 			if(!result)result=[];
-			sendNotification(LogEvents.LOG,"数目:"+result.length,"查询结果")
+			LogUtils.log("查询结果-->数目:"+result.length);
 			sendNotification(GlobalEvents.SEARCH_COMPLETE,result,type);
 		}
 		

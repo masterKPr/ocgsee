@@ -27,6 +27,7 @@ package com.application
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.CardsSearchProxy;
 	import com.application.ocgsee.proxys.CardsTextureProxy;
+	import com.application.ocgsee.proxys.ConfigProxy;
 	import com.application.ocgsee.proxys.DeckProxy;
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.proxys.LimitProxy;
@@ -88,10 +89,12 @@ package com.application
 			registerProxy(new LoadProxy(new LoadModel));
 			registerProxy(new CardsSearchProxy(new SearchEngine));
 			registerProxy(new SQLProxy(new SQLText));
+			registerProxy(new ConfigProxy());
 			
 			var appAssets:AssetManager=new AssetManager();
 			appAssets.verbose=false;
 			
+
 			registerProxy(new AssetsProxy(appAssets));
 			registerProxy(new CardsTextureProxy(appAssets));
 			_localeProxy=new LocaleProxy(appAssets);

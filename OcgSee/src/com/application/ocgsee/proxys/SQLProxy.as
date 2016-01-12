@@ -2,6 +2,8 @@ package com.application.ocgsee.proxys
 {
 	import com.application.ocgsee.models.SQLText;
 	
+	import framework.log.LogUtils;
+	
 	import mvclite.notification.LogEvents;
 	import mvclite.proxys.Proxy_Lite;
 	
@@ -15,12 +17,12 @@ package com.application.ocgsee.proxys
 		}
 		public function createTermsSQL(terms:String):String{
 			var re:String=model.SEARCH_RESULT_HEAD+terms;
-			sendNotification(LogEvents.LOG,re,"查询语句");
+			LogUtils.log("查询语句-->"+re);
 			return re;
 		}
 		public function singleCardSQL(id:int):String{
 			var re:String=model.SEARCH_SINGLE_HEAD+id;
-			sendNotification(LogEvents.LOG,re,"查询单卡");
+			LogUtils.log("查询单卡-->"+re);
 			return re;
 		}
 		

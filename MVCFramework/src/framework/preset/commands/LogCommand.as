@@ -22,6 +22,7 @@ package framework.preset.commands
 //			if(SystemUtil.platform!="WIN"){
 //				trace(msg);
 //			}
+			trace(notification.getName(),notification.getType(),msg);
 		}
 	}
 }

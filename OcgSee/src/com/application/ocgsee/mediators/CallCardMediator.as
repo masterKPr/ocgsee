@@ -1,24 +1,18 @@
 package com.application.ocgsee.mediators
 {
-	import com.application.engine.utils.FileUtils;
+	import com.application.ApplicationFacade;
 	import com.application.ocgsee.consts.CallEvents;
 	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.consts.SearchType;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.CardsTextureProxy;
+	import com.application.ocgsee.proxys.ConfigProxy;
 	import com.application.ocgsee.proxys.FavoritesSearchProxy;
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.views.ShowCard;
 	
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
-	import flash.filesystem.File;
-	import flash.media.CameraRoll;
-	import flash.net.FileReference;
-	import flash.net.URLRequest;
-	import flash.net.URLRequestHeader;
-	import flash.net.URLRequestMethod;
-	import flash.net.navigateToURL;
 	
 	import feathers.controls.Callout;
 	
@@ -27,7 +21,6 @@ package com.application.ocgsee.mediators
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.observer.Notification;
 	
-	import starling.core.Starling;
 	import starling.events.Event;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
@@ -76,10 +69,13 @@ package com.application.ocgsee.mediators
 				}
 			}
 		}
+		private function get configProxy():ConfigProxy{
+			return ApplicationFacade._.retrieveProxy_Lite(ConfigProxy) as ConfigProxy;
+		}
 		private function createSpellStr():String{
 			var re:String="";
 			re+=_cardVO.name;
-			re+="\n\n"+getName("type",_cardVO.type)+"\n\n";
+			re+="\n\n"+configProxy.getName("type",_cardVO.type)+"\n\n";
 			re+=_cardVO.desc;
 			return re;
 		}
@@ -90,14 +86,14 @@ package com.application.ocgsee.mediators
 			var __defValue:String=formatValue(_cardVO.def);
 			
 			re+="  "+"★"+_cardVO.level%16+"\n\n"
-			re+=getName("attribute",_cardVO.attribute)+"\t\t";
-			re+=getName("race",_cardVO.race)+"\n";
+			re+=configProxy.getName("attribute",_cardVO.attribute)+"\t\t";
+			re+=configProxy.getName("race",_cardVO.race)+"\n";
 			var atkStr:String="ATK:"+__atkValue
 			re+=addSpace(atkStr);
 			re+="\t";
 			re+="DEF:"+__defValue
 			re+="\n\n";
-			re+=getName("type",_cardVO.type)+"\n";
+			re+=configProxy.getName("type",_cardVO.type)+"\n";
 			re+=_cardVO.desc;
 			return re;
 		}
@@ -114,14 +110,7 @@ package com.application.ocgsee.mediators
 			}
 			return str;
 		}
-		private var _config:XML;
-		public function get config():XML{
-			if(!_config){
-				var assetsProxy:AssetsProxy=appFacade.retrieveProxy_Lite(AssetsProxy) as AssetsProxy;
-				_config=assetsProxy.takeXML("Label_Config");
-			}
-			return _config;
-		}
+
 		public override function setViewComponent(viewComponent:Object):void{
 			super.setViewComponent(viewComponent);
 			view.imgContent.addEventListener(TouchEvent.TOUCH,onImgTouch);
@@ -183,14 +172,7 @@ package com.application.ocgsee.mediators
 			}
 		}
 		
-		private function getName(itemId:String,childId:String):String{
-			var str:String= config.item.(@id==itemId).child.(@id==childId)[0];
-			if(str=="0"){
-				return childId;
-			}else{
-				return str;
-			}
-		}
+
 		public function set id(value:int):void{
 			var proxy:CardsTextureProxy=appFacade.retrieveProxy_Lite(CardsTextureProxy)as CardsTextureProxy;
 			view.id=value;

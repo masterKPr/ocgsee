@@ -3,14 +3,16 @@ package com.application.ocgsee.mediators
 	
 	import com.application.ocgsee.StarlingRoot;
 	import com.application.ocgsee.consts.GlobalEvents;
-	import com.application.ocgsee.proxys.LoaderProxy;
 	import com.application.ocgsee.proxys.AssetsProxy;
+	import com.application.ocgsee.proxys.LoaderProxy;
 	import com.application.ocgsee.themes.OcgseeTheme;
 	import com.application.ocgsee.views.ResultListView;
 	import com.application.ocgsee.views.SearchView;
 	
 	import feathers.controls.Drawers;
 	import feathers.events.FeathersEventType;
+	
+	import framework.log.LogUtils;
 	
 	import mvclite.mediator.Mediator_Lite;
 	import mvclite.notification.LogEvents;
@@ -31,7 +33,7 @@ package com.application.ocgsee.mediators
 		}
 		public override function onRegister():void{
 			new OcgseeTheme()
-			sendNotification(LogEvents.LOG,"starling start");
+			LogUtils.log("starling start");
 			facade.registerMediator(new CallCardMediator());
 			var loaderProxy:LoaderProxy=appFacade.retrieveProxy_Lite(LoaderProxy) as LoaderProxy;
 			loaderProxy.begin();

@@ -1,6 +1,8 @@
 package com.application.engine.local
 {
 	
+	import framework.log.LogUtils;
+	
 	import mvclite.proxys.Proxy_Lite;
 	
 	import starling.utils.AssetManager;
@@ -29,6 +31,7 @@ package com.application.engine.local
 			else
 			{
 				re= key;
+				LogUtils.error("locale key null:"+key);
 			}
 			return re;
 		}

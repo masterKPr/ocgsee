@@ -1,5 +1,6 @@
 package com.application.ocgsee.mediators
 {
+	import com.application.ApplicationFacade;
 	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.consts.SearchType;
 	import com.application.ocgsee.models.LflistPackage;
@@ -259,7 +260,8 @@ package com.application.ocgsee.mediators
 				header.title=config.item[i].@prompt;
 				var list:Array=[];
 				for each(var item:XML in config.item[i].child){
-					list.push({label:item.@label,value:item.@value});
+					var label:String=ApplicationFacade._.locale.localize(item.@label);
+					list.push({label:label,value:item.@value});
 				}
 				picker.dataProvider=new ListCollection(list);
 				picker.labelField="label";
