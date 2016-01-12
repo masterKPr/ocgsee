@@ -3,12 +3,12 @@ package com.application.ocgsee.views
 	import com.application.ApplicationFacade;
 	import com.application.engine.utils.FileUtils;
 	import com.application.ocgsee.consts.GlobalEvents;
-	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.utils.ImageCache;
 	
 	import flash.display.BitmapData;
 	import flash.display.JPEGEncoderOptions;
+	import flash.events.IOErrorEvent;
 	import flash.filesystem.File;
 	import flash.utils.ByteArray;
 	
@@ -25,9 +25,12 @@ package com.application.ocgsee.views
 		public function SaveImageLoader()
 		{
 			this.addEventListener(Event.COMPLETE,onLoaderComplete);
+			this.addEventListener(IOErrorEvent.IO_ERROR,onIOerror);
 			super();
-//			var assetsProxy:AssetsProxy=ApplicationFacade._.retrieveProxy_Lite(AssetsProxy) as AssetsProxy;
-//			this.loadingTexture=assetsProxy.loadingTexture;
+		}
+		private function onIOerror(e:IOErrorEvent):void
+		{
+			LogUtils.error(e);
 		}
 		public override function set source(value:Object):void{
 			if(value is String){

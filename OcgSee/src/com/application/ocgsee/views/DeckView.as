@@ -1,11 +1,8 @@
 package com.application.ocgsee.views
 {
 	
-	import flash.net.dns.AAAARecord;
-	
 	import feathers.controls.List;
 	import feathers.controls.ScrollContainer;
-	import feathers.layout.VerticalLayout;
 	
 	public class DeckView extends ScrollContainer
 	{

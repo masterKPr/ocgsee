@@ -116,10 +116,6 @@ package com.application.ocgsee.mediators
 				var options:Array=[Array.NUMERIC|Array.DESCENDING,Array.NUMERIC|Array.DESCENDING];
 				var sortList:Array=CardSortUtils.sortCardList(result,fields,options);
 				view.resultList.dataProvider=new ListCollection(sortList);
-				
-			}else if(notification.getType()==SearchType.SINGLE){
-//				var result:Array=notification.getBody() as Array;
-//				label.text=result[0].id;
 			}
 		}
 		private function formatCards(list:Array):Array{

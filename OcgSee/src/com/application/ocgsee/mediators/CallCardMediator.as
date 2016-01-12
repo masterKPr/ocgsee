@@ -74,8 +74,6 @@ package com.application.ocgsee.mediators
 				}else{
 					view.attributeLabel.text=createSpellStr();
 				}
-				
-				
 			}
 		}
 		private function createSpellStr():String{
@@ -201,9 +199,9 @@ package com.application.ocgsee.mediators
 			
 			var smartTexture:Texture=proxy.cardTextureLocal(value);
 			smartTexture=smartTexture?smartTexture:assets.loadingTexture;
-			view.netImage.loadingTexture=smartTexture;
-			view.netImage.errorTexture=smartTexture;
-			view.netImage.source=globalProxy.getMyCardUri(value);
+			view.image.loadingTexture=smartTexture;
+			view.image.errorTexture=smartTexture;
+			view.image.source=globalProxy.getMyCardUri(value);
 		}
 	}
 }

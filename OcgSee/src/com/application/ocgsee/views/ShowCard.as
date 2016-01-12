@@ -13,7 +13,7 @@ package com.application.ocgsee.views
 	{
 
 
-		public var netImage:SaveImageLoader;
+		public var image:SaveImageLoader;
 
 		
 		public var attributeLabel:Label;
@@ -47,10 +47,10 @@ package com.application.ocgsee.views
 			leftContent.addChild(imgContent);
 			btnContent=new ScrollContainer();
 
-			netImage=new SaveImageLoader();
-			netImage.width=177*scale;
-			netImage.height=254*scale;
-			imgContent.addChild(netImage);
+			image=new SaveImageLoader();
+			image.width=177*scale;
+			image.height=254*scale;
+			imgContent.addChild(image);
 			labelContent=new ScrollContainer();
 			
 			labelContent.height=254*scale;
