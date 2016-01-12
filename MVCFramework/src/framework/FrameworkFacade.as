@@ -7,7 +7,6 @@ package framework
 	
 	import mvclite.Facade_Lite;
 	import mvclite.notification.LogEvents;
-	import mvclite.notification.MVCLiteEvents;
 	
 	public class FrameworkFacade extends Facade_Lite
 	{

@@ -10,16 +10,19 @@ package framework.log
 		{
 		}
 		public static function log(msg:*,type:String=""):void{
-			FrameworkFacade.getFacade().sendNotification(LogEvents.LOG,msg,type);
+			report(LogEvents.LOG,msg,type);
 		}
 		public static function error(msg:*,type:String=""):void{
-			FrameworkFacade.getFacade().sendNotification(LogEvents.ERROR,msg,type);
+			report(LogEvents.ERROR,msg,type);
 		}
 		public static function debug(msg:*,type:String=""):void{
-			FrameworkFacade.getFacade().sendNotification(LogEvents.DEBUG,msg,type);
+			report(LogEvents.DEBUG,msg,type);
 		}
 		public static function warn(msg:*,type:String=""):void{
-			FrameworkFacade.getFacade().sendNotification(LogEvents.WARN,msg,type);
+			report(LogEvents.WARN,msg,type);
+		}
+		private static function report(logType:String,msg:*,type:String):void{
+			FrameworkFacade.getFacade().sendNotification(logType,msg,type);
 		}
 	}
 }
