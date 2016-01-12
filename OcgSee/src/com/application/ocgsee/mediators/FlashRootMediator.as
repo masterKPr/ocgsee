@@ -95,7 +95,7 @@ package com.application.ocgsee.mediators
 			_loadingLoader=null;
 		}
 		protected override function registerNotification():void{
-			notificationsProxy.regist(GlobalEvents.TEXTURE_COMPLETE,onTextureComplete);
+			notificationsProxy.regist(GlobalEvents.RES_COMPLETE,onTextureComplete);
 			notificationsProxy.regist(GlobalEvents.LOADING_PROGRESS,refreshProgress);
 		}
 		

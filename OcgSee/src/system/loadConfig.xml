@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-	<item url="xml/SQL_Config.xml"/>
-	<item url="xml/lflist.conf"/>
-	<item url="xml/Label_Config.xml"/>
+	<item url="config/language.json"/>
+	<item url="config/SQL_Config.xml"/>
+	<item url="config/lflist.conf"/>
+	<item url="config/Label_Config.xml"/>
 	<item url="system/systemTexture.png"/>
 	<item url="system/systemTexture.xml"/>
 	

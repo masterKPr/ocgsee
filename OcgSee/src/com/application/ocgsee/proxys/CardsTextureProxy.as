@@ -5,7 +5,6 @@ package com.application.ocgsee.proxys
 	
 	import mvclite.proxys.Proxy_Lite;
 	
-	import starling.textures.SubTexture;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	import starling.utils.AssetManager;

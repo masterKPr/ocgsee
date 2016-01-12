@@ -1,9 +1,6 @@
 package com.application.ocgsee.models
 {
 	import com.application.ocgsee.utils.CardSortUtils;
-	import com.application.engine.utils.FileUtils;
-	
-	import flash.filesystem.File;
 
 	public class CardsAnalysis
 	{
@@ -18,7 +15,6 @@ package com.application.ocgsee.models
 
 		private var trapList:Array;
 
-//		private var _config:XML;
 		public function CardsAnalysis(list:Array)
 		{
 			_list=list;
@@ -31,8 +27,6 @@ package com.application.ocgsee.models
 			NAMList=CardSortUtils.getNAMList(_list);
 			spellList=CardSortUtils.getSpellList(NAMList);
 			trapList=CardSortUtils.getTrapList(NAMList);
-//			var str:String=FileUtils.readFile(File.applicationDirectory.resolvePath("xml/Label_Config.xml"));
-//			_config=new XML(str);
 		}
 		private function getMonsterCount():int{
 			return monsterList.length;

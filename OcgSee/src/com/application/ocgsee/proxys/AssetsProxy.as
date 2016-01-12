@@ -36,6 +36,9 @@ package com.application.ocgsee.proxys
 		public function takeXML(name:String):XML{
 			return model.getXml(name);
 		}
+		public function takeJSON(name:String):Object{
+			return model.getObject(name);
+		}
 		
 	}
 }

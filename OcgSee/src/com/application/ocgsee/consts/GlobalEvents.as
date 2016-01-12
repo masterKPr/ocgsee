@@ -7,7 +7,7 @@ package com.application.ocgsee.consts
 		/**
 		 *贴图加载完毕 starling才算真正初始化完成 
 		 */		
-		public static const TEXTURE_COMPLETE:String="TEXTURE_COMPLETE";
+		public static const RES_COMPLETE:String="RES_COMPLETE";
 		
 		
 		public static const SEARCH:String="SEARCH";

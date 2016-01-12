@@ -40,7 +40,7 @@ package com.application.ocgsee.mediators
 		
 		
 		protected override function registerNotification():void{
-			notificationsProxy.regist(GlobalEvents.TEXTURE_COMPLETE,onTextureComplete);
+			notificationsProxy.regist(GlobalEvents.RES_COMPLETE,onTextureComplete);
 		}
 		
 		private function onTextureComplete(notification:INotification):void

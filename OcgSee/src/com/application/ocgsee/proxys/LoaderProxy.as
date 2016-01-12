@@ -32,7 +32,7 @@ package com.application.ocgsee.proxys
 		}
 		private function packageComplete(ratio:Number):void{
 			if(ratio==1.0){
-				sendNotification(GlobalEvents.TEXTURE_COMPLETE);
+				sendNotification(GlobalEvents.RES_COMPLETE);
 			}else{
 				sendNotification(GlobalEvents.LOADING_PROGRESS,ratio);
 			}

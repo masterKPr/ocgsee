@@ -3,6 +3,7 @@ package com.application
 	import com.application.engine.load.LoadCommand;
 	import com.application.engine.load.LoadModel;
 	import com.application.engine.load.LoadProxy;
+	import com.application.engine.local.LocaleProxy;
 	import com.application.engine.search.SearchEngine;
 	import com.application.ocgsee.commands.ActiveCommand;
 	import com.application.ocgsee.commands.CallCardInfoCommand;
@@ -33,7 +34,6 @@ package com.application
 	import com.application.ocgsee.proxys.SQLProxy;
 	import com.application.ocgsee.views.LoginView;
 	
-	
 	import framework.FrameworkFacade;
 	import framework.events.MVCFrameworkEvents;
 	
@@ -53,9 +53,13 @@ package com.application
 		}
 
 		private var _globalProxy:GlobalProxy;
-		
 		public function get globalProxy():GlobalProxy{
 			return _globalProxy;
+		}
+		
+		private var _localeProxy:LocaleProxy;
+		public function get locale():LocaleProxy{
+			return _localeProxy;
 		}
 
 		protected override function initializeController():void{
@@ -90,6 +94,8 @@ package com.application
 			
 			registerProxy(new AssetsProxy(appAssets));
 			registerProxy(new CardsTextureProxy(appAssets));
+			_localeProxy=new LocaleProxy(appAssets);
+			registerProxy(_localeProxy);
 			registerProxy(new LoaderProxy(appAssets));
 			
 			registerProxy(new DeckProxy(new DeckPackage));
