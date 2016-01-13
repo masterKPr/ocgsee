@@ -1,6 +1,6 @@
 package com.application.ocgsee.proxys
 {
-	import com.application.ApplicationFacade;
+	import com.application.ocgsee.utils.localize;
 	
 	import mvclite.proxys.Proxy_Lite;
 	
@@ -19,12 +19,8 @@ package com.application.ocgsee.proxys
 			return _config;
 		}
 		public function getName(itemId:String,childId:String):String{
-			var str:String= config.item.(@id==itemId).child.(@id==childId)[0];
-			if(str=="0"){
-				return childId;
-			}else{
-				return ApplicationFacade._.locale.localize(str);
-			}
+			var str:String= config.item.(@id==itemId).child.(@id==childId).@label;
+			return localize(str);
 		}
 	}
 }

@@ -1,97 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <data>
   <item id="ot">
-    <child id="ot">归属</child>
-    <child id="1">ocg</child>
-    <child id="2">tcg</child>
-    <child id="3">通用</child>
+    <child id="ot" 				label="card_ot_name"		/>
+    <child id="1"  				label="card_ot_1"			/>
+    <child id="2"  				label="card_ot_2"			/>
+    <child id="3" 				label="card_ot_3"			/>
   </item>
    <item id="level">
-    <child id="level">等级</child>
-    <child id="0">0</child>
-    <child id="1">1</child>
-    <child id="2">2</child>
-    <child id="3">3</child>
-    <child id="4">4</child>
-    <child id="5">5</child>
-    <child id="6">6</child>
-    <child id="7">7</child>
-    <child id="8">8</child>
-    <child id="9">9</child>
-    <child id="10">10</child>
-    <child id="11">11</child>
-     <child id="12">12</child>
+    <child id="level" 			label="card_level_name"		/>
+    <child id="0" 				label="card_level_0"		/>
+    <child id="1" 				label="card_level_1"		/>
+    <child id="2" 				label="card_level_2"		/>
+    <child id="3" 				label="card_level_3"		/>
+    <child id="4" 				label="card_level_4"		/>
+    <child id="5" 				label="card_level_5"		/>
+    <child id="6" 				label="card_level_6"		/>
+    <child id="7" 				label="card_level_7"		/>
+    <child id="8" 				label="card_level_8"		/>
+    <child id="9" 				label="card_level_9"		/>
+    <child id="10" 				label="card_level_10"		/>
+    <child id="11" 				label="card_level_11"		/>
+     <child id="12" 			label="card_level_12"		/>
   </item>
   <item id="attribute">
-    <child id="attribute">属性</child>
-    <child id="0">无属性</child>
-    <child id="1">地</child>
-    <child id="2">水</child>
-    <child id="4">炎</child>
-    <child id="8">风</child>
-    <child id="16">光</child>
-    <child id="32">暗</child>
-    <child id="64">神</child>
+    <child id="attribute" 		label="card_attribute_name"	/>
+    <child id="0" 				label="card_attribute_0"	/>
+    <child id="1"				label="card_attribute_1"	/>
+    <child id="2" 				label="card_attribute_2"	/>
+    <child id="4" 				label="card_attribute_4"	/>
+    <child id="8" 				label="card_attribute_8"	/>
+    <child id="16" 				label="card_attribute_16"	/>
+    <child id="32" 				label="card_attribute_32"	/>
+    <child id="64" 				label="card_attribute_64"	/>
   </item>
   <item id="race">
-    <child id="race">种族</child>
-    <child id="0">无</child>
-    <child id="1">战士</child>
-    <child id="2">魔法师</child>
-    <child id="4">天使</child>
-    <child id="8">恶魔</child>
-    <child id="16">不死</child>
-    <child id="32">机械</child>
-    <child id="64">水</child>
-    <child id="128">炎</child>
-    <child id="256">岩石</child>
-    <child id="512">鸟兽</child>
-    <child id="1024">植物</child>
-    <child id="2048">昆虫</child>
-    <child id="4096">雷</child>
-    <child id="8192">龙</child>
-    <child id="16384">兽</child>
-    <child id="32768">兽战士</child>
-    <child id="65536">恐龙</child>
-    <child id="131072">鱼</child>
-    <child id="262144">海龙</child>
-    <child id="524288">爬虫类</child>
-    <child id="1048576">念动力</child>
-    <child id="2097152">幻神兽</child>
-    <child id="4194304">创世神</child>
-    <child id="8388608">幻龙</child>
+    <child id="race" 			label="card_race_name"		/>
+    <child id="0" 				label="card_race_0"			/>
+    <child id="1" 				label="card_race_1"			/>
+    <child id="2" 				label="card_race_2"			/>
+    <child id="4" 				label="card_race_4"			/>
+    <child id="8" 				label="card_race_8"			/>
+    <child id="16" 				label="card_race_16"		/>
+    <child id="32" 				label="card_race_32"		/>
+    <child id="64" 				label="card_race_64"		/>
+    <child id="128" 			label="card_race_128"		/>
+    <child id="256" 			label="card_race_256"		/>
+    <child id="512" 			label="card_race_512"		/>
+    <child id="1024" 			label="card_race_1024"		/>
+    <child id="2048" 			label="card_race_2048"		/>
+    <child id="4096" 			label="card_race_4096"		/>
+    <child id="8192" 			label="card_race_8192"		/>
+    <child id="16384" 			label="card_race_16384"		/>
+    <child id="32768" 			label="card_race_32768"		/>
+    <child id="65536" 			label="card_race_65536"		/>
+    <child id="131072" 			label="card_race_131072"	/>
+    <child id="262144" 			label="card_race_262144"	/>
+    <child id="524288" 			label="card_race_524288"	/>
+    <child id="1048576" 		label="card_race_1048576"	/>
+    <child id="2097152" 		label="card_race_2097152"	/>
+    <child id="4194304" 		label="card_race_4194304"	/>
+    <child id="8388608" 		label="card_race_8388608"	/>
   </item>
   <item id="type">
-    <child id="type">卡片类型</child>
-    <child id="2">通常魔法</child>
-    <child id="4">通常陷阱</child>
-    <child id="17">通常怪兽</child>
-    <child id="33">效果怪兽</child>
-    <child id="65">融合怪兽</child>
-    <child id="97">融合效果</child>
-    <child id="129">仪式怪兽</child>
-    <child id="130">仪式魔法</child>
-    <child id="161">仪式效果</child>
-    <child id="545">灵魂怪兽</child>
-    <child id="1057">同盟怪兽</child>
-    <child id="2081">二重怪兽</child>
-    <child id="4113">通常调整</child>
-    <child id="4129">效果调整</child>
-    <child id="8193">同调怪兽</child>
-    <child id="8225">同调效果</child>
-    <child id="12321">同调调整</child>
-    <child id="16401">衍生物</child>
-    <child id="65538">速攻魔法</child>
-    <child id="131074">永续魔法</child>
-    <child id="131076">永续陷阱</child>
-    <child id="262146">装备魔法</child>
-    <child id="524290">场地魔法</child>
-    <child id="1048580">反击陷阱</child>
-    <child id="2097185">反转怪兽</child>
-    <child id="4194337">卡通怪兽</child>
-    <child id="8388609">超量怪兽</child>
-    <child id="8388641">超量效果</child>
-    <child id="16777233">灵摆通常</child>
-    <child id="16777249">灵摆怪兽</child>
+    <child id="type" 			label="card_type_name"		/>
+    <child id="2" 				label="card_type_2"			/>
+    <child id="4" 				label="card_type_4"			/>
+    <child id="17" 				label="card_type_17"		/>
+    <child id="33" 				label="card_type_33"		/>
+    <child id="65" 				label="card_type_65"		/>
+    <child id="97" 				label="card_type_97"		/>
+    <child id="129" 			label="card_type_129"		/>
+    <child id="130" 			label="card_type_130"		/>
+    <child id="161" 			label="card_type_161"		/>
+    <child id="545" 			label="card_type_545"		/>
+    <child id="1057" 			label="card_type_1057"		/>
+    <child id="2081" 			label="card_type_2081"		/>
+    <child id="4113" 			label="card_type_4113"		/>
+    <child id="4129" 			label="card_type_4129"		/>
+    <child id="8193"			label="card_type_8193"		/>
+    <child id="8225" 			label="card_type_8225"		/>
+    <child id="12321" 			label="card_type_12321"		/>
+    <child id="16401" 			label="card_type_16401"		/>
+    <child id="65538" 			label="card_type_65538"		/>
+    <child id="131074" 			label="card_type_131074"	/>
+    <child id="131076" 			label="card_type_131076"	/>
+    <child id="262146" 			label="card_type_262146"	/>
+    <child id="524290" 			label="card_type_524290"	/>
+    <child id="1048580" 		label="card_type_1048580"	/>
+    <child id="2097185" 		label="card_type_2097185"	/>
+    <child id="4194337" 		label="card_type_4194337"	/>
+    <child id="8388609" 		label="card_type_8388609"	/>
+    <child id="8388641" 		label="card_type_8388641"	/>
+    <child id="16777233" 		label="card_type_16777233"	/>
+    <child id="16777249" 		label="card_type_16777249"	/>
   </item>
 </data>

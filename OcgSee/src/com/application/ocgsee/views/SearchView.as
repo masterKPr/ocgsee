@@ -1,5 +1,7 @@
 package com.application.ocgsee.views
 {
+	import com.application.ocgsee.utils.localize;
+	
 	import feathers.controls.Button;
 	import feathers.controls.Header;
 	import feathers.controls.NumericStepper;
@@ -115,11 +117,10 @@ package com.application.ocgsee.views
 			
 			searchInput = new TextInput();
 			searchInput.styleNameList.add(TextInput.ALTERNATE_NAME_SEARCH_TEXT_INPUT);
-			searchInput.prompt = "关键字";
+			searchInput.prompt = localize("info_keyword");
 			this.addChild(this.searchInput);
 			
 			resetBtn=new Button();
-			resetBtn.label="复位";
 			this.addChild(resetBtn);
 			
 

@@ -33,6 +33,7 @@ package com.application.engine.local
 				re= key;
 				LogUtils.error("locale key null:"+key);
 			}
+			re="."+re
 			return re;
 		}
 	}

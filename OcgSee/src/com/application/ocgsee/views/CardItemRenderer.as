@@ -6,6 +6,7 @@ package com.application.ocgsee.views
 	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.ILimit;
+	import com.application.ocgsee.utils.localize;
 	
 	import flash.geom.Point;
 	
@@ -304,11 +305,11 @@ package com.application.ocgsee.views
 				_limitMark.source=limitProxy.getLimitMarkImg(this._data.id);
 				if(this._data.ot==1){
 					_label.color=0x0000ff;
-					_label.text="OCG";
+					_label.text=localize("card_ot_1_simple");
 					this.addChild(_label);
 				}else if(this._data.ot==2){
 					_label.color=0xff0000;
-					_label.text="TCG";
+					_label.text=localize("card_ot_2_simple");
 					this.addChild(_label);
 				}else{
 					_label.text="";

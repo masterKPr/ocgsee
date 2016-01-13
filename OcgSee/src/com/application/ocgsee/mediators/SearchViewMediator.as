@@ -1,6 +1,5 @@
 package com.application.ocgsee.mediators
 {
-	import com.application.ApplicationFacade;
 	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.consts.SearchType;
 	import com.application.ocgsee.models.LflistPackage;
@@ -8,6 +7,7 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.proxys.FavoritesSearchProxy;
 	import com.application.ocgsee.proxys.LimitProxy;
 	import com.application.ocgsee.proxys.SQLProxy;
+	import com.application.ocgsee.utils.localize;
 	import com.application.ocgsee.views.SearchView;
 	
 	import flash.utils.setTimeout;
@@ -257,10 +257,10 @@ package com.application.ocgsee.mediators
 			for(var i:int=0;i<view.pickerList.length;i++){
 				var picker:PickerList=view.pickerList[i];
 				var header:Header=view.headerList[i];
-				header.title=config.item[i].@prompt;
+				header.title=localize(config.item[i].@prompt);
 				var list:Array=[];
 				for each(var item:XML in config.item[i].child){
-					var label:String=ApplicationFacade._.locale.localize(item.@label);
+					var label:String=localize(item.@label);
 					list.push({label:label,value:item.@value});
 				}
 				picker.dataProvider=new ListCollection(list);
