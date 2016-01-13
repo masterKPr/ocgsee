@@ -115,9 +115,9 @@ package com.application.ocgsee.mediators
 		{
 			if(isPause)return;
 			if(isReset()){
-				view.resetBtn.label="复位";
+				view.resetBtn.label=localize("info_reset");
 			}else{
-				view.resetBtn.label="●复位";
+				view.resetBtn.label="●"+localize("info_reset");
 			}
 			sendNotification(GlobalEvents.SEARCH,createSearchText(),SearchType.MULTI);
 		}
@@ -269,28 +269,28 @@ package com.application.ocgsee.mediators
 				
 				//				picker.selectedIndex=-1;
 			}
-			view.limitHeader.title="禁限选择";
+			view.limitHeader.title=localize("info_lf_select");
 			view.limit_Picker.dataProvider=new ListCollection([
-				{label:"无限制    ",value:3},
-				{label:"禁止卡",value:0},
-				{label:"限制卡",value:1},
-				{label:"准限制",value:2}
+				{label:localize("system_unlimit"),value:3},
+				{label:localize("info_forbidden"),value:0},
+				{label:localize("info_limit_1"),value:1},
+				{label:localize("info_limit_2"),value:2}
 				//				{label:"禁限卡表",value:4}
 			]);
 			view.limit_Picker.labelField="label";
 			
-			view.favoritesHeader.title="收藏列表";
+			view.favoritesHeader.title=localize("info_favorite_title");
 			view.favorites_Picker.dataProvider=new ListCollection([
-				{label:"无限制    ",value:0},
-				{label:"在列表中",value:1}
+				{label:localize("system_unlimit"),value:0},
+				{label:localize("info_favorite_in"),value:1}
 			]);
 			view.favorites_Picker.labelField="label";
 			
 			picker.listFactory=listFactory;
 			
-			view.toggleHeader.title="衍生物";
+			view.toggleHeader.title=localize("card_type_16401");
 			
-			view.layoutHeader.title="布局列数";
+			view.layoutHeader.title=localize("info_layout");
 		}
 		private function listFactory():List
 		{

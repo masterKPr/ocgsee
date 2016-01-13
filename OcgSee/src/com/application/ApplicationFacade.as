@@ -44,10 +44,12 @@ package com.application
 	
 	public class ApplicationFacade extends FrameworkFacade
 	{
+		public var debug:Boolean=true;
 		public function ApplicationFacade()
 		{
 			super();
 		}
+
 		public static function get _():ApplicationFacade{
 			if( instance == null) instance = new ApplicationFacade(); 
 			return instance as ApplicationFacade; 

@@ -5,6 +5,8 @@ package com.application.ocgsee.utils
 	
 	import flash.utils.Dictionary;
 	
+	import framework.log.LogUtils;
+	
 	import starling.textures.Texture;
 	
 	public class ImageCache
@@ -32,7 +34,7 @@ package com.application.ocgsee.utils
 		}
 		public function save(key:String,value:Texture):void{
 			if(_dict[key]){
-				trace(key,"含有原有值");
+				LogUtils.error(key+"含有原有值");
 			}
 			var del:String=_gcList.push(key);
 			if(del){

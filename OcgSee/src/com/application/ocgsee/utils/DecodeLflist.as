@@ -30,7 +30,7 @@ package com.application.ocgsee.utils
 				returnConfigList.push(vo);
 			}
 			var noLflist:LflistPackage=new LflistPackage();
-			noLflist.title="无卡表";
+			noLflist.title=localize("info_lf_none_select");
 			returnConfigList.push(noLflist);
 			return returnConfigList;
 		}

@@ -15,7 +15,6 @@ package com.application.ocgsee.mediators
 	import framework.log.LogUtils;
 	
 	import mvclite.mediator.Mediator_Lite;
-	import mvclite.notification.LogEvents;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	

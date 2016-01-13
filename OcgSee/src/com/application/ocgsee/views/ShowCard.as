@@ -1,5 +1,7 @@
 package com.application.ocgsee.views
 {
+	import com.application.ocgsee.utils.localize;
+	
 	import feathers.controls.Button;
 	import feathers.controls.ImageLoader;
 	import feathers.controls.Label;
@@ -27,7 +29,6 @@ package com.application.ocgsee.views
 
 		public var saveBtn:Button;
 
-		public var backBtn:Button;
 
 		public var btnContent:ScrollContainer;
 		public var id:int;
@@ -73,25 +74,18 @@ package com.application.ocgsee.views
 			labelContent.addChild(attributeLabel);
 			
 			copyBtn=new Button();
-			copyBtn.label="复制";
+			copyBtn.label=localize("info_copy");
 			copyBtn.width=177*scale;
 			copyBtn.height=254*scale/2;
 			copyBtn.alpha=1;
 			btnContent.addChild(copyBtn);
 			
 			saveBtn=new Button();
-			saveBtn.label="收藏 ☆";
 			saveBtn.width=177*scale;
 			saveBtn.height=254*scale/2;
 			saveBtn.alpha=1;
 			btnContent.addChild(saveBtn);
 			
-			backBtn=new Button();
-			backBtn.label="返回";
-			backBtn.width=177*scale;
-			backBtn.height=254*scale/3;
-			backBtn.alpha=1;
-//			btnContent.addChild(backBtn);
 			
 			btnContent.visible=false;
 		}

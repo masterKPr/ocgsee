@@ -26,21 +26,21 @@
 	</item>
 	<item type="" prompt="card_level_name">
 		<child label="system_unlimit" value="" />
-		<child label="1→4" value="(datas.level%16) in (1,2,3,4)"/>
-		<child label="5→6" value="(datas.level%16) in (5,6)"/>
-		<child label="7→12" value="(datas.level%16) in (7,8,9,10,11,12)"/>
-		<child label="1" value="(datas.level%16)=1" />
-		<child label="2" value="(datas.level%16)=2" />
-		<child label="3" value="(datas.level%16)=3" />
-		<child label="4" value="(datas.level%16)=4" />
-		<child label="5" value="(datas.level%16)=5" />
-		<child label="6" value="(datas.level%16)=6" />
-		<child label="7" value="(datas.level%16)=7" />
-		<child label="8" value="(datas.level%16)=8" />
-		<child label="9" value="(datas.level%16)=9" />
-		<child label="10" value="(datas.level%16)=10" />
-		<child label="11" value="(datas.level%16)=11" />
-		<child label="12" value="(datas.level%16)=12" />
+		<child label="level_search_1_4" value="(datas.level%16) in (1,2,3,4)"/>
+		<child label="level_search_5_6" value="(datas.level%16) in (5,6)"/>
+		<child label="level_search_7_12" value="(datas.level%16) in (7,8,9,10,11,12)"/>
+		<child label="level_search_1" value="(datas.level%16)=1" />
+		<child label="level_search_2" value="(datas.level%16)=2" />
+		<child label="level_search_3" value="(datas.level%16)=3" />
+		<child label="level_search_4" value="(datas.level%16)=4" />
+		<child label="level_search_5" value="(datas.level%16)=5" />
+		<child label="level_search_6" value="(datas.level%16)=6" />
+		<child label="level_search_7" value="(datas.level%16)=7" />
+		<child label="level_search_8" value="(datas.level%16)=8" />
+		<child label="level_search_9" value="(datas.level%16)=9" />
+		<child label="level_search_10" value="(datas.level%16)=10" />
+		<child label="level_search_11" value="(datas.level%16)=11" />
+		<child label="level_search_12" value="(datas.level%16)=12" />
 	</item>
 	<item type="" prompt="card_race_name">
 		<child label="system_unlimit" value="" />

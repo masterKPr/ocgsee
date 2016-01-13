@@ -1,5 +1,6 @@
 package com.application.ocgsee.mediators
 {
+	import com.application.ApplicationFacade;
 	import com.application.engine.utils.FileUtils;
 	import com.application.ocgsee.StarlingRoot;
 	import com.application.ocgsee.consts.GlobalEvents;
@@ -10,7 +11,6 @@ package com.application.ocgsee.mediators
 	import flash.display.Sprite;
 	import flash.filesystem.File;
 	import flash.geom.Rectangle;
-	import flash.net.URLRequest;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
@@ -47,10 +47,11 @@ package com.application.ocgsee.mediators
 			
 			__starling.addEventListener(Event.ROOT_CREATED,onStarlingCreate);
 			
+			if(ApplicationFacade._.debug){
+				__starling.showStats=true;
+			}
+//				__starling.enableErrorChecking=true;//错误检查
 			__starling.start();
-			__starling.showStats=true;
-			
-			//			__starling.enableErrorChecking=true;//错误检查
 		}
 		
 		private function createLoadingImg():void

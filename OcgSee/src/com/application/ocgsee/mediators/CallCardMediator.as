@@ -9,6 +9,7 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.proxys.ConfigProxy;
 	import com.application.ocgsee.proxys.FavoritesSearchProxy;
 	import com.application.ocgsee.proxys.GlobalProxy;
+	import com.application.ocgsee.utils.localize;
 	import com.application.ocgsee.views.ShowCard;
 	
 	import flash.desktop.Clipboard;
@@ -117,13 +118,8 @@ package com.application.ocgsee.mediators
 			
 			view.copyBtn.addEventListener(Event.TRIGGERED,copyInfoHandler);
 			view.saveBtn.addEventListener(Event.TRIGGERED,saveCardHandler);
-			view.backBtn.addEventListener(Event.TRIGGERED,backHandler);
 		}
 		
-		private function backHandler(e:Event):void
-		{
-			view.btnContent.visible=!view.btnContent.visible;
-		}
 		private function saveCardHandler(e:Event):void{
 			var proxy:FavoritesSearchProxy=appFacade.retrieveProxy_Lite(FavoritesSearchProxy)as FavoritesSearchProxy;
 			var stats:Boolean=proxy.hasOne(view.id);
@@ -164,9 +160,9 @@ package com.application.ocgsee.mediators
 			if(touch){
 				var proxy:FavoritesSearchProxy=appFacade.retrieveProxy_Lite(FavoritesSearchProxy)as FavoritesSearchProxy;
 				if(proxy.hasOne(view.id)){
-					view.saveBtn.label="收藏 ★"
+					view.saveBtn.label=localize("info_favorite_to_out");
 				}else{
-					view.saveBtn.label="收藏 ☆"
+					view.saveBtn.label=localize("info_favorite_to_in");
 				}
 				view.btnContent.visible=!view.btnContent.visible;
 			}

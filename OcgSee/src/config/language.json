@@ -73,14 +73,14 @@
 	"card_type_33"			:"效果怪兽",
 	"card_type_65"			:"融合通常",
 	"card_type_97"			:"融合效果",
-	"card_type_129"			:"通常仪式",
+	"card_type_129"			:"仪式通常",
 	"card_type_130"			:"仪式魔法",
 	"card_type_161"			:"仪式效果",
 	"card_type_545"			:"灵魂怪兽",
 	"card_type_1057"		:"同盟怪兽",
 	"card_type_2081"		:"二重怪兽",
 	"card_type_4113"		:"调整通常",
-	"card_type_4129"		:"效果调整",
+	"card_type_4129"		:"调整效果",
 	"card_type_8193"		:"同调通常",
 	"card_type_8225"		:"同调效果",
 	"card_type_12321"		:"同调调整",
@@ -100,5 +100,37 @@
 	
 	"system_unlimit"		:"无限制",
 	"info_keyword"			:"关键字",
-	"info_reset"			:"复位"
+	"info_reset"			:"复位",
+	"info_layout"			:"布局数列",
+	"info_lf_select"		:"限制规则",
+	"info_favorite_title"	:"收藏列表",
+	"info_favorite_in"		:"在列表中",
+	"info_limit_2"			:"准限制",
+	"info_limit_1"			:"限制卡",
+	"info_forbidden"		:"禁止卡",
+	"info_favorite_to_in"	:"收藏 ☆",
+	"info_favorite_to_out"	:"收藏 ★",
+	"info_copy"				:"复制",
+	"info_search_result"	:"搜索结果:{0} 怪兽卡:{1} 魔法卡:{2} 陷阱卡:{3}",
+	"info_lf_none_select"	:"无卡表",
+	"level_search_1_4"		:"1→4★",
+	"level_search_5_6"		:"5→6★",
+	"level_search_7_12"		:"7→12★",
+	"level_search_1"		:"1★",
+	"level_search_2"		:"2★",
+	"level_search_3"		:"3★",
+	"level_search_4"		:"4★",
+	"level_search_5"		:"5★",
+	"level_search_6"		:"6★",
+	"level_search_7"		:"7★",
+	"level_search_8"		:"8★",
+	"level_search_9"		:"9★",
+	"level_search_10"		:"10★",
+	"level_search_11"		:"11★",
+	"level_search_12"		:"12★"
+	
+	
+	
+	
+	
 }

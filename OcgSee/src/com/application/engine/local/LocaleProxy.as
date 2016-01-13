@@ -1,6 +1,8 @@
 package com.application.engine.local
 {
 	
+	import com.application.ApplicationFacade;
+	
 	import framework.log.LogUtils;
 	
 	import mvclite.proxys.Proxy_Lite;
@@ -33,7 +35,10 @@ package com.application.engine.local
 				re= key;
 				LogUtils.error("locale key null:"+key);
 			}
-			re="."+re
+			if(ApplicationFacade._.debug){
+//				re="["+re+"]"
+			}
+			
 			return re;
 		}
 	}

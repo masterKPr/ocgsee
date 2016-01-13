@@ -1,6 +1,7 @@
 package com.application.ocgsee.models
 {
 	import com.application.ocgsee.utils.CardSortUtils;
+	import com.application.ocgsee.utils.localize;
 
 	public class CardsAnalysis
 	{
@@ -38,7 +39,7 @@ package com.application.ocgsee.models
 			return trapList.length;
 		}
 		public function get text():String{
-			return "搜索结果:"+_list.length+"  怪兽卡:"+getMonsterCount()+"  魔法卡:"+getSpellCount()+"  陷阱卡:"+getTrapCount();
+			return localize("info_search_result",_list.length,getMonsterCount(),getSpellCount(),getTrapCount());
 		}
 	}
 }
