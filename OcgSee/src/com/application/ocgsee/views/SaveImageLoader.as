@@ -38,11 +38,11 @@ package com.application.ocgsee.views
 				var cardJPG:String=globalProxy.getCardJPG(sourcePath);
 				var localFile:File=globalProxy.get_File_CardJPG(cardJPG);
 				if(map.has(cardJPG)){
-					trace("ram");
+					LogUtils.log("ram");
 					super.source=map.take(cardJPG);
 				}else if(localFile.exists){
 					super.source=localFile.url;
-					trace("local",localFile.nativePath);
+					LogUtils.log("local",localFile.nativePath);
 					
 				}else{
 					super.source=value;
@@ -77,7 +77,6 @@ package com.application.ocgsee.views
 				ApplicationFacade._.sendNotification(GlobalEvents.REFRESH_CARD_TEXTURE,obj);
 			}else{
 				LogUtils.warn("不是string的加载类型"+this.source);
-				trace("不是string的加载类型"+this.source);
 			}
 		}
 		

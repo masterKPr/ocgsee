@@ -35,7 +35,6 @@ package com.application.ocgsee.utils
 			return returnConfigList;
 		}
 		public static function getIdList(value:String,key:String):Array{
-//			MonsterDebugger.trace("valueStr",value);
 			var list:Array=value.split("\n");
 			var idList:Array=[];
 			for(var i:uint=0;i<list.length;i++){

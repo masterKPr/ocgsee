@@ -7,7 +7,6 @@ package com.application.ocgsee.proxys
 	
 	import framework.log.LogUtils;
 	
-	import mvclite.notification.LogEvents;
 	import mvclite.proxys.Proxy_Lite;
 	
 	public class CardsSearchProxy extends Proxy_Lite

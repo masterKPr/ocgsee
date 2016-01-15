@@ -18,7 +18,7 @@ package com.application.ocgsee.commands
 		public override function execute(notification:INotification):void{
 			var proxy:FavoritesSearchProxy=new FavoritesSearchProxy(new SearchEngine);
 			appFacade.registerProxy(proxy);
-			var db:File=File.applicationStorageDirectory.resolvePath("favorites.db");
+			var db:File=File.applicationStorageDirectory.resolvePath("favorites.cdb");
 			proxy.open(db);
 			proxy.create();
 			

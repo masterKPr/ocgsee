@@ -1,6 +1,8 @@
 package com.application.engine.load
 {
 	
+	import framework.log.LogUtils;
+	
 	import mvclite.contorl.SimpleCommand_Lite;
 	
 	import org.puremvc.as3.interfaces.INotification;
@@ -16,7 +18,7 @@ package com.application.engine.load
 			
 			var proxy:LoadProxy=appFacade.retrieveProxy_Lite(LoadProxy) as LoadProxy;
 			var loadData:LoadData=proxy.getLoader(notification.getType());
-			trace(loadData.mediator)
+			LogUtils.log(loadData.mediator)
 			
 //			sendNotification(pure_load,f);
 			

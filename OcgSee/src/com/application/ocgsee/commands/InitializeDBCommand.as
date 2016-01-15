@@ -20,7 +20,7 @@ package com.application.ocgsee.commands
 		public override function execute(notification:INotification):void{
 			var SQLFile:File=File.applicationStorageDirectory.resolvePath("cards.cdb");
 			if(!SQLFile.exists){
-				var compressFile:File=File.applicationDirectory.resolvePath("compress.db")
+				var compressFile:File=File.applicationDirectory.resolvePath("compress.cdb")
 				var compressStream:FileStream=new FileStream();
 				compressStream.open(compressFile,FileMode.READ);
 				var bytes:ByteArray=new ByteArray();

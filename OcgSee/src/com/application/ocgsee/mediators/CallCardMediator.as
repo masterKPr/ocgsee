@@ -132,7 +132,7 @@ package com.application.ocgsee.mediators
 		}
 		private function copyInfoHandler(e:Event):void
 		{
-//			var db:String=File.applicationStorageDirectory.resolvePath("favorites.db").nativePath;
+//			var db:String=File.applicationStorageDirectory.resolvePath("favorites.cdb").nativePath;
 //			var file:FileReference=new FileReference();
 //			file.save(db);
 	

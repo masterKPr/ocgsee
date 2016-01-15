@@ -60,10 +60,8 @@ package com.application.ocgsee.mediators
 		}
 		public function createRendererFactory(value:int):Function{
 			var gap:int=4;
-//			trace(view.resultList.);
 			var screenWidth:int  = appFacade.root.stage.fullScreenWidth;
 			var scale:Number=64/93;
-//			view.resultList.
 			var obset:Number=(value-3)*0.4;
 			var cardWidth:int=screenWidth/value-gap*2-1+obset;
 			var cardHeight:Number=cardWidth/scale;
