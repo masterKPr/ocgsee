@@ -1,7 +1,6 @@
 package com.application.ocgsee.proxys
 {
 	import com.application.engine.search.SearchEngine;
-	import com.application.ocgsee.consts.GlobalEvents;
 	
 	import flash.utils.ByteArray;
 	
@@ -34,14 +33,14 @@ package com.application.ocgsee.proxys
 		{
 			_text = value;
 		}
-		public function excecute(type:String):void{
+		public function excecute():Array{
 			model.text=_text;
 			model.execute();
 			
 			var result:Array=model.getResult().data;
 			if(!result)result=[];
 			LogUtils.log("查询结果-->数目:"+result.length);
-			sendNotification(GlobalEvents.SEARCH_COMPLETE,result,type);
+			return result;
 		}
 		
 		

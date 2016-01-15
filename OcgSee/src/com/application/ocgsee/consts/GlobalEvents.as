@@ -10,9 +10,16 @@ package com.application.ocgsee.consts
 		public static const RES_COMPLETE:String="RES_COMPLETE";
 		
 		
-		public static const SEARCH:String="SEARCH";
 		
-		public static const SEARCH_COMPLETE:String="SEARCH_COMPLETE";
+		public static const SEARCH_MULIT:String="SEARCH_MULIT";
+		
+		public static const SEARCH_SINGLE:String="SEARCH_SINGLE";
+		
+		
+		public static const SEARCH_MULIT_COMPLETE:String="SEARCH_MULIT_COMPLETE";
+		
+		public static const SEARCH_SINGLE_COMPLETE:String="SEARCH_SINGLE_COMPLETE";
+		
 		
 		public static const LOADING_PROGRESS:String="LOADING_PROGRESS";
 		

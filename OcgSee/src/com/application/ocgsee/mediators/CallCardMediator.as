@@ -3,7 +3,6 @@ package com.application.ocgsee.mediators
 	import com.application.ApplicationFacade;
 	import com.application.ocgsee.consts.CallEvents;
 	import com.application.ocgsee.consts.GlobalEvents;
-	import com.application.ocgsee.consts.SearchType;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.CardsTextureProxy;
 	import com.application.ocgsee.proxys.ConfigProxy;
@@ -33,8 +32,8 @@ package com.application.ocgsee.mediators
 		public var view:ShowCard;
 		
 		private var _cardVO:Object;
-
-
+		
+		
 		
 		public var callOut:Callout;
 		public function CallCardMediator(viewComponent:Object=null)
@@ -42,7 +41,7 @@ package com.application.ocgsee.mediators
 			super(viewComponent);
 		}
 		protected override function registerNotification():void{
-			notificationsProxy.regist(GlobalEvents.SEARCH_COMPLETE,searchCompleteHandler);
+			notificationsProxy.regist(GlobalEvents.SEARCH_SINGLE_COMPLETE,searchCompleteHandler);
 			notificationsProxy.regist(CallEvents.HIDE_ONE_CARD,onHideCardHandler);
 		}
 		
@@ -59,15 +58,13 @@ package com.application.ocgsee.mediators
 		private function searchCompleteHandler(notification:INotification):void
 		{
 			if(!view)return 
-			if(notification.getType()==SearchType.SINGLE){
-				var result:Array=notification.getBody() as Array;
-				_cardVO=result[0];
-				var isMonster:Boolean=_cardVO.type%2==1;
-				if(isMonster){
-					view.attributeLabel.text=createMonsterStr();
-				}else{
-					view.attributeLabel.text=createSpellStr();
-				}
+			var result:Array=notification.getBody() as Array;
+			_cardVO=result[0];
+			var isMonster:Boolean=_cardVO.type%2==1;
+			if(isMonster){
+				view.attributeLabel.text=createMonsterStr();
+			}else{
+				view.attributeLabel.text=createSpellStr();
 			}
 		}
 		private function get configProxy():ConfigProxy{
@@ -111,7 +108,7 @@ package com.application.ocgsee.mediators
 			}
 			return str;
 		}
-
+		
 		public override function setViewComponent(viewComponent:Object):void{
 			super.setViewComponent(viewComponent);
 			view.imgContent.addEventListener(TouchEvent.TOUCH,onImgTouch);
@@ -132,19 +129,19 @@ package com.application.ocgsee.mediators
 		}
 		private function copyInfoHandler(e:Event):void
 		{
-//			var db:String=File.applicationStorageDirectory.resolvePath("favorites.cdb").nativePath;
-//			var file:FileReference=new FileReference();
-//			file.save(db);
-	
-//			var url:URLRequest=new URLRequest("mailto:525398535@qq.com?body="+view.attributeLabel.text+"&attach="+db);
-//			navigateToURL(url);
+			//			var db:String=File.applicationStorageDirectory.resolvePath("favorites.cdb").nativePath;
+			//			var file:FileReference=new FileReference();
+			//			file.save(db);
+			
+			//			var url:URLRequest=new URLRequest("mailto:525398535@qq.com?body="+view.attributeLabel.text+"&attach="+db);
+			//			navigateToURL(url);
 			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT,view.attributeLabel.text);
 			view.btnContent.visible=!view.btnContent.visible;
 		}
 		
 		private function onBtnTouch(e:Event):void
 		{
-//			sendNotification(DeckEvents.JOIN_SIDE,clone(_cardVO));
+			//			sendNotification(DeckEvents.JOIN_SIDE,clone(_cardVO));
 		}
 		public function clone(object:Object):Object{
 			var new_one:Object={};
@@ -168,7 +165,7 @@ package com.application.ocgsee.mediators
 			}
 		}
 		
-
+		
 		public function set id(value:int):void{
 			var proxy:CardsTextureProxy=appFacade.retrieveProxy_Lite(CardsTextureProxy)as CardsTextureProxy;
 			view.id=value;

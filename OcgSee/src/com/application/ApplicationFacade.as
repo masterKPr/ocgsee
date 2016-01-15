@@ -72,7 +72,8 @@ package com.application
 			registerCommand(GlobalEvents.LOAD_SOMETING,LoadCommand);
 			registerCommand(MVCLiteEvents.ACTIVE,ActiveCommand);
 			registerCommand(MVCLiteEvents.DEACTIVE,DeactiveCommand);
-			registerCommand(GlobalEvents.SEARCH,SearchCommand);
+			registerCommand(GlobalEvents.SEARCH_MULIT,SearchCommand);
+			registerCommand(GlobalEvents.SEARCH_SINGLE,SearchCommand);
 			registerCommand(CallEvents.CALL_ONE_CARD,CallCardInfoCommand);
 			registerCommand(DeckEvents.JOIN_MAIN,JoinMainCommand);
 			registerCommand(DeckEvents.JOIN_SIDE,JoinSideCommand);

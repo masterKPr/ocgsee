@@ -10,16 +10,18 @@ package com.application.ocgsee.proxys
 		{
 			super(data);
 		}
-		private var _config:XML;
-		private function get config():XML{
-			if(!_config){
-				var assetsProxy:AssetsProxy=appFacade.retrieveProxy_Lite(AssetsProxy) as AssetsProxy;
-				_config=assetsProxy.takeXML("Label_Config");
-			}
-			return _config;
+		public function get labelConfig():XML{
+			var assetsProxy:AssetsProxy=appFacade.retrieveProxy_Lite(AssetsProxy) as AssetsProxy;
+			return assetsProxy.takeXML("Label_Config");
 		}
+		
+		public function get sqlConfig():XML{
+			var assetsProxy:AssetsProxy=appFacade.retrieveProxy_Lite(AssetsProxy) as AssetsProxy;
+			return assetsProxy.takeXML("SQL_Config");
+		}
+		
 		public function getName(itemId:String,childId:String):String{
-			var str:String= config.item.(@id==itemId).child.(@id==childId).@label;
+			var str:String= labelConfig.item.(@id==itemId).child.(@id==childId).@label;
 			return localize(str);
 		}
 	}

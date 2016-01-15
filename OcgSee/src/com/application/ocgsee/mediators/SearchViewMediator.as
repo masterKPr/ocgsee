@@ -1,9 +1,8 @@
 package com.application.ocgsee.mediators
 {
 	import com.application.ocgsee.consts.GlobalEvents;
-	import com.application.ocgsee.consts.SearchType;
 	import com.application.ocgsee.models.LflistPackage;
-	import com.application.ocgsee.proxys.AssetsProxy;
+	import com.application.ocgsee.proxys.ConfigProxy;
 	import com.application.ocgsee.proxys.FavoritesSearchProxy;
 	import com.application.ocgsee.proxys.LimitProxy;
 	import com.application.ocgsee.proxys.SQLProxy;
@@ -119,7 +118,7 @@ package com.application.ocgsee.mediators
 			}else{
 				view.resetBtn.label="●"+localize("info_reset");
 			}
-			sendNotification(GlobalEvents.SEARCH,createSearchText(),SearchType.MULTI);
+			sendNotification(GlobalEvents.SEARCH_MULIT,createSearchText());
 		}
 		
 		private function createSearchText():String{
@@ -251,8 +250,8 @@ package com.application.ocgsee.mediators
 		
 		private function createView():void
 		{
-			var assetsProxy:AssetsProxy=appFacade.retrieveProxy_Lite(AssetsProxy) as AssetsProxy;
-			var config:XML=assetsProxy.takeXML("SQL_Config");
+			var configProxy:ConfigProxy=appFacade.retrieveProxy_Lite(ConfigProxy) as ConfigProxy;
+			var config:XML=configProxy.sqlConfig;
 			
 			for(var i:int=0;i<view.pickerList.length;i++){
 				var picker:PickerList=view.pickerList[i];
