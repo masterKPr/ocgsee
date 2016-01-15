@@ -22,25 +22,13 @@ package com.application.ocgsee.proxys
 			}
 			model.connection.open(reference,openMode,autoCompact,pageSize,encryptionKey);
 		}
-		private var _text:String;
-		
-		public function get text():String
-		{
-			return _text;
-		}
-		
-		public function set text(value:String):void
-		{
-			_text = value;
-		}
-		public function excecute():Array{
-			model.text=_text;
+		public function excecute(text:String,resultHandler:Function):void{
+			model.text=text;
 			model.execute();
-			
 			var result:Array=model.getResult().data;
 			if(!result)result=[];
 			LogUtils.log("查询结果-->数目:"+result.length);
-			return result;
+			resultHandler(result);
 		}
 		
 		

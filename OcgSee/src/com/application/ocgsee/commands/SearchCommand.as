@@ -13,18 +13,23 @@ package com.application.ocgsee.commands
 		{
 			super();
 		}
+		private function callBack(commandName:String):Function{
+			return function(result:Object):void{
+				sendNotification(commandName,result);
+			}
+		}
 		public override function execute(notification:INotification):void{
 			var text:String=String(notification.getBody());
 			var proxy:CardsSearchProxy=appFacade.retrieveProxy_Lite(CardsSearchProxy) as CardsSearchProxy;
-			proxy.text=text;
-			var result:Array=proxy.excecute();
+			
 			var commandName:String;
-			if(notification.getName()==GlobalEvents.SEARCH_MULIT){
+			if(notification.getName()==GlobalEvents.SEARCH_MULIT)
+			{
 				commandName=GlobalEvents.SEARCH_MULIT_COMPLETE;
 			}else{
 				commandName=GlobalEvents.SEARCH_SINGLE_COMPLETE;
 			}
-			sendNotification(commandName,result);
+			proxy.excecute(text,callBack(commandName));
 		}
 	}
 }

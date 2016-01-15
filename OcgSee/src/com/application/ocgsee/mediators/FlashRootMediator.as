@@ -70,6 +70,7 @@ package com.application.ocgsee.mediators
 			_progressLabel.defaultTextFormat=textformat;
 			view.addChild(_progressLabel);
 			_progressLabel.text="100%";
+			_progressLabel.selectable=false;
 			_progressLabel.width=_progressLabel.textWidth+10;
 			_progressLabel.height=_progressLabel.textHeight+10;
 			_progressLabel.text="";
