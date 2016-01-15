@@ -106,8 +106,8 @@ package com.application.ocgsee.views
 			this.addChild(toggleHeader);
 			
 			layoutStepper=new NumericStepper();
-			this.layoutStepper.minimum = 3;
-			this.layoutStepper.maximum = 7;
+			this.layoutStepper.minimum = 4;
+			this.layoutStepper.maximum = 8;
 			this.layoutStepper.step = 1;
 			this.layoutStepper.value=4;
 			

@@ -2,7 +2,7 @@ package com.application.ocgsee.models
 {
 	public class SQLText
 	{
-		public const FIELD_VALUE:String=" datas.id,datas.type,datas.atk,datas.def,datas.level,datas.attribute,datas.ot,datas.race,texts.name ";
+		public const FIELD_VALUE:String=" datas.id,datas.type,datas.atk,datas.def,datas.level,datas.attribute,datas.ot,datas.race ";
 		public const SEARCH_RESULT_HEAD:String="select" + FIELD_VALUE + "from datas,texts where datas.id=texts.id";
 		
 		

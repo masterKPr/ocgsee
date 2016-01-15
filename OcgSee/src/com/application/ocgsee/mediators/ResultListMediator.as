@@ -3,7 +3,6 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.consts.CallEvents;
 	import com.application.ocgsee.consts.CardConst;
 	import com.application.ocgsee.consts.GlobalEvents;
-	import com.application.ocgsee.consts.SearchType;
 	import com.application.ocgsee.models.CardsAnalysis;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.CardsTextureProxy;

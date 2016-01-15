@@ -66,7 +66,6 @@ package com.application.ocgsee.mediators
 			textformat.align=TextFormatAlign.CENTER;
 			textformat.size=60;
 			textformat.color=0xff0000;
-			//			_progressLabel.border=true;
 			_progressLabel.defaultTextFormat=textformat;
 			view.addChild(_progressLabel);
 			_progressLabel.text="100%";

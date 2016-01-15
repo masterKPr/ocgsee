@@ -129,10 +129,6 @@ package com.application.ocgsee.mediators
 		}
 		private function copyInfoHandler(e:Event):void
 		{
-			//			var db:String=File.applicationStorageDirectory.resolvePath("favorites.cdb").nativePath;
-			//			var file:FileReference=new FileReference();
-			//			file.save(db);
-			
 			//			var url:URLRequest=new URLRequest("mailto:525398535@qq.com?body="+view.attributeLabel.text+"&attach="+db);
 			//			navigateToURL(url);
 			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT,view.attributeLabel.text);

@@ -11,6 +11,14 @@ package com.application.ocgsee.proxys
 	public class GlobalProxy extends Proxy_Lite
 	{
 		public var model:GlobalModel;
+		
+		public const DB_CONFIG:String="db.txt";
+		public const DB_DIR:String="db/";
+		
+		public function get SERVER_HEAD():String{
+			return model.SERVER_HEAD
+		}
+		
 		public function GlobalProxy(data:Object=null)
 		{
 			super(data);
@@ -27,10 +35,10 @@ package com.application.ocgsee.proxys
 		}
 
 		public function getMyCardUri(id:int):String{
-			return formatString(model.MC_API,id);
+			return formatString(model.PICS_API,id);
 		}
 		public function isMCCardUri(uri:String):Boolean{
-			return uri.indexOf(model.MC_HEAD)!=-1
+			return uri.indexOf(model.SERVER_HEAD)!=-1
 		}
 		/**
 		 * 从MC uri里获取到xxx.jpg

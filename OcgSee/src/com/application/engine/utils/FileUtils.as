@@ -25,12 +25,20 @@ package com.application.engine.utils
 			}
 			return re;
 		}
+		public static function writeString(file:File,str:String):void{
+			var stream:FileStream=new FileStream();
+			stream.open(file,FileMode.WRITE);
+			stream.writeUTFBytes(str);
+			stream.close()
+//			setTimeout(stream.close, 1);
+		}
 		public static function writeFileBytes(file:File,bytes:ByteArray):void{
 			var stream:FileStream=new FileStream();
 			stream.open(file,FileMode.WRITE);
 			stream.writeBytes(bytes);
 			setTimeout(stream.close, 1)
 		}
+
 		public static function readFileBytes(file:File):ByteArray{
 			var re:ByteArray=new ByteArray;
 			if(file.exists){

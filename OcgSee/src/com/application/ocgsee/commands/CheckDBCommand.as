@@ -1,6 +1,10 @@
 package com.application.ocgsee.commands
 {
+	import com.application.ApplicationFacade;
+	import com.application.engine.utils.FileUtils;
+	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.proxys.CardsSearchProxy;
+	import com.application.ocgsee.proxys.GlobalProxy;
 	
 	import flash.events.Event;
 	import flash.filesystem.File;
@@ -22,49 +26,57 @@ package com.application.ocgsee.commands
 		private var urlLoader:URLLoader;
 
 		private var fileName:String;
+
+		private var DBPath:String;
 		public function CheckDBCommand()
 		{
 			super();
 		}
 		public override function execute(notification:INotification):void{
-			return 
 			urlLoader=new URLLoader();
 			urlLoader.addEventListener(Event.COMPLETE,onComplete);
-			urlLoader.load(new URLRequest("http://riaocg.sinaapp.com/dbVersion.xml"));
+			
+			urlLoader.load(new URLRequest(globalProxy.SERVER_HEAD+"dbVersion.xml"));
 		}
 		
 		protected function onComplete(event:Event):void
 		{
 			var str:String=urlLoader.data;
 			var xml:XML=XML(str);
-			var dbPath:String=xml.db;
-			var temp:Array=dbPath.split("/");
+			var xmlDBPath:String=xml.db;
+			var temp:Array=xmlDBPath.split("/");
 			fileName=temp[temp.length-1];
-			var localFile:File=File.applicationStorageDirectory.resolvePath("db/"+fileName);
+			DBPath=globalProxy.DB_DIR+fileName;
+			var localFile:File=File.applicationStorageDirectory.resolvePath(DBPath);
 			if(!localFile.exists){
 				var dbLoader:URLLoader=new URLLoader();
 				dbLoader.dataFormat=URLLoaderDataFormat.BINARY;
-				dbLoader.load(new URLRequest(dbPath));
+				dbLoader.load(new URLRequest(xmlDBPath));
 				dbLoader.addEventListener(Event.COMPLETE,onDBComplete);
-			}else{
-				var proxy:CardsSearchProxy=appFacade.retrieveProxy_Lite(CardsSearchProxy) as CardsSearchProxy;
-				proxy.open(localFile);
 			}
 		}
-		
+		private function get globalProxy():GlobalProxy{
+			return ApplicationFacade._.globalProxy;
+		}
 		protected function onDBComplete(e:Event):void
 		{
-			var byte:ByteArray=e.target.data;
-			var localFile:File=File.applicationStorageDirectory.resolvePath("db/"+fileName);
+			var bytes:ByteArray=e.target.data;
+			
+			bytes.position=0;
+			bytes.uncompress();
+			bytes.position=0;
+			
+			
+			var localFile:File=File.applicationStorageDirectory.resolvePath(DBPath);
 			var fileStream:FileStream=new FileStream();
 			fileStream.open(localFile,FileMode.WRITE);
-			fileStream.writeBytes(byte);
-			setTimeout(fileStream.close,1);
-			var f:Function=function():void{
-				var proxy:CardsSearchProxy=appFacade.retrieveProxy_Lite(CardsSearchProxy) as CardsSearchProxy;
-				proxy.open(localFile);
-			}
-			setTimeout(f,2);
+			fileStream.writeBytes(bytes);
+			fileStream.close();
+			
+			var configFile:File=File.applicationStorageDirectory.resolvePath(globalProxy.DB_CONFIG);
+			FileUtils.writeString(configFile,fileName);
+			
+			sendNotification(GlobalEvents.INIT_DB);
 		}
 	}
 }
