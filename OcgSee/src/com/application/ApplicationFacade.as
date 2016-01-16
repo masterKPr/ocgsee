@@ -11,8 +11,10 @@ package com.application
 	import com.application.ocgsee.commands.DeactiveCommand;
 	import com.application.ocgsee.commands.InitFavoritesCommand;
 	import com.application.ocgsee.commands.InitializeDBCommand;
+	import com.application.ocgsee.commands.LoadDBStatisticsCommand;
 	import com.application.ocgsee.commands.SearchCommand;
 	import com.application.ocgsee.commands.StartupCommand;
+	import com.application.ocgsee.commands.StatisticsDBCommand;
 	import com.application.ocgsee.commands.deck.JoinExCommand;
 	import com.application.ocgsee.commands.deck.JoinMainCommand;
 	import com.application.ocgsee.commands.deck.JoinSideCommand;
@@ -30,6 +32,7 @@ package com.application
 	import com.application.ocgsee.proxys.ConfigProxy;
 	import com.application.ocgsee.proxys.DeckProxy;
 	import com.application.ocgsee.proxys.GlobalProxy;
+	import com.application.ocgsee.proxys.KVDBProxy;
 	import com.application.ocgsee.proxys.LimitProxy;
 	import com.application.ocgsee.proxys.LoaderProxy;
 	import com.application.ocgsee.proxys.SQLProxy;
@@ -61,8 +64,15 @@ package com.application
 		}
 		
 		private var _localeProxy:LocaleProxy;
+
+		
 		public function get locale():LocaleProxy{
 			return _localeProxy;
+		}
+		private var _kvdbProxy:KVDBProxy;
+		
+		public function get kvdb():KVDBProxy{
+			return _kvdbProxy;
 		}
 
 		protected override function initializeController():void{
@@ -80,19 +90,25 @@ package com.application
 			registerCommand(DeckEvents.JOIN_EX,JoinExCommand);
 			registerCommand(GlobalEvents.INIT_FAVORITES,InitFavoritesCommand);
 			registerCommand(GlobalEvents.CHECK_DB,CheckDBCommand);
-			registerCommand(GlobalEvents.INIT_DB,InitializeDBCommand);
+			registerCommand(GlobalEvents.OPEN_DB,InitializeDBCommand);
+			registerCommand(GlobalEvents.STATISTICS_DB,StatisticsDBCommand);
+			registerCommand(GlobalEvents.LOAD_STATISTICS,LoadDBStatisticsCommand);
 			
 			
 		}
 		
 		protected override function initializeModel():void{
 			super.initializeModel();
+
 			_globalProxy=new GlobalProxy(new GlobalModel)
 			registerProxy(_globalProxy);
+			_kvdbProxy=new KVDBProxy();
+			registerProxy(_kvdbProxy);
 			registerProxy(new LoadProxy(new LoadModel));
 			registerProxy(new CardsSearchProxy(new SearchEngine));
 			registerProxy(new SQLProxy(new SQLText));
 			registerProxy(new ConfigProxy());
+
 			
 			var appAssets:AssetManager=new AssetManager();
 			appAssets.verbose=false;

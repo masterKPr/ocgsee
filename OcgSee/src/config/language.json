@@ -108,6 +108,8 @@
 	"info_limit_2"			:"准限制",
 	"info_limit_1"			:"限制卡",
 	"info_forbidden"		:"禁止卡",
+	"info_in_lflist"		:"卡表内",
+	"info_in_limit_list"	:"限&准限",
 	"info_favorite_to_in"	:"收藏 ☆",
 	"info_favorite_to_out"	:"收藏 ★",
 	"info_copy"				:"复制",

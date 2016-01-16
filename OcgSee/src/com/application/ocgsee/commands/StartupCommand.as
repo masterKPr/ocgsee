@@ -15,7 +15,7 @@ package com.application.ocgsee.commands
 		}
 		public override function execute(notification:INotification):void{
 			sendNotification(GlobalEvents.INIT_FAVORITES);
-			sendNotification(GlobalEvents.INIT_DB);
+			sendNotification(GlobalEvents.OPEN_DB);
 			facade.registerMediator(new FlashRootMediator(appFacade.root));
 			
 		}

@@ -6,6 +6,7 @@
 	<item url="config/Label_Config.xml"/>
 	<item url="system/systemTexture.png"/>
 	<item url="system/systemTexture.xml"/>
+	<item url="system/newIcon.png"/>
 	
 	<item url="assets/CardsTexture_0.jpg" />
   	<item url="assets/CardsTexture_1.jpg" />

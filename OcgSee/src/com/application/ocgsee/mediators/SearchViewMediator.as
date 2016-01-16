@@ -66,15 +66,15 @@ package com.application.ocgsee.mediators
 		}
 		private function resizePicker():void{
 			var pickList:Array=[
-				 view.limit_Picker,
-				 view.mainType_Picker,
-				 view.attribute_Picker,
-				 view.ot_Picker,
-				 view.level_Picker,
-				 view.race_Picker,
-				 view.child_type_Picker,
-				 view.favorites_Picker
-				 ];
+				view.limit_Picker,
+				view.mainType_Picker,
+				view.attribute_Picker,
+				view.ot_Picker,
+				view.level_Picker,
+				view.race_Picker,
+				view.child_type_Picker,
+				view.favorites_Picker
+			];
 			var maxWidth:int=0;
 			for each(var picker:PickerList in pickList){
 				if(picker.width>maxWidth){
@@ -194,14 +194,14 @@ package com.application.ocgsee.mediators
 		}
 		private function isReset():Boolean{
 			return view.mainType_Picker.selectedIndex==0&&
-			view.attribute_Picker.selectedIndex==0&&
-			view.ot_Picker.selectedIndex==0&&
-			view.level_Picker.selectedIndex==0&&
-			view.race_Picker.selectedIndex==0&&
-			view.child_type_Picker.selectedIndex==0&&
-			view.limit_Picker.selectedIndex==0&&
-			view.favorites_Picker.selectedIndex==0&&
-			view.searchInput.text=="";
+				view.attribute_Picker.selectedIndex==0&&
+				view.ot_Picker.selectedIndex==0&&
+				view.level_Picker.selectedIndex==0&&
+				view.race_Picker.selectedIndex==0&&
+				view.child_type_Picker.selectedIndex==0&&
+				view.limit_Picker.selectedIndex==0&&
+				view.favorites_Picker.selectedIndex==0&&
+				view.searchInput.text=="";
 		}
 		private function createFavorites():String{
 			var obj:Object=view.favorites_Picker.selectedItem;
@@ -224,26 +224,28 @@ package com.application.ocgsee.mediators
 		{
 			var serch:String=""
 			var obj:Object=view.limit_Picker.selectedItem;
-			var selectValue:int=obj["value"];
+			var selectValue:String=obj["label"];
 			var idList:String="";
 			var proxy:LimitProxy=appFacade.retrieveProxy_Lite(LimitProxy)as LimitProxy;
 			var lfpackage:LflistPackage=proxy.currentLflist;
 			switch(selectValue){
-				case 0:
-					idList=(lfpackage.forbidden).toString();
+				case localize("info_forbidden"):
+					idList=lfpackage.forbidden.toString();
 					break;
-				case 1:
-					idList=(lfpackage.limit).toString();
+				case localize("info_limit_1"):
+					idList=lfpackage.limit.toString();
 					break;
-				case 2:
-					idList=(lfpackage.semiLimit).toString();
+				case localize("info_limit_2"):
+					idList=lfpackage.semiLimit.toString();
 					break;
-				case 4:
-					idList=(lfpackage.forbidden).toString() + "," + (lfpackage.limit).toString() + "," + (lfpackage.semiLimit).toString();
+				case localize("info_in_lflist"):
+					idList=lfpackage.forbidden.toString() + "," + lfpackage.limit.toString() + "," + lfpackage.semiLimit.toString();
 					break;
-				case 3:
+				case localize("info_in_limit_list"):
+					idList=lfpackage.limit.toString() + "," + lfpackage.semiLimit.toString();
+					break;
+				case localize("system_unlimit"):
 					return "";
-					break;
 			}
 			return " and datas.id in(" + idList + ") ";
 		}
@@ -270,11 +272,12 @@ package com.application.ocgsee.mediators
 			}
 			view.limitHeader.title=localize("info_lf_select");
 			view.limit_Picker.dataProvider=new ListCollection([
-				{label:localize("system_unlimit"),value:3},
-				{label:localize("info_forbidden"),value:0},
-				{label:localize("info_limit_1"),value:1},
-				{label:localize("info_limit_2"),value:2}
-				//				{label:"禁限卡表",value:4}
+				{label:localize("system_unlimit")},
+				{label:localize("info_forbidden")},
+				{label:localize("info_limit_1")},
+				{label:localize("info_limit_2")},
+				{label:localize("info_in_lflist")},
+				{label:localize("info_in_limit_list")}
 			]);
 			view.limit_Picker.labelField="label";
 			

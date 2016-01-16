@@ -39,6 +39,7 @@ package com.application.ocgsee.mediators
 			var loaderProxy:LoaderProxy=appFacade.retrieveProxy_Lite(LoaderProxy) as LoaderProxy;
 			loaderProxy.begin();
 			sendNotification(GlobalEvents.CHECK_DB);
+
 		}
 		
 		

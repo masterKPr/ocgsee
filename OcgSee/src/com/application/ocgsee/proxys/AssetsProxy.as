@@ -22,6 +22,9 @@ package com.application.ocgsee.proxys
 		public function get selectTexture():Texture{
 			return systemTextures.getTexture("ground");
 		} 
+		public function get newCardTexture():Texture{
+			return model.getTexture("newIcon");
+		}
 		public function get loadingTexture():Texture{
 			return systemTextures.getTexture("unloading");
 		} 

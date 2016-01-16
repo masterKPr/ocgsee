@@ -3,8 +3,8 @@ package com.application.ocgsee.commands
 	import com.application.ApplicationFacade;
 	import com.application.engine.utils.FileUtils;
 	import com.application.ocgsee.consts.GlobalEvents;
-	import com.application.ocgsee.proxys.CardsSearchProxy;
 	import com.application.ocgsee.proxys.GlobalProxy;
+	import com.application.ocgsee.proxys.KVDBProxy;
 	
 	import flash.events.Event;
 	import flash.filesystem.File;
@@ -14,7 +14,6 @@ package com.application.ocgsee.commands
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
-	import flash.utils.setTimeout;
 	
 	import mvclite.contorl.SimpleCommand_Lite;
 	
@@ -58,6 +57,9 @@ package com.application.ocgsee.commands
 		private function get globalProxy():GlobalProxy{
 			return ApplicationFacade._.globalProxy;
 		}
+		private function get kvdb():KVDBProxy{
+			return ApplicationFacade._.kvdb;
+		}
 		protected function onDBComplete(e:Event):void
 		{
 			var bytes:ByteArray=e.target.data;
@@ -66,17 +68,18 @@ package com.application.ocgsee.commands
 			bytes.uncompress();
 			bytes.position=0;
 			
-			
 			var localFile:File=File.applicationStorageDirectory.resolvePath(DBPath);
 			var fileStream:FileStream=new FileStream();
 			fileStream.open(localFile,FileMode.WRITE);
 			fileStream.writeBytes(bytes);
 			fileStream.close();
 			
-			var configFile:File=File.applicationStorageDirectory.resolvePath(globalProxy.DB_CONFIG);
-			FileUtils.writeString(configFile,fileName);
 			
-			sendNotification(GlobalEvents.INIT_DB);
+			var lastDB:String=kvdb.take(globalProxy.KEY_CURRENT_DB);
+			kvdb.save(globalProxy.KEY_LAST_DB,lastDB);
+			kvdb.save(globalProxy.KEY_CURRENT_DB,fileName);
+			
+			sendNotification(GlobalEvents.OPEN_DB);
 		}
 	}
 }

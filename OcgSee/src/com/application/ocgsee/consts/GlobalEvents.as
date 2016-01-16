@@ -35,9 +35,16 @@ package com.application.ocgsee.consts
 		
 		public static const RESULT_LAYOUT_CHANGE:String="RESULT_LAYOUT_CHANGE";
 		
-		public static const INIT_DB:String="INIT_DB";
+		public static const OPEN_DB:String="OPEN_DB";
 		
 		public static const CHECK_DB:String="CHECK_DB";
+		
+		public static const LOAD_STATISTICS:String="LOAD_STATISTICS";
+		
+		/**
+		 *统计数据库 
+		 */		
+		public static const STATISTICS_DB:String="STATISTICS_DB";
 		
 		public static const REFRESH_CARD_TEXTURE:String="REFRESH_CARD_TEXTURE";
 		

@@ -2,8 +2,10 @@ package com.application.ocgsee.commands
 {
 	import com.application.ApplicationFacade;
 	import com.application.engine.utils.FileUtils;
+	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.proxys.CardsSearchProxy;
 	import com.application.ocgsee.proxys.GlobalProxy;
+	import com.application.ocgsee.proxys.KVDBProxy;
 	
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
@@ -24,24 +26,21 @@ package com.application.ocgsee.commands
 		private function get globalProxy():GlobalProxy{
 			return ApplicationFacade._.globalProxy;
 		}
-		private function createDefaultConfig():void{
-			var file:File=File.applicationStorageDirectory.resolvePath(globalProxy.DB_CONFIG)
-			var stream:FileStream=new FileStream();
-			stream.open(file,FileMode.WRITE);
-			stream.writeUTFBytes(defaultDB);
-			stream.close();
+		private function get kvdb():KVDBProxy{
+			return ApplicationFacade._.kvdb;
 		}
 		public override function execute(notification:INotification):void{
-			var configFile:File=File.applicationStorageDirectory.resolvePath(globalProxy.DB_CONFIG);
-			var SQLFile:File;
+			var configDB:String=kvdb.take(globalProxy.KEY_CURRENT_DB);
 			var dbName:String;
-			if(!configFile.exists){
-				createDefaultConfig();
-				dbName=defaultDB;
+			if(configDB){
+				dbName=configDB;
 			}else{
-				dbName=FileUtils.readFile(configFile);
+				dbName=defaultDB;
+				kvdb.save(globalProxy.KEY_CURRENT_DB,dbName);
 			}
 			
+			var SQLFile:File;
+
 			var DBPath:String=globalProxy.DB_DIR+dbName;
 			SQLFile=File.applicationStorageDirectory.resolvePath(DBPath);
 			
@@ -63,6 +62,7 @@ package com.application.ocgsee.commands
 			
 			var proxy:CardsSearchProxy=appFacade.retrieveProxy_Lite(CardsSearchProxy) as CardsSearchProxy;
 			proxy.open(SQLFile);
+			sendNotification(GlobalEvents.STATISTICS_DB);
 		}
 	}
 }

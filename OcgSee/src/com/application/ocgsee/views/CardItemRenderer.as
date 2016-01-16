@@ -4,7 +4,6 @@ package com.application.ocgsee.views
 	import com.application.engine.interfaces.ICardTexture;
 	import com.application.ocgsee.consts.CallEvents;
 	import com.application.ocgsee.consts.GlobalEvents;
-	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.ILimit;
 	import com.application.ocgsee.utils.localize;
 	
@@ -32,7 +31,8 @@ package com.application.ocgsee.views
 	{
 		public var cardsTextures:ICardTexture;
 		public var facade:IFacade;
-		public var selectTexture:Texture;
+		public static var selectTexture:Texture;
+		public static var newCardTexture:Texture;
 		public var limitProxy:ILimit;
 		
 		public override function dispose():void{
@@ -61,7 +61,12 @@ package com.application.ocgsee.views
 			_selectImg.width=_cardWidth;
 			_selectImg.height=_cardHeight;
 			this.addChild(_selectImg);
-
+			
+			_newMarkImg=new ImageLoader();
+			_newMarkImg.x=5;
+			_newMarkImg.y=5;
+			this.addChild(_newMarkImg);
+			
 			
 			
 			_label=new TextField(_cardWidth/2,_cardHeight/5,"","Verdana",35);
@@ -207,6 +212,8 @@ package com.application.ocgsee.views
 		private var _cardHeight:Number;
 
 		private var _label:TextField;
+
+		private var _newMarkImg:ImageLoader;
 		
 		
 		public function get isSelected():Boolean
@@ -295,7 +302,23 @@ package com.application.ocgsee.views
 			//			}
 			return this.setSizeInternal(_cardWidth, _cardHeight, false);
 		}
-		
+		private var _isNewCard:Boolean;
+
+		public function get isNewCard():Boolean
+		{
+			return _isNewCard;
+		}
+
+		public function set isNewCard(value:Boolean):void
+		{
+			_isNewCard = value;
+			if(_isNewCard){
+				_newMarkImg.source=newCardTexture;
+			}else{
+				_newMarkImg.source=null;
+			}
+		}
+
 		protected function commitData():void
 		{
 			if(this._data)
@@ -303,6 +326,7 @@ package com.application.ocgsee.views
 				//				this.itemLabel.text = this._data[labelField];
 				cardImage.source=cardsTextures.cardTexture(this._data.id);
 				_limitMark.source=limitProxy.getLimitMarkImg(this._data.id);
+				
 				if(this._data.ot==1){
 					_label.color=0x0000ff;
 					_label.text=localize("card_ot_1_simple");
@@ -315,12 +339,14 @@ package com.application.ocgsee.views
 					_label.text="";
 					this.removeChild(_label);
 				}
+				isNewCard=ApplicationFacade._.globalProxy.isNewCard(this._data.id);
 			}
 			else
 			{
 				//				this.itemLabel.text = "";
 				cardImage.source=null;
 				_limitMark.source=null;
+				isNewCard=false;
 			}
 		}
 		

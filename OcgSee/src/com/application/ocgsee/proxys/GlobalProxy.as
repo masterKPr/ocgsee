@@ -12,9 +12,23 @@ package com.application.ocgsee.proxys
 	{
 		public var model:GlobalModel;
 		
-		public const DB_CONFIG:String="db.txt";
+//		public const DB_CONFIG:String="db.txt";
+//		public const DB_LAST:String="lastDB.txt";
+		
+		public const KEY_CURRENT_DB:String="current_DB";
+		public const KEY_LAST_DB:String="last_DB";
+		
 		public const DB_DIR:String="db/";
 		
+		public var lastIDList:Array=[];
+		
+		public function isNewCard(id:int):Boolean{
+			var re:Boolean=false;
+			if(lastIDList.length){
+				re=lastIDList.indexOf(id)==-1
+			}
+			return re;
+		}
 		public function get SERVER_HEAD():String{
 			return model.SERVER_HEAD
 		}
@@ -23,17 +37,17 @@ package com.application.ocgsee.proxys
 		{
 			super(data);
 		}
-
+		
 		public function get isDrawOpen():Boolean
 		{
 			return model.drawOpen
 		}
-
+		
 		public function set isDrawOpen(value:Boolean):void
 		{
 			model.drawOpen = value;
 		}
-
+		
 		public function getMyCardUri(id:int):String{
 			return formatString(model.PICS_API,id);
 		}

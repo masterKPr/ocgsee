@@ -19,7 +19,8 @@ package com.application.engine.utils
 				var stream:FileStream=new FileStream();
 				stream.open(file,FileMode.READ);
 				re=stream.readUTFBytes(stream.bytesAvailable);
-				setTimeout(stream.close, 1)
+//				setTimeout(stream.close, 1)
+				stream.close();
 			}else{
 				LogUtils.error("加载本地文件url:"+file.nativePath+"不存在");
 			}

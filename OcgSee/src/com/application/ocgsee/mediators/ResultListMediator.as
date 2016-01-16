@@ -74,7 +74,8 @@ package com.application.ocgsee.mediators
 				item.cardsTextures=cardsTextureProxy;
 				item.facade=appFacade; 
 				item.limitProxy=limitProxy;					 
-				item.selectTexture=assetsProxy.selectTexture;
+				CardItemRenderer.selectTexture=assetsProxy.selectTexture;
+				CardItemRenderer.newCardTexture=assetsProxy.newCardTexture;
 				return item
 			}
 			return f;
