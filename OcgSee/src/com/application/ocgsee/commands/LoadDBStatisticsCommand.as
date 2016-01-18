@@ -11,6 +11,8 @@ package com.application.ocgsee.commands
 	
 	import org.puremvc.as3.interfaces.INotification;
 	
+	import starling.utils.formatString;
+	
 	public class LoadDBStatisticsCommand extends SimpleCommand_Lite
 	{
 		public function LoadDBStatisticsCommand()
@@ -27,10 +29,10 @@ package com.application.ocgsee.commands
 			
 			var lastDBName:String=kvdb.take(globalProxy.KEY_LAST_DB);
 			if(lastDBName){
-				var configName:String=lastDBName.split(".")[0]+".txt";
-				var configFile:File=File.applicationStorageDirectory.resolvePath("config/"+configName);
-				if(configFile.exists){
-					var str:String=FileUtils.readFile(configFile);
+				var dataName:String=formatString("data/{0}.json",lastDBName.split(".")[0]);
+				var dataFile:File=File.applicationStorageDirectory.resolvePath(dataName);
+				if(dataFile.exists){
+					var str:String=FileUtils.readFile(dataFile);
 					var result:Array=JSON.parse(str) as Array;
 					globalProxy.lastIDList=result;
 				}

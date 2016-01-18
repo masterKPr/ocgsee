@@ -1,7 +1,6 @@
 package com.application.ocgsee.commands
 {
 	import com.application.ApplicationFacade;
-	import com.application.engine.utils.FileUtils;
 	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.proxys.CardsSearchProxy;
 	import com.application.ocgsee.proxys.GlobalProxy;
@@ -30,8 +29,8 @@ package com.application.ocgsee.commands
 			return ApplicationFacade._.kvdb;
 		}
 		public override function execute(notification:INotification):void{
-			var configDB:String=kvdb.take(globalProxy.KEY_CURRENT_DB);
 			var dbName:String;
+			var configDB:String=kvdb.take(globalProxy.KEY_CURRENT_DB);
 			if(configDB){
 				dbName=configDB;
 			}else{

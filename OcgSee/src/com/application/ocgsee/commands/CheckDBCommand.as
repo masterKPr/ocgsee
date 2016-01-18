@@ -1,7 +1,6 @@
 package com.application.ocgsee.commands
 {
 	import com.application.ApplicationFacade;
-	import com.application.engine.utils.FileUtils;
 	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.proxys.KVDBProxy;

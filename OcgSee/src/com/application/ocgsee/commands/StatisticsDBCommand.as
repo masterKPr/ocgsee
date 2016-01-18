@@ -10,6 +10,8 @@ package com.application.ocgsee.commands
 	
 	import org.puremvc.as3.interfaces.INotification;
 	
+	import starling.utils.formatString;
+	
 	public class StatisticsDBCommand extends SimpleCommand_Lite
 	{
 		/**
@@ -26,14 +28,14 @@ package com.application.ocgsee.commands
 		public override function execute(notification:INotification):void{
 			
 			var proxy:CardsSearchProxy=appFacade.retrieveProxy_Lite(CardsSearchProxy) as CardsSearchProxy;
-			var name:String=proxy.fileName.split(".")[0];
-			var configFile:File=File.applicationStorageDirectory.resolvePath("config/"+name+".txt");
-			if(!configFile.exists){
+			var dataName:String=formatString("data/{0}.json",proxy.fileName.split(".")[0]);
+			var dataFile:File=File.applicationStorageDirectory.resolvePath(dataName);
+			if(!dataFile.exists){
 				var text:String="select id from datas";
 				var result:Array=proxy.excecute(text);
 				var idList:Array=result.map(mapID)
 				var jsonStr:String=JSON.stringify(idList);
-				FileUtils.writeString(configFile,jsonStr);
+				FileUtils.writeString(dataFile,jsonStr);
 			}
 			sendNotification(GlobalEvents.LOAD_STATISTICS);
 

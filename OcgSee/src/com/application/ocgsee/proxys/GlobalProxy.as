@@ -12,9 +12,6 @@ package com.application.ocgsee.proxys
 	{
 		public var model:GlobalModel;
 		
-//		public const DB_CONFIG:String="db.txt";
-//		public const DB_LAST:String="lastDB.txt";
-		
 		public const KEY_CURRENT_DB:String="current_DB";
 		public const KEY_LAST_DB:String="last_DB";
 		
