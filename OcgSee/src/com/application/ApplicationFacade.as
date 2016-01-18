@@ -25,6 +25,7 @@ package com.application
 	import com.application.ocgsee.models.DeckPackage;
 	import com.application.ocgsee.models.GlobalModel;
 	import com.application.ocgsee.models.LfListModel;
+	import com.application.ocgsee.models.LflistPackage;
 	import com.application.ocgsee.models.SQLText;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.CardsSearchProxy;
@@ -121,7 +122,7 @@ package com.application
 			registerProxy(new LoaderProxy(appAssets));
 			
 			registerProxy(new DeckProxy(new DeckPackage));
-			registerProxy(new LimitProxy(new LfListModel));
+			registerProxy(new LimitProxy());
 			initializeLoadMap();
 		}
 		

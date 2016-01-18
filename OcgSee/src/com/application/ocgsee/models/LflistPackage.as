@@ -9,5 +9,11 @@ package com.application.ocgsee.models
 		public function LflistPackage()
 		{
 		}
+		public function parse(obj:Object):void{
+			this.forbidden=obj["forbidden"];
+			this.limit=obj["limit"];
+			this.semiLimit=obj["semi limit"];
+			this.title=obj["title"];
+		}
 	}
 }

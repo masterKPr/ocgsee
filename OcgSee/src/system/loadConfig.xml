@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
+	<item url="config/default_lflist.json"/>
 	<item url="config/language.json"/>
 	<item url="config/SQL_Config.xml"/>
 	<item url="config/lflist.conf"/>

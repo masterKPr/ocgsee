@@ -1,10 +1,7 @@
 package com.application.ocgsee.proxys
 {
 	import com.application.ocgsee.consts.LimitConst;
-	import com.application.ocgsee.models.LfListModel;
 	import com.application.ocgsee.models.LflistPackage;
-	import com.application.ocgsee.utils.DecodeLflist;
-	
 	
 	import mvclite.proxys.Proxy_Lite;
 	
@@ -14,24 +11,25 @@ package com.application.ocgsee.proxys
 	
 	public class LimitProxy extends Proxy_Lite implements ILimit
 	{
-		public var model:LfListModel;
+		public var model:LflistPackage;
 		
 		public function LimitProxy(data:Object=null)
 		{
 			super(data);
 		}
 		public function get currentLflist():LflistPackage{				
-			if (!model.LflistList){
+			if (!model){
 				var assetsProxy:AssetsProxy=appFacade.retrieveProxy_Lite(AssetsProxy) as AssetsProxy;
-				var str:String=assetsProxy.takeUTF("lflist");
-				model.LflistList=DecodeLflist.getConfig(str);
+				var obj:Object=assetsProxy.takeJSON("default_lflist");
+				model=new LflistPackage();
+				model.parse(obj);
 			}
-			return model.LflistList[0];
+			return model;
 		}
 		public function getLimitMark(id:int):String{  
 			if(currentLflist.forbidden.indexOf(id)!=-1){
 				return LimitConst.FORBIDDEN;
-			}else if(currentLflist.limit.indexOf(id)!=-1){
+			}else if(currentLflist.limit.indexOf(id)!=-1){ 
 				return LimitConst.LIMIT;
 			}else if(currentLflist.semiLimit.indexOf(id)!=-1){
 				return LimitConst.SEMI_LIMIT;
