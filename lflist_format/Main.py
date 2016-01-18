@@ -25,7 +25,12 @@ if __name__ == '__main__':
                     continue
                 card_num=line.split("--")[0]
                 card_num=card_num.strip()
-                card_id=card_num.split(" ")[0]
+                try:
+                    card_id=int(card_num.split(" ")[0])
+                except:
+                    card_id=0
+                if card_id==0:
+                    continue
                 if not lf_dict.has_key(title):
                     lf_dict[title]={}
                 if not lf_dict[title].has_key(head):
@@ -33,6 +38,7 @@ if __name__ == '__main__':
                 lf_dict[title][head].append(card_id)
                 
     for key in lf_dict:
+        lf_dict[key]["title"]=key
         st=key.decode("utf-8")
         file_name="config/{0}.json".decode("utf-8").format(st)
         with open(file_name,"w") as f:
