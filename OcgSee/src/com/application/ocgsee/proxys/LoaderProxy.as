@@ -17,7 +17,7 @@ package com.application.ocgsee.proxys
 			super(data);
 		}
 		public function begin():void{
-			config("system/loadConfig.xml");
+			config("assets/loadConfig.xml");
 		}
 		public function config(uri:String):void{
 			var file:File=File.applicationDirectory.resolvePath(uri)

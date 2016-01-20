@@ -3,6 +3,8 @@ package com.application.ocgsee.proxys
 	import com.application.ocgsee.consts.LimitConst;
 	import com.application.ocgsee.models.LflistPackage;
 	
+	import flash.filesystem.File;
+	
 	import mvclite.proxys.Proxy_Lite;
 	
 	import starling.textures.Texture;
@@ -17,7 +19,11 @@ package com.application.ocgsee.proxys
 		{
 			super(data);
 		}
-		public function get currentLflist():LflistPackage{				
+		private function init():void{
+//			var file:File=File.applicationDirectory.resolvePath("assets/lflist");
+//			file.getDirectoryListing()
+		}
+		public function get currentLflist():LflistPackage{
 			if (!model){
 				var assetsProxy:AssetsProxy=appFacade.retrieveProxy_Lite(AssetsProxy) as AssetsProxy;
 				var obj:Object=assetsProxy.takeJSON("default_lflist");

@@ -57,6 +57,8 @@ package com.application.ocgsee.consts
 		 *内存超过张数限制的时候的回收事件
 		 */		
 		public static const GC_DISPOSE:String="GC_DISPOSE";
+		
+		public static const CHECK_LFLIST:String="CHECK_LFLIST";
 		public function GlobalEvents()
 		{
 		}

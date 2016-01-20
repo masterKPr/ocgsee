@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<item url="assets/config/default_lflist.json"/>
+	<item url="assets/config/language.json"/>
+	<item url="assets/config/SQL_Config.xml"/>
+	<item url="assets/config/lflist.conf"/>
+	<item url="assets/config/Label_Config.xml"/>
+	<item url="assets/system/systemTexture.png"/>
+	<item url="assets/system/systemTexture.xml"/>
+	<item url="assets/system/newIcon.png"/>
+	
+	  <item url="assets/cardTextures/CardsTexture_0.jpg" />
+  	<item url="assets/cardTextures/CardsTexture_1.jpg" />
+  	<item url="assets/cardTextures/CardsTexture_2.jpg" />
+  	<item url="assets/cardTextures/CardsTexture_3.jpg" />
+  	<item url="assets/cardTextures/CardsTexture_4.jpg" />
+  	<item url="assets/cardTextures/CardsTexture_5.jpg" />
+  	<item url="assets/cardTextures/CardsTexture_6.jpg" />
+  	<item url="assets/cardTextures/CardsTexture_7.jpg" />
+  	<item url="assets/cardTextures/CardsTexture_8.jpg" />
+  	<item url="assets/cardTextures/CardsTexture_9.jpg" />
+  	<item url="assets/cardTextures/CardsTexture_10.jpg"/>
+  	<item url="assets/cardTextures/CardsTexture_0.xml" />
+  	<item url="assets/cardTextures/CardsTexture_1.xml" />
+  	<item url="assets/cardTextures/CardsTexture_2.xml" />
+  	<item url="assets/cardTextures/CardsTexture_3.xml" />
+  	<item url="assets/cardTextures/CardsTexture_4.xml" />
+  	<item url="assets/cardTextures/CardsTexture_5.xml" />
+  	<item url="assets/cardTextures/CardsTexture_6.xml" />
+  	<item url="assets/cardTextures/CardsTexture_7.xml" />
+  	<item url="assets/cardTextures/CardsTexture_8.xml" />
+  	<item url="assets/cardTextures/CardsTexture_9.xml" />
+  	<item url="assets/cardTextures/CardsTexture_10.xml"/>
+</root>

@@ -8,6 +8,7 @@ package com.application
 	import com.application.ocgsee.commands.ActiveCommand;
 	import com.application.ocgsee.commands.CallCardInfoCommand;
 	import com.application.ocgsee.commands.CheckDBCommand;
+	import com.application.ocgsee.commands.CheckLflistCommand;
 	import com.application.ocgsee.commands.DeactiveCommand;
 	import com.application.ocgsee.commands.InitFavoritesCommand;
 	import com.application.ocgsee.commands.InitializeDBCommand;
@@ -24,8 +25,6 @@ package com.application
 	import com.application.ocgsee.mediators.LoginMediator;
 	import com.application.ocgsee.models.DeckPackage;
 	import com.application.ocgsee.models.GlobalModel;
-	import com.application.ocgsee.models.LfListModel;
-	import com.application.ocgsee.models.LflistPackage;
 	import com.application.ocgsee.models.SQLText;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.CardsSearchProxy;
@@ -94,6 +93,7 @@ package com.application
 			registerCommand(GlobalEvents.OPEN_DB,InitializeDBCommand);
 			registerCommand(GlobalEvents.STATISTICS_DB,StatisticsDBCommand);
 			registerCommand(GlobalEvents.LOAD_STATISTICS,LoadDBStatisticsCommand);
+			registerCommand(GlobalEvents.CHECK_LFLIST,CheckLflistCommand);
 			
 			
 		}
