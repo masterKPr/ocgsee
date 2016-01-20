@@ -43,8 +43,8 @@ if __name__ == '__main__':
         file_name="config/{0}.json".decode("utf-8").format(st)
         with open(file_name,"w") as f:
             result_str=json.dumps(lf_dict[key])
-            result_str=",\n".join(result_str.split(","))
-            result_str="[\n".join(result_str.split("["))
+#             result_str=",\n".join(result_str.split(","))
+#             result_str="[\n".join(result_str.split("["))
             f.write(result_str)
             
                 
