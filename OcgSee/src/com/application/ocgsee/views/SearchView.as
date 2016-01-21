@@ -22,6 +22,9 @@ package com.application.ocgsee.views
 		public var level_Picker:PickerList;
 		public var race_Picker:PickerList;
 		public var child_type_Picker:PickerList;
+		public var lflist_Picker:PickerList;
+		
+		
 		
 		
 
@@ -44,6 +47,8 @@ package com.application.ocgsee.views
 
 		public var favorites_Picker:PickerList;
 		
+		public var lflistHeader:Header;
+		
 		public function SearchView()
 		{
 			super();
@@ -55,12 +60,19 @@ package com.application.ocgsee.views
 
 		public var layoutHeader:Header;
 
+
+
 		override protected function get defaultStyleProvider():IStyleProvider
 		{
 			return SearchView.globalStyleProvider;
 		}
 		private function create():void
 		{
+			
+			lflistHeader=new Header();
+			lflist_Picker=new PickerList();
+			lflistHeader.rightItems=new <DisplayObject>[lflist_Picker];
+			this.addChild(lflistHeader);
 			
 			limitHeader=new Header();
 			limit_Picker=new PickerList();

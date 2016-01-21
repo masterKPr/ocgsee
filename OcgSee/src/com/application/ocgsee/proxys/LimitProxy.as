@@ -1,5 +1,6 @@
 package com.application.ocgsee.proxys
 {
+	import com.application.engine.utils.FileUtils;
 	import com.application.ocgsee.consts.LimitConst;
 	import com.application.ocgsee.models.LflistPackage;
 	
@@ -18,10 +19,17 @@ package com.application.ocgsee.proxys
 		public function LimitProxy(data:Object=null)
 		{
 			super(data);
+			init();
 		}
+		public var lflistDict:Object={};
 		private function init():void{
-//			var file:File=File.applicationDirectory.resolvePath("assets/lflist");
-//			file.getDirectoryListing()
+			var fileDir:File=File.applicationStorageDirectory.resolvePath("lflist");
+			var fileList:Array=fileDir.getDirectoryListing();
+			for each(var file:File in fileList){
+				var str:String=FileUtils.readFile(file);
+				var obj:Object=JSON.parse(str);
+				lflistDict[obj.title]=obj;
+			}
 		}
 		public function get currentLflist():LflistPackage{
 			if (!model){
@@ -32,6 +40,9 @@ package com.application.ocgsee.proxys
 			}
 			return model;
 		}
+		
+		
+		
 		public function getLimitMark(id:int):String{  
 			if(currentLflist.forbidden.indexOf(id)!=-1){
 				return LimitConst.FORBIDDEN;

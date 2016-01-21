@@ -293,6 +293,22 @@ package com.application.ocgsee.mediators
 			view.toggleHeader.title=localize("card_type_16401");
 			
 			view.layoutHeader.title=localize("info_layout");
+			
+			view.lflistHeader.title=localize("lflist_title_test");
+			
+			
+			view.lflist_Picker.dataProvider=createLflistProvider();
+		}
+		private function createLflistProvider():ListCollection{
+			var re:ListCollection=new ListCollection();
+			var proxy:LimitProxy=appFacade.retrieveProxy_Lite(LimitProxy)as LimitProxy;
+			var arr:Array=[];
+			for (var key:String in proxy.lflistDict){
+				arr.push(key);
+			}
+			arr=arr.sort();
+			re.data=arr;
+			return re;
 		}
 		private function listFactory():List
 		{
