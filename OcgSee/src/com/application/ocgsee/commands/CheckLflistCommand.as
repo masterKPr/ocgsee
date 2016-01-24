@@ -1,5 +1,10 @@
 package com.application.ocgsee.commands
 {
+	import com.application.ApplicationFacade;
+	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.LimitConst;
+	import com.application.ocgsee.proxys.LimitProxy;
+	
 	import flash.filesystem.File;
 	
 	import mvclite.contorl.SimpleCommand_Lite;
@@ -24,6 +29,9 @@ package com.application.ocgsee.commands
 					file.copyTo(storageFile);
 				}
 			}
+			var limitProxy:LimitProxy=ApplicationFacade._.retrieveProxy_Lite(LimitProxy) as LimitProxy;
+			limitProxy.update();
+			sendNotification(GlobalEvents.UPDATE_LFLIST);
 		}
 	}
 }

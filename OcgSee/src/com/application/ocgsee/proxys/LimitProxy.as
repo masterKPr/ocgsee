@@ -1,6 +1,8 @@
 package com.application.ocgsee.proxys
 {
+	import com.application.ApplicationFacade;
 	import com.application.engine.utils.FileUtils;
+	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.consts.LimitConst;
 	import com.application.ocgsee.models.LflistPackage;
 	
@@ -14,16 +16,17 @@ package com.application.ocgsee.proxys
 	
 	public class LimitProxy extends Proxy_Lite implements ILimit
 	{
-		public var model:LflistPackage;
+		public var model:LflistPackage
 		
 		public function LimitProxy(data:Object=null)
 		{
 			super(data);
-			init();
+			update();
 		}
 		public var lflistDict:Object={};
-		private function init():void{
+		public function update():void{
 			var fileDir:File=File.applicationStorageDirectory.resolvePath("lflist");
+			fileDir.createDirectory();
 			var fileList:Array=fileDir.getDirectoryListing();
 			for each(var file:File in fileList){
 				var str:String=FileUtils.readFile(file);
@@ -31,13 +34,24 @@ package com.application.ocgsee.proxys
 				lflistDict[obj.title]=obj;
 			}
 		}
-		public function get currentLflist():LflistPackage{
-			if (!model){
-				var assetsProxy:AssetsProxy=appFacade.retrieveProxy_Lite(AssetsProxy) as AssetsProxy;
-				var obj:Object=assetsProxy.takeJSON("default_lflist");
-				model=new LflistPackage();
-				model.parse(obj);
+		private var _selectLflist:String;
+		
+		public function get selectLflist():String
+		{
+			return ApplicationFacade._.kvdb.take("last_lflist");
+		}
+		
+		public function set selectLflist(value:String):void
+		{
+			if(value!=selectLflist){
+				_selectLflist = value;
+				ApplicationFacade._.kvdb.save("last_lflist",value);
+				sendNotification(GlobalEvents.REFRESH_LFLIST);
 			}
+		}
+		public function get currentLflist():LflistPackage{
+			var obj:Object=lflistDict[selectLflist];
+			model.parse(obj);
 			return model;
 		}
 		

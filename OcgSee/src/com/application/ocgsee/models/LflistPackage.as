@@ -10,10 +10,19 @@ package com.application.ocgsee.models
 		{
 		}
 		public function parse(obj:Object):void{
-			this.forbidden=obj["forbidden"];
-			this.limit=obj["limit"];
-			this.semiLimit=obj["semi limit"];
-			this.title=obj["title"];
+			if(obj==null){
+				empty();
+			}
+			this.forbidden=obj["forbidden"]||[];
+			this.limit=obj["limit"]||[];
+			this.semiLimit=obj["semi limit"]||[];
+			this.title=obj["title"]||"";
+		}
+		private function empty():void{
+			this.forbidden=[];
+			this.limit=[];
+			this.semiLimit=[];
+			this.title="";
 		}
 	}
 }

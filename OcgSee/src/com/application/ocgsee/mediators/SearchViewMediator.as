@@ -1,9 +1,11 @@
 package com.application.ocgsee.mediators
 {
+	import com.application.ApplicationFacade;
 	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.models.LflistPackage;
 	import com.application.ocgsee.proxys.ConfigProxy;
 	import com.application.ocgsee.proxys.FavoritesSearchProxy;
+	import com.application.ocgsee.proxys.KVDBProxy;
 	import com.application.ocgsee.proxys.LimitProxy;
 	import com.application.ocgsee.proxys.SQLProxy;
 	import com.application.ocgsee.utils.localize;
@@ -18,7 +20,11 @@ package com.application.ocgsee.mediators
 	import feathers.controls.renderers.IListItemRenderer;
 	import feathers.data.ListCollection;
 	
+	import framework.log.LogUtils;
+	
 	import mvclite.mediator.Mediator_Lite;
+	
+	import org.puremvc.as3.interfaces.INotification;
 	
 	import starling.display.DisplayObject;
 	import starling.events.Event;
@@ -48,18 +54,28 @@ package com.application.ocgsee.mediators
 			eventsProxy.regist(view.favorites_Picker,Event.CHANGE,onSearchChange);
 			
 			eventsProxy.regist(view.layoutStepper,Event.CHANGE,onStepChange);
+			eventsProxy.regist(view.lflist_Picker,Event.CHANGE,onLflistChange);
+			
 			onSearchChange(null);
 		}
-		
+	
 		
 		private function onStepChange(e:Event):void
 		{
 			appFacade.sendNotification(GlobalEvents.RESULT_LAYOUT_CHANGE,view.layoutStepper.value);
 		}
+		protected override function registerNotification():void{
+			notificationsProxy.regist(GlobalEvents.UPDATE_LFLIST,updateLflist);
+			
+		}
 		
+		private function updateLflist(notification:INotification):void
+		{
+			createLflistPicker();
+		}
 		private function viewAddedHandler(e:Event):void
 		{
-			eventsProxy.remove(view,Event.ADDED_TO_STAGE,viewAddedHandler)
+			eventsProxy.remove(view,Event.ADDED_TO_STAGE,viewAddedHandler);
 			
 			setTimeout(resizePicker,1);
 			setTimeout(resizeHeader,2);
@@ -73,7 +89,8 @@ package com.application.ocgsee.mediators
 				view.level_Picker,
 				view.race_Picker,
 				view.child_type_Picker,
-				view.favorites_Picker
+				view.favorites_Picker,
+				view.lflist_Picker
 			];
 			var maxWidth:int=0;
 			for each(var picker:PickerList in pickList){
@@ -177,6 +194,7 @@ package com.application.ocgsee.mediators
 		}
 		
 		private var isPause:Boolean=false;//暂停开关用于复位按钮时频繁查询的优化
+
 		private function resetHandler(e:Event):void
 		{
 			isPause=true;
@@ -219,7 +237,14 @@ package com.application.ocgsee.mediators
 				return "";
 			}
 		}
-		
+		private function onLflistChange(e:Event):void
+		{
+			var selectObj:String=view.lflist_Picker.selectedItem as String;
+			var proxy:LimitProxy=ApplicationFacade._.retrieveProxy_Lite(LimitProxy) as LimitProxy;
+			proxy.selectLflist=selectObj;
+			onSearchChange(null);
+			
+		}	
 		private function createSerchByLflist():String
 		{
 			var serch:String=""
@@ -228,6 +253,7 @@ package com.application.ocgsee.mediators
 			var idList:String="";
 			var proxy:LimitProxy=appFacade.retrieveProxy_Lite(LimitProxy)as LimitProxy;
 			var lfpackage:LflistPackage=proxy.currentLflist;
+			var connect:Array=[];
 			switch(selectValue){
 				case localize("info_forbidden"):
 					idList=lfpackage.forbidden.toString();
@@ -239,10 +265,12 @@ package com.application.ocgsee.mediators
 					idList=lfpackage.semiLimit.toString();
 					break;
 				case localize("info_in_lflist"):
-					idList=lfpackage.forbidden.toString() + "," + lfpackage.limit.toString() + "," + lfpackage.semiLimit.toString();
+					connect=connect.concat(lfpackage.forbidden,lfpackage.limit,lfpackage.semiLimit);
+					idList=connect.toString();
 					break;
 				case localize("info_in_limit_list"):
-					idList=lfpackage.limit.toString() + "," + lfpackage.semiLimit.toString();
+					connect=connect.concat(lfpackage.limit,lfpackage.semiLimit);
+					idList=connect.toString();
 					break;
 				case localize("system_unlimit"):
 					return "";
@@ -294,21 +322,26 @@ package com.application.ocgsee.mediators
 			
 			view.layoutHeader.title=localize("info_layout");
 			
-			view.lflistHeader.title=localize("lflist_title_test");
+			view.lflistHeader.title=localize("header_lflist_title");
 			
 			
-			view.lflist_Picker.dataProvider=createLflistProvider();
+			updateLflist(null);
 		}
-		private function createLflistProvider():ListCollection{
+		private function createLflistPicker():void{
 			var re:ListCollection=new ListCollection();
 			var proxy:LimitProxy=appFacade.retrieveProxy_Lite(LimitProxy)as LimitProxy;
 			var arr:Array=[];
+			
 			for (var key:String in proxy.lflistDict){
 				arr.push(key);
 			}
 			arr=arr.sort();
+			arr.unshift(localize("system_unlimit"));
 			re.data=arr;
-			return re;
+			view.lflist_Picker.dataProvider=re;
+			if(proxy.selectLflist){
+				view.lflist_Picker.selectedItem=proxy.selectLflist;
+			}
 		}
 		private function listFactory():List
 		{

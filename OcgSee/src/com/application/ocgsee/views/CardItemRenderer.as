@@ -318,14 +318,16 @@ package com.application.ocgsee.views
 				_newMarkImg.source=null;
 			}
 		}
-
+		public function set limitSource(source:Texture):void{
+			_limitMark.source=source;
+		}
 		protected function commitData():void
 		{
 			if(this._data)
 			{
 				//				this.itemLabel.text = this._data[labelField];
 				cardImage.source=cardsTextures.cardTexture(this._data.id);
-				_limitMark.source=limitProxy.getLimitMarkImg(this._data.id);
+				limitSource=limitProxy.getLimitMarkImg(this._data.id);
 				
 				if(this._data.ot==1){
 					_label.color=0x0000ff;
@@ -345,7 +347,7 @@ package com.application.ocgsee.views
 			{
 				//				this.itemLabel.text = "";
 				cardImage.source=null;
-				_limitMark.source=null;
+				limitSource=null;
 				isNewCard=false;
 			}
 		}

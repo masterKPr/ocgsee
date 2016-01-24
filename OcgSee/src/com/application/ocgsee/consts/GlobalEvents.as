@@ -59,6 +59,14 @@ package com.application.ocgsee.consts
 		public static const GC_DISPOSE:String="GC_DISPOSE";
 		
 		public static const CHECK_LFLIST:String="CHECK_LFLIST";
+		/**
+		 *通过检查限制卡表 完成发出事件 
+		 */		
+		public static const UPDATE_LFLIST:String="UPDATE_LFLIST";
+		/**
+		 *选择卡表切换事件 
+		 */		
+		public static const REFRESH_LFLIST:String="REFRESH_LFLIST";
 		public function GlobalEvents()
 		{
 		}

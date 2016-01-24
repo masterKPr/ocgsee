@@ -1,9 +1,11 @@
 package com.application.ocgsee.mediators
 {
+	import com.application.ApplicationFacade;
 	import com.application.engine.interfaces.ICardTexture;
 	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.CardsTextureProxy;
+	import com.application.ocgsee.proxys.LimitProxy;
 	import com.application.ocgsee.utils.ImageCache;
 	import com.application.ocgsee.views.CardItemRenderer;
 	
@@ -14,6 +16,7 @@ package com.application.ocgsee.mediators
 	import org.puremvc.as3.interfaces.INotification;
 	
 	import starling.events.Event;
+	import starling.textures.Texture;
 	
 	public class CardRendererMediator extends Mediator_Lite
 	{
@@ -35,6 +38,7 @@ package com.application.ocgsee.mediators
 		protected override function registerNotification():void{
 			notificationsProxy.regist(GlobalEvents.REFRESH_CARD_TEXTURE,refreshCardTexture);
 			notificationsProxy.regist(GlobalEvents.GC_DISPOSE,gcDispose);
+			notificationsProxy.regist(GlobalEvents.REFRESH_LFLIST,refreshLflist);
 		}
 		
 		private function gcDispose(notification:INotification):void
@@ -56,7 +60,14 @@ package com.application.ocgsee.mediators
 		{
 			appFacade.removeMediator(NAME);
 		}
-		
+		private function refreshLflist(notification:INotification):void{
+			var limitProxy:LimitProxy=ApplicationFacade._.retrieveProxy_Lite(LimitProxy) as LimitProxy;
+			var litmitSource:Texture;
+			if(view.data){
+				litmitSource=limitProxy.getLimitMarkImg(view.data.id);
+			}
+			view.limitSource=litmitSource;
+		}
 		private function refreshCardTexture(notification:INotification):void
 		{
 			var obj:Object=notification.getBody();

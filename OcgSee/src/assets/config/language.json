@@ -1,5 +1,6 @@
 {
 	"card_type_global"	:"卡片类型",
+	"header_lflist_title":"限制卡表",
 	"card_monster"		:"怪兽",
 	"card_spell"		:"魔法",
 	"card_trap"			:"陷阱",
