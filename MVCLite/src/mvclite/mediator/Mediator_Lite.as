@@ -68,7 +68,7 @@ package mvclite.mediator
 			super.onRemove();
 		}
 		private final function setViewDefault(view:Object):void{
-			if(this.hasOwnProperty("view")){
+			if(this.hasOwnProperty("view")&&view){
 				this["view"]=view;
 			}else{
 				sendNotification(LogEvents.ERROR,this+"无法指定属性view");

@@ -23,7 +23,7 @@ package mvclite.proxys
 			return null;
 		}
 		private final function setModelDefault(data:Object):void{
-			if(this.hasOwnProperty("model")){
+			if(this.hasOwnProperty("model")&&data){
 				this["model"]=data;
 			}else{
 				sendNotification(LogEvents.ERROR,this+"无法指定属性model");
