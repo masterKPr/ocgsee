@@ -1,7 +1,7 @@
 package com.application.ocgsee.proxys
 {
 	import com.application.engine.utils.FileUtils;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	
 	import flash.filesystem.File;
 	
@@ -32,9 +32,9 @@ package com.application.ocgsee.proxys
 		}
 		private function packageComplete(ratio:Number):void{
 			if(ratio==1.0){
-				sendNotification(GlobalEvents.RES_COMPLETE);
+				sendNotification(GlobalNotifications.RES_COMPLETE);
 			}else{
-				sendNotification(GlobalEvents.LOADING_PROGRESS,ratio);
+				sendNotification(GlobalNotifications.LOADING_PROGRESS,ratio);
 			}
 		}
 

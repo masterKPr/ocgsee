@@ -3,7 +3,7 @@ package com.application.ocgsee.mediators
 	import com.application.ApplicationFacade;
 	import com.application.engine.utils.FileUtils;
 	import com.application.ocgsee.StarlingRoot;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	
 	import flash.display.Bitmap;
@@ -96,8 +96,8 @@ package com.application.ocgsee.mediators
 			_loadingLoader=null;
 		}
 		protected override function registerNotification():void{
-			notificationsProxy.regist(GlobalEvents.RES_COMPLETE,onTextureComplete);
-			notificationsProxy.regist(GlobalEvents.LOADING_PROGRESS,refreshProgress);
+			notificationsProxy.regist(GlobalNotifications.RES_COMPLETE,onTextureComplete);
+			notificationsProxy.regist(GlobalNotifications.LOADING_PROGRESS,refreshProgress);
 		}
 		
 		private function refreshProgress(notification:INotification):void

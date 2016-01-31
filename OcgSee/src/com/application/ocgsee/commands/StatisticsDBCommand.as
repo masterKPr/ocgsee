@@ -1,7 +1,7 @@
 package com.application.ocgsee.commands
 {
 	import com.application.engine.utils.FileUtils;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.proxys.CardsSearchProxy;
 	
 	import flash.filesystem.File;
@@ -37,7 +37,7 @@ package com.application.ocgsee.commands
 				var jsonStr:String=JSON.stringify(idList);
 				FileUtils.writeString(dataFile,jsonStr);
 			}
-			sendNotification(GlobalEvents.LOAD_STATISTICS);
+			sendNotification(GlobalNotifications.LOAD_STATISTICS);
 
 		}
 	}

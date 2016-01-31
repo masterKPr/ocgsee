@@ -2,7 +2,7 @@ package com.application.ocgsee.proxys
 {
 	import com.application.ApplicationFacade;
 	import com.application.engine.utils.FileUtils;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.consts.LimitConst;
 	import com.application.ocgsee.models.LflistPackage;
 	
@@ -46,7 +46,7 @@ package com.application.ocgsee.proxys
 			if(value!=selectLflist){
 				_selectLflist = value;
 				ApplicationFacade._.kvdb.save("last_lflist",value);
-				sendNotification(GlobalEvents.REFRESH_LFLIST);
+				sendNotification(GlobalNotifications.REFRESH_LFLIST);
 			}
 		}
 		public function get currentLflist():LflistPackage{

@@ -1,6 +1,6 @@
 package com.application.ocgsee.commands
 {
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.mediators.FlashRootMediator;
 	
 	import mvclite.contorl.SimpleCommand_Lite;
@@ -14,9 +14,9 @@ package com.application.ocgsee.commands
 			super();
 		}
 		public override function execute(notification:INotification):void{
-			sendNotification(GlobalEvents.INIT_FAVORITES);
-			sendNotification(GlobalEvents.OPEN_DB);
-			sendNotification(GlobalEvents.CHECK_LFLIST);
+			sendNotification(GlobalNotifications.INIT_FAVORITES);
+			sendNotification(GlobalNotifications.OPEN_DB);
+			sendNotification(GlobalNotifications.CHECK_LFLIST);
 			facade.registerMediator(new FlashRootMediator(appFacade.root));
 			
 		}

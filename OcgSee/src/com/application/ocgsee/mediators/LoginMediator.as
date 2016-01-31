@@ -1,6 +1,6 @@
 package com.application.ocgsee.mediators
 {
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.views.LoginView;
 	
 	import flash.events.MouseEvent;
@@ -33,7 +33,7 @@ package com.application.ocgsee.mediators
 		private function onClick(e:MouseEvent):void
 		{
 //			facade.sendNotification(Events.CHANGE_LABEL_NAME,"返回");
-			facade.sendNotification(GlobalEvents.LOAD_SOMETING,null,"xxx");
+			facade.sendNotification(GlobalNotifications.LOAD_SOMETING,null,"xxx");
 		}
 		
 	}

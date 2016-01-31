@@ -1,7 +1,7 @@
 package com.application.ocgsee.commands
 {
 	import com.application.ApplicationFacade;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.proxys.KVDBProxy;
 	
@@ -78,7 +78,7 @@ package com.application.ocgsee.commands
 			kvdb.save(globalProxy.KEY_LAST_DB,lastDB);
 			kvdb.save(globalProxy.KEY_CURRENT_DB,fileName);
 			
-			sendNotification(GlobalEvents.OPEN_DB);
+			sendNotification(GlobalNotifications.OPEN_DB);
 		}
 	}
 }

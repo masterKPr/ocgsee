@@ -1,6 +1,6 @@
 package com.application.ocgsee.commands
 {
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.mediators.CallCardMediator;
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.proxys.SQLProxy;
@@ -43,7 +43,7 @@ package com.application.ocgsee.commands
 			globalProxy.model.showCard=true;
 			var proxy:SQLProxy=appFacade.retrieveProxy_Lite(SQLProxy) as SQLProxy;
 			var text:String=proxy.singleCardSQL(id);
-			sendNotification(GlobalEvents.SEARCH_SINGLE,text);
+			sendNotification(GlobalNotifications.SEARCH_SINGLE,text);
 			
 			
 			

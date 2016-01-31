@@ -2,7 +2,7 @@ package com.application.ocgsee.mediators
 {
 	
 	import com.application.ocgsee.StarlingRoot;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.LoaderProxy;
 	import com.application.ocgsee.themes.OcgseeTheme;
@@ -38,13 +38,13 @@ package com.application.ocgsee.mediators
 			facade.registerMediator(new CallCardMediator());
 			var loaderProxy:LoaderProxy=appFacade.retrieveProxy_Lite(LoaderProxy) as LoaderProxy;
 			loaderProxy.begin();
-			sendNotification(GlobalEvents.CHECK_DB);
+			sendNotification(GlobalNotifications.CHECK_DB);
 
 		}
 		
 		
 		protected override function registerNotification():void{
-			notificationsProxy.regist(GlobalEvents.RES_COMPLETE,onTextureComplete);
+			notificationsProxy.regist(GlobalNotifications.RES_COMPLETE,onTextureComplete);
 		}
 		
 		private function onTextureComplete(notification:INotification):void
@@ -86,22 +86,22 @@ package com.application.ocgsee.mediators
 		
 		private function openHandler(e:Event):void
 		{
-			sendNotification(GlobalEvents.DRAWERS_OPEN);
+			sendNotification(GlobalNotifications.DRAWERS_OPEN);
 		}
 		
 		private function closeHandler(e:Event):void
 		{
-			sendNotification(GlobalEvents.DRAWERS_CLOSE);
+			sendNotification(GlobalNotifications.DRAWERS_CLOSE);
 		}
 		
 		private function endInteractHandler(e:Event):void
 		{
-			sendNotification(GlobalEvents.DRAWERS_STOP_INTERACTION);
+			sendNotification(GlobalNotifications.DRAWERS_STOP_INTERACTION);
 		}
 		
 		private function beginInteractHandler(e:Event):void
 		{
-			sendNotification(GlobalEvents.DRAWERS_BEGIN_INTERACTION);
+			sendNotification(GlobalNotifications.DRAWERS_BEGIN_INTERACTION);
 		}
 	}
 }

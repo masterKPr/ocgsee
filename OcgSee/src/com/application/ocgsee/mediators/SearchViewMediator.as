@@ -1,7 +1,7 @@
 package com.application.ocgsee.mediators
 {
 	import com.application.ApplicationFacade;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.models.LflistPackage;
 	import com.application.ocgsee.proxys.ConfigProxy;
 	import com.application.ocgsee.proxys.FavoritesSearchProxy;
@@ -62,10 +62,10 @@ package com.application.ocgsee.mediators
 		
 		private function onStepChange(e:Event):void
 		{
-			appFacade.sendNotification(GlobalEvents.RESULT_LAYOUT_CHANGE,view.layoutStepper.value);
+			appFacade.sendNotification(GlobalNotifications.RESULT_LAYOUT_CHANGE,view.layoutStepper.value);
 		}
 		protected override function registerNotification():void{
-			notificationsProxy.regist(GlobalEvents.UPDATE_LFLIST,updateLflist);
+			notificationsProxy.regist(GlobalNotifications.UPDATE_LFLIST,updateLflist);
 			
 		}
 		
@@ -135,7 +135,7 @@ package com.application.ocgsee.mediators
 			}else{
 				view.resetBtn.label="●"+localize("info_reset");
 			}
-			sendNotification(GlobalEvents.SEARCH_MULIT,createSearchText());
+			sendNotification(GlobalNotifications.SEARCH_MULIT,createSearchText());
 		}
 		
 		private function createSearchText():String{

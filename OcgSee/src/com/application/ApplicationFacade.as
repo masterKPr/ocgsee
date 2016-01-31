@@ -21,7 +21,7 @@ package com.application
 	import com.application.ocgsee.commands.deck.JoinSideCommand;
 	import com.application.ocgsee.consts.CallEvents;
 	import com.application.ocgsee.consts.DeckEvents;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.mediators.LoginMediator;
 	import com.application.ocgsee.models.DeckPackage;
 	import com.application.ocgsee.models.GlobalModel;
@@ -80,21 +80,21 @@ package com.application
 			super.initializeController();
 			
 			registerCommand(MVCFrameworkEvents.START_UP,StartupCommand);
-			registerCommand(GlobalEvents.LOAD_SOMETING,LoadCommand);
+			registerCommand(GlobalNotifications.LOAD_SOMETING,LoadCommand);
 			registerCommand(MVCLiteEvents.ACTIVE,ActiveCommand);
 			registerCommand(MVCLiteEvents.DEACTIVE,DeactiveCommand);
-			registerCommand(GlobalEvents.SEARCH_MULIT,SearchCommand);
-			registerCommand(GlobalEvents.SEARCH_SINGLE,SearchCommand);
+			registerCommand(GlobalNotifications.SEARCH_MULIT,SearchCommand);
+			registerCommand(GlobalNotifications.SEARCH_SINGLE,SearchCommand);
 			registerCommand(CallEvents.CALL_ONE_CARD,CallCardInfoCommand);
 			registerCommand(DeckEvents.JOIN_MAIN,JoinMainCommand);
 			registerCommand(DeckEvents.JOIN_SIDE,JoinSideCommand);
 			registerCommand(DeckEvents.JOIN_EX,JoinExCommand);
-			registerCommand(GlobalEvents.INIT_FAVORITES,InitFavoritesCommand);
-			registerCommand(GlobalEvents.CHECK_DB,CheckDBCommand);
-			registerCommand(GlobalEvents.OPEN_DB,InitializeDBCommand);
-			registerCommand(GlobalEvents.STATISTICS_DB,StatisticsDBCommand);
-			registerCommand(GlobalEvents.LOAD_STATISTICS,LoadDBStatisticsCommand);
-			registerCommand(GlobalEvents.CHECK_LFLIST,CheckLflistCommand);
+			registerCommand(GlobalNotifications.INIT_FAVORITES,InitFavoritesCommand);
+			registerCommand(GlobalNotifications.CHECK_DB,CheckDBCommand);
+			registerCommand(GlobalNotifications.OPEN_DB,InitializeDBCommand);
+			registerCommand(GlobalNotifications.STATISTICS_DB,StatisticsDBCommand);
+			registerCommand(GlobalNotifications.LOAD_STATISTICS,LoadDBStatisticsCommand);
+			registerCommand(GlobalNotifications.CHECK_LFLIST,CheckLflistCommand);
 			
 			
 		}

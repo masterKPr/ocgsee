@@ -2,7 +2,7 @@ package com.application.ocgsee.views
 {
 	import com.application.ApplicationFacade;
 	import com.application.engine.utils.FileUtils;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.utils.ImageCache;
 	
@@ -74,7 +74,7 @@ package com.application.ocgsee.views
 				var obj:Object={
 					id:globalProxy.get_ID_CardJPG(cardJPG)
 				};
-				ApplicationFacade._.sendNotification(GlobalEvents.REFRESH_CARD_TEXTURE,obj);
+				ApplicationFacade._.sendNotification(GlobalNotifications.REFRESH_CARD_TEXTURE,obj);
 			}else{
 				LogUtils.warn("不是string的加载类型"+this.source);
 			}

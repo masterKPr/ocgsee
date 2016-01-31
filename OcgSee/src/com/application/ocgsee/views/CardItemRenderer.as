@@ -1,11 +1,7 @@
 package com.application.ocgsee.views
 {
 	import com.application.ApplicationFacade;
-	import com.application.engine.interfaces.ICardTexture;
-	import com.application.ocgsee.consts.CallEvents;
 	import com.application.ocgsee.consts.GlobalEvents;
-	import com.application.ocgsee.proxys.ILimit;
-	import com.application.ocgsee.utils.localize;
 	
 	import flash.geom.Point;
 	
@@ -14,10 +10,6 @@ package com.application.ocgsee.views
 	import feathers.controls.renderers.IListItemRenderer;
 	import feathers.core.FeathersControl;
 	
-	import org.puremvc.as3.interfaces.IFacade;
-	
-	import starling.core.Starling;
-	import starling.display.DisplayObject;
 	import starling.events.Event;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
@@ -27,13 +19,13 @@ package com.application.ocgsee.views
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
 	
+	[Event(name="dataChange", type="flash.events.Event")]
 	public class CardItemRenderer extends FeathersControl implements IListItemRenderer
 	{
-		public var cardsTextures:ICardTexture;
-		public var facade:IFacade;
-		public static var selectTexture:Texture;
-		public static var newCardTexture:Texture;
-		public var limitProxy:ILimit;
+		
+		public static const DATA_CHANGE:String="dataChange";
+		
+		public static var SELECTED_TEXTURE:Texture;
 		
 		public override function dispose():void{
 			this.dispatchEvent(new Event(GlobalEvents.DISPOSE));
@@ -43,12 +35,12 @@ package com.application.ocgsee.views
 		{
 			_cardWidth=cardWidth;
 			_cardHeight=cardHeight;
-			cardImage=new SaveImageLoader();
-			cardImage.width=_cardWidth;
-			cardImage.height=_cardHeight;
+			_cardImage=new SaveImageLoader();
+			_cardImage.width=_cardWidth;
+			_cardImage.height=_cardHeight;
 
 			
-			this.addChild(cardImage);
+			this.addChild(_cardImage);
 			
 			_limitMark=new ImageLoader();
 			this.addChild(_limitMark);
@@ -69,14 +61,15 @@ package com.application.ocgsee.views
 			
 			
 			
-			_label=new TextField(_cardWidth/2,_cardHeight/5,"","Verdana",35);
+			_otLabel=new TextField(_cardWidth/2,_cardHeight/5,"","Verdana",35);
 			
-			_label.hAlign=HAlign.RIGHT;
-			_label.vAlign=VAlign.BOTTOM;
-			_label.autoScale=true;
+			_otLabel.hAlign=HAlign.RIGHT;
+			_otLabel.vAlign=VAlign.BOTTOM;
+			_otLabel.autoScale=true;
 //			_label.bold=true;
-			_label.y=_cardHeight-_label.height-5;
-			_label.x=_cardWidth-_label.width-5;
+			_otLabel.y=_cardHeight-_otLabel.height-5;
+			_otLabel.x=_cardWidth-_otLabel.width-5;
+			this.addChild(_otLabel);
 			
 			
 			this.addEventListener(TouchEvent.TOUCH, touchHandler);
@@ -201,7 +194,7 @@ package com.application.ocgsee.views
 		
 		protected var _isSelected:Boolean;
 		
-		public var cardImage:SaveImageLoader;
+		private var _cardImage:SaveImageLoader;
 
 		private var _limitMark:ImageLoader;
 
@@ -211,10 +204,25 @@ package com.application.ocgsee.views
 
 		private var _cardHeight:Number;
 
-		private var _label:TextField;
+		private var _otLabel:TextField;
 
 		private var _newMarkImg:ImageLoader;
 		
+
+		public function set loadingAndError(value:Texture):void{
+			_cardImage.loadingTexture=value;
+			_cardImage.errorTexture=value;
+		}
+		
+		public function get cardSource():Object
+		{
+			return _cardImage.source;
+		}
+
+		public function set cardSource(value:Object):void
+		{
+			_cardImage.source=value;
+		}
 		
 		public function get isSelected():Boolean
 		{
@@ -227,25 +235,9 @@ package com.application.ocgsee.views
 			{
 				return;
 			}
-
 			this._isSelected = value;
 			this.invalidate(INVALIDATION_FLAG_SELECTED);
-			if(this._isSelected){
-				var target:DisplayObject=this;
-				var f:Function=function():void{
-					facade.sendNotification(CallEvents.CALL_ONE_CARD,{target:target,id:_data.id});
-				}
-				Starling.current.juggler.delayCall(f,0.0001);
-				
-			}else{
-				facade.sendNotification(CallEvents.HIDE_ONE_CARD);
-			}
 			this.dispatchEventWith(Event.CHANGE);
-			
-			
-			
-			
-			
 		}
 		
 		override protected function initialize():void
@@ -265,11 +257,9 @@ package com.application.ocgsee.views
 			}
 			if(selectionInvalid){
 				if(isSelected){
-//					this.alpha=0.3
-					_selectImg.source=selectTexture
+					selectedSource=SELECTED_TEXTURE;
 				}else{
-//					this.alpha=1;
-					_selectImg.source=null;
+					selectedSource=null;
 				}
 				
 			}
@@ -302,54 +292,24 @@ package com.application.ocgsee.views
 			//			}
 			return this.setSizeInternal(_cardWidth, _cardHeight, false);
 		}
-		private var _isNewCard:Boolean;
 
-		public function get isNewCard():Boolean
-		{
-			return _isNewCard;
-		}
 
-		public function set isNewCard(value:Boolean):void
-		{
-			_isNewCard = value;
-			if(_isNewCard){
-				_newMarkImg.source=newCardTexture;
-			}else{
-				_newMarkImg.source=null;
-			}
+		public function set newMarkSource(value:Texture):void{
+			_newMarkImg.source=value;
 		}
 		public function set limitSource(source:Texture):void{
 			_limitMark.source=source;
 		}
+		public function set selectedSource(value:Texture):void{
+			_selectImg.source=value;
+		}
+		public function setLabel(text:String,color:int):void{
+			_otLabel.text=text;
+			_otLabel.color=color;
+		}
 		protected function commitData():void
 		{
-			if(this._data)
-			{
-				//				this.itemLabel.text = this._data[labelField];
-				cardImage.source=cardsTextures.cardTexture(this._data.id);
-				limitSource=limitProxy.getLimitMarkImg(this._data.id);
-				
-				if(this._data.ot==1){
-					_label.color=0x0000ff;
-					_label.text=localize("card_ot_1_simple");
-					this.addChild(_label);
-				}else if(this._data.ot==2){
-					_label.color=0xff0000;
-					_label.text=localize("card_ot_2_simple");
-					this.addChild(_label);
-				}else{
-					_label.text="";
-					this.removeChild(_label);
-				}
-				isNewCard=ApplicationFacade._.globalProxy.isNewCard(this._data.id);
-			}
-			else
-			{
-				//				this.itemLabel.text = "";
-				cardImage.source=null;
-				limitSource=null;
-				isNewCard=false;
-			}
+			this.dispatchEvent(new Event(DATA_CHANGE));
 		}
 		
 		protected function layout():void

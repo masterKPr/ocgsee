@@ -1,7 +1,7 @@
 package com.application.ocgsee.commands
 {
 	import com.application.ApplicationFacade;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.proxys.CardsSearchProxy;
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.proxys.KVDBProxy;
@@ -61,7 +61,7 @@ package com.application.ocgsee.commands
 			
 			var proxy:CardsSearchProxy=appFacade.retrieveProxy_Lite(CardsSearchProxy) as CardsSearchProxy;
 			proxy.open(SQLFile);
-			sendNotification(GlobalEvents.STATISTICS_DB);
+			sendNotification(GlobalNotifications.STATISTICS_DB);
 		}
 	}
 }

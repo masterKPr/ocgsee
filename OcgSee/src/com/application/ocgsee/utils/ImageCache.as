@@ -1,7 +1,7 @@
 package com.application.ocgsee.utils
 {
 	import com.application.ApplicationFacade;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	
 	import flash.utils.Dictionary;
 	
@@ -56,7 +56,7 @@ package com.application.ocgsee.utils
 			texture.dispose();
 			delete _dict[key];
 
-			ApplicationFacade._.sendNotification(GlobalEvents.GC_DISPOSE,obj);
+			ApplicationFacade._.sendNotification(GlobalNotifications.GC_DISPOSE,obj);
 		}
 		public function reset():void{
 			for (var key:String in _dict){

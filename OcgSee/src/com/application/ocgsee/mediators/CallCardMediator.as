@@ -2,7 +2,7 @@ package com.application.ocgsee.mediators
 {
 	import com.application.ApplicationFacade;
 	import com.application.ocgsee.consts.CallEvents;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.CardsTextureProxy;
 	import com.application.ocgsee.proxys.ConfigProxy;
@@ -41,7 +41,7 @@ package com.application.ocgsee.mediators
 			super(viewComponent);
 		}
 		protected override function registerNotification():void{
-			notificationsProxy.regist(GlobalEvents.SEARCH_SINGLE_COMPLETE,searchCompleteHandler);
+			notificationsProxy.regist(GlobalNotifications.SEARCH_SINGLE_COMPLETE,searchCompleteHandler);
 			notificationsProxy.regist(CallEvents.HIDE_ONE_CARD,onHideCardHandler);
 		}
 		

@@ -2,7 +2,7 @@ package com.application.ocgsee.mediators
 {
 	import com.application.ocgsee.consts.CallEvents;
 	import com.application.ocgsee.consts.CardConst;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.models.CardsAnalysis;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.CardsTextureProxy;
@@ -43,13 +43,13 @@ package com.application.ocgsee.mediators
 			view.resultList.selectedIndex=-1;
 		}
 		protected override function registerNotification():void{
-			notificationsProxy.regist(GlobalEvents.SEARCH_MULIT_COMPLETE,searchCompleteHandler);
+			notificationsProxy.regist(GlobalNotifications.SEARCH_MULIT_COMPLETE,searchCompleteHandler);
 			
-			notificationsProxy.regist(GlobalEvents.DRAWERS_BEGIN_INTERACTION,onDrawersControlBegin);
+			notificationsProxy.regist(GlobalNotifications.DRAWERS_BEGIN_INTERACTION,onDrawersControlBegin);
 			
-			notificationsProxy.regist(GlobalEvents.DRAWERS_OPEN,onDrawerOpen);
-			notificationsProxy.regist(GlobalEvents.DRAWERS_CLOSE,onDrawerClose);
-			notificationsProxy.regist(GlobalEvents.RESULT_LAYOUT_CHANGE,onLayoutChange);
+			notificationsProxy.regist(GlobalNotifications.DRAWERS_OPEN,onDrawerOpen);
+			notificationsProxy.regist(GlobalNotifications.DRAWERS_CLOSE,onDrawerClose);
+			notificationsProxy.regist(GlobalNotifications.RESULT_LAYOUT_CHANGE,onLayoutChange);
 		}
 		
 		private function onLayoutChange(notification:INotification):void
@@ -64,18 +64,12 @@ package com.application.ocgsee.mediators
 			var obset:Number=(value-3)*0.4;
 			var cardWidth:int=screenWidth/value-gap*2-1+obset;
 			var cardHeight:Number=cardWidth/scale;
-			var limitProxy:LimitProxy=appFacade.retrieveProxy_Lite(LimitProxy) as LimitProxy;
 			var assetsProxy:AssetsProxy=appFacade.retrieveProxy_Lite(AssetsProxy) as AssetsProxy;
-			var cardsTextureProxy:CardsTextureProxy=appFacade.retrieveProxy_Lite(CardsTextureProxy) as CardsTextureProxy;
 			var f:Function=function():IListItemRenderer{
 				var item:CardItemRenderer=new CardItemRenderer(cardWidth,cardHeight);
-				var meditator:CardRendererMediator=new CardRendererMediator(item);
+				var meditator:CardItemRendererMediator=new CardItemRendererMediator(item);
 				appFacade.registerMediator(meditator);
-				item.cardsTextures=cardsTextureProxy;
-				item.facade=appFacade; 
-				item.limitProxy=limitProxy;					 
-				CardItemRenderer.selectTexture=assetsProxy.selectTexture;
-				CardItemRenderer.newCardTexture=assetsProxy.newCardTexture;
+				CardItemRenderer.SELECTED_TEXTURE=assetsProxy.selectTexture;
 				return item
 			}
 			return f;

@@ -1,7 +1,7 @@
 package com.application.ocgsee.commands
 {
 	import com.application.ApplicationFacade;
-	import com.application.ocgsee.consts.GlobalEvents;
+	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.consts.LimitConst;
 	import com.application.ocgsee.proxys.LimitProxy;
 	
@@ -31,7 +31,7 @@ package com.application.ocgsee.commands
 			}
 			var limitProxy:LimitProxy=ApplicationFacade._.retrieveProxy_Lite(LimitProxy) as LimitProxy;
 			limitProxy.update();
-			sendNotification(GlobalEvents.UPDATE_LFLIST);
+			sendNotification(GlobalNotifications.UPDATE_LFLIST);
 		}
 	}
 }
