@@ -50,7 +50,8 @@ package com.application.ocgsee.proxys
 		}
 		public function getAll():Array{
 			
-			if(mark){
+			if(mark)
+			{
 				excecute("select id from "+TABLE_NAME);
 				var result:SQLResult=model.getResult();
 				var list:Array=result.data;

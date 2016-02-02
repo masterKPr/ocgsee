@@ -5,9 +5,7 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.models.CardsAnalysis;
 	import com.application.ocgsee.proxys.AssetsProxy;
-	import com.application.ocgsee.proxys.CardsTextureProxy;
 	import com.application.ocgsee.proxys.GlobalProxy;
-	import com.application.ocgsee.proxys.LimitProxy;
 	import com.application.ocgsee.utils.CardSortUtils;
 	import com.application.ocgsee.views.CardItemRenderer;
 	import com.application.ocgsee.views.ResultListView;
@@ -69,7 +67,6 @@ package com.application.ocgsee.mediators
 				var item:CardItemRenderer=new CardItemRenderer(cardWidth,cardHeight);
 				var meditator:CardItemRendererMediator=new CardItemRendererMediator(item);
 				appFacade.registerMediator(meditator);
-				CardItemRenderer.SELECTED_TEXTURE=assetsProxy.selectTexture;
 				return item
 			}
 			return f;

@@ -1,6 +1,5 @@
 package com.application.ocgsee.proxys
 {
-	import com.application.engine.interfaces.ICardTexture;
 	import com.application.ocgsee.utils.ImageCache;
 	
 	import mvclite.proxys.Proxy_Lite;
@@ -9,7 +8,7 @@ package com.application.ocgsee.proxys
 	import starling.textures.TextureAtlas;
 	import starling.utils.AssetManager;
 	
-	public class CardsTextureProxy extends Proxy_Lite implements ICardTexture
+	public class CardsTextureProxy extends Proxy_Lite
 	{
 		private static const length:int=11;
 		public function CardsTextureProxy(data:Object=null)

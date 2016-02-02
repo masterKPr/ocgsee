@@ -1,7 +1,6 @@
 package com.application.ocgsee.mediators
 {
 	import com.application.ApplicationFacade;
-	import com.application.engine.interfaces.ICardTexture;
 	import com.application.ocgsee.consts.CallEvents;
 	import com.application.ocgsee.consts.GlobalEvents;
 	import com.application.ocgsee.consts.GlobalNotifications;
@@ -35,8 +34,8 @@ package com.application.ocgsee.mediators
 			createIndex++;
 			LogUtils.log("创建个数:"+createIndex);
 			super(viewComponent);
-			var assets:AssetsProxy=appFacade.retrieveProxy_Lite(AssetsProxy)as AssetsProxy;
-			view.loadingAndError=assets.loadingTexture;
+			view.loadingAndError=assetsProxy.loadingTexture;
+			view.selectedTexture=assetsProxy.selectedTexture;
 		}
 		public override function get NAME():String{
 			return getQualifiedClassName(this)+index;
@@ -44,34 +43,37 @@ package com.application.ocgsee.mediators
 		protected override function registerNotification():void{
 			notificationsProxy.regist(GlobalNotifications.REFRESH_CARD_TEXTURE,refreshCardTexture);
 			notificationsProxy.regist(GlobalNotifications.GC_DISPOSE,gcDispose);
-			notificationsProxy.regist(GlobalNotifications.REFRESH_LFLIST,refreshLflist);
+			notificationsProxy.regist(GlobalNotifications.REFRESH_LFLIST,refreshLflistMark);
 		}
 		
 		private function gcDispose(notification:INotification):void
 		{
 			var obj:Object=notification.getBody();
 			var id:int=obj.id;
-			if(view.data.id==id){
+			if(view.data.id==id)
+			{
 				view.cardSource=cardsTextures.cardTexture(id);
 			}
 		}
-		private function get cardsTextures():ICardTexture{
+		private function get cardsTextures():CardsTextureProxy{
 			return appFacade.retrieveProxy_Lite(CardsTextureProxy) as CardsTextureProxy;
 		}
 		public override function onRegister():void{
 			eventsProxy.regist(view,GlobalEvents.DISPOSE,onDispose);
-			eventsProxy.regist(view,CardItemRenderer.DATA_CHANGE,ondataRefresh);
+			eventsProxy.regist(view,CardItemRenderer.DATA_CHANGE,onDataRefresh);
 			eventsProxy.regist(view,Event.CHANGE,onSelectChange);
 		}
-		
+		private function delayCall():void{
+			facade.sendNotification(CallEvents.CALL_ONE_CARD,{target:view,id:view.data.id});
+		}
 		private function onSelectChange(e:Event):void
 		{
-			if(view.isSelected){
-				var f:Function=function():void{
-					facade.sendNotification(CallEvents.CALL_ONE_CARD,{target:view,id:view.data.id});
-				}
-				Starling.current.juggler.delayCall(f,0.0001);
-			}else{
+			if(view.isSelected)
+			{
+				Starling.current.juggler.delayCall(delayCall,0.0001);
+			}
+			else
+			{
 				facade.sendNotification(CallEvents.HIDE_ONE_CARD);
 			}
 		}
@@ -82,12 +84,12 @@ package com.application.ocgsee.mediators
 		private function get assetsProxy():AssetsProxy{
 			return appFacade.retrieveProxy_Lite(AssetsProxy) as AssetsProxy;
 		}
-		private function ondataRefresh(e:Event):void{
+		private function onDataRefresh(e:Event):void{
+			
 			if(view.data)
 			{
 				var __id:int=view.data.id;
 				view.cardSource=cardsTextures.cardTexture(__id);
-				view.limitSource=limitProxy.getLimitMarkImg(__id);
 				var __isNew:Boolean=ApplicationFacade._.globalProxy.isNewCard(__id);
 				if(__isNew)
 				{
@@ -114,19 +116,20 @@ package com.application.ocgsee.mediators
 			else
 			{
 				view.cardSource=null;
-				view.limitSource=null;
 				view.newMarkSource=null;
 			}
+			refreshLflistMark(null);
 		}
 		
 		private function onDispose(e:Event):void
 		{
+			LogUtils.log("销毁Mediator:"+this);
 			appFacade.removeMediator(NAME);
 		}
-		private function refreshLflist(notification:INotification):void{
-			var limitProxy:LimitProxy=ApplicationFacade._.retrieveProxy_Lite(LimitProxy) as LimitProxy;
+		private function refreshLflistMark(notification:INotification):void{
 			var litmitSource:Texture;
-			if(view.data){
+			if(view.data)
+			{
 				litmitSource=limitProxy.getLimitMarkImg(view.data.id);
 			}
 			view.limitSource=litmitSource;
@@ -135,7 +138,8 @@ package com.application.ocgsee.mediators
 		{
 			var obj:Object=notification.getBody();
 			var id:int=obj.id;
-			if(view.data.id==id){
+			if(view.data.id==id)
+			{
 				view.cardSource=ImageCache._.takeID(id);
 			}
 		}

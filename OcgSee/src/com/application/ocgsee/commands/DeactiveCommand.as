@@ -13,7 +13,7 @@ package com.application.ocgsee.commands
 			super();
 		}
 		public override function execute(notification:INotification):void{
-				Starling.current.stop();
+			Starling.current.stop();
 		}
 	}
 }

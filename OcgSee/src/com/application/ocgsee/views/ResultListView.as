@@ -1,15 +1,10 @@
 package com.application.ocgsee.views
 {
-	import com.application.ApplicationFacade;
-	
 	import feathers.controls.Label;
 	import feathers.controls.List;
 	import feathers.controls.Panel;
 	import feathers.controls.ScrollContainer;
-	import feathers.controls.WebView;
 	import feathers.skins.IStyleProvider;
-	
-	import org.puremvc.as3.patterns.facade.Facade;
 	
 	
 	public class ResultListView extends ScrollContainer

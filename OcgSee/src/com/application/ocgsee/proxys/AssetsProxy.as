@@ -19,7 +19,7 @@ package com.application.ocgsee.proxys
 		{
 			super(data);
 		}
-		public function get selectTexture():Texture{
+		public function get selectedTexture():Texture{
 			return systemTextures.getTexture("ground");
 		} 
 		public function get newCardTexture():Texture{

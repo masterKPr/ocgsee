@@ -3,7 +3,6 @@ package com.application.ocgsee.views
 	import com.application.ocgsee.utils.localize;
 	
 	import feathers.controls.Button;
-	import feathers.controls.ImageLoader;
 	import feathers.controls.Label;
 	import feathers.controls.Panel;
 	import feathers.controls.ScrollContainer;

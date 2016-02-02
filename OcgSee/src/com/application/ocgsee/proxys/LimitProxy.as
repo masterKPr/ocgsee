@@ -14,7 +14,7 @@ package com.application.ocgsee.proxys
 	
 	
 	
-	public class LimitProxy extends Proxy_Lite implements ILimit
+	public class LimitProxy extends Proxy_Lite
 	{
 		public var model:LflistPackage
 		

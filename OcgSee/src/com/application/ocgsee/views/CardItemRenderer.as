@@ -25,7 +25,23 @@ package com.application.ocgsee.views
 		
 		public static const DATA_CHANGE:String="dataChange";
 		
-		public static var SELECTED_TEXTURE:Texture;
+		public var selectedTexture:Texture;
+		
+		private var _isSelected:Boolean;
+		
+		private var _cardImage:SaveImageLoader;
+		
+		private var _limitMark:ImageLoader;
+		
+		private var _selectImg:ImageLoader;
+		
+		private var _cardWidth:Number;
+		
+		private var _cardHeight:Number;
+		
+		private var _otLabel:TextField;
+		
+		private var _newMarkImg:ImageLoader;
 		
 		public override function dispose():void{
 			this.dispatchEvent(new Event(GlobalEvents.DISPOSE));
@@ -35,19 +51,18 @@ package com.application.ocgsee.views
 		{
 			_cardWidth=cardWidth;
 			_cardHeight=cardHeight;
+			
 			_cardImage=new SaveImageLoader();
 			_cardImage.width=_cardWidth;
 			_cardImage.height=_cardHeight;
-
-			
 			this.addChild(_cardImage);
 			
 			_limitMark=new ImageLoader();
-			this.addChild(_limitMark);
 			_limitMark.width=32;
 			_limitMark.height=32;
 			_limitMark.x=3;
 			_limitMark.y=3;
+			this.addChild(_limitMark);
 			
 			_selectImg=new ImageLoader();
 			_selectImg.width=_cardWidth;
@@ -59,10 +74,7 @@ package com.application.ocgsee.views
 			_newMarkImg.y=5;
 			this.addChild(_newMarkImg);
 			
-			
-			
 			_otLabel=new TextField(_cardWidth/2,_cardHeight/5,"","Verdana",35);
-			
 			_otLabel.hAlign=HAlign.RIGHT;
 			_otLabel.vAlign=VAlign.BOTTOM;
 			_otLabel.autoScale=true;
@@ -70,7 +82,6 @@ package com.application.ocgsee.views
 			_otLabel.y=_cardHeight-_otLabel.height-5;
 			_otLabel.x=_cardWidth-_otLabel.width-5;
 			this.addChild(_otLabel);
-			
 			
 			this.addEventListener(TouchEvent.TOUCH, touchHandler);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
@@ -176,7 +187,6 @@ package com.application.ocgsee.views
 		}
 		
 		protected var _data:Object;
-		public var labelField:String;
 		public function get data():Object
 		{
 			return this._data;
@@ -192,21 +202,7 @@ package com.application.ocgsee.views
 			this.invalidate(INVALIDATION_FLAG_DATA);
 		}
 		
-		protected var _isSelected:Boolean;
-		
-		private var _cardImage:SaveImageLoader;
 
-		private var _limitMark:ImageLoader;
-
-		private var _selectImg:ImageLoader;
-
-		private var _cardWidth:Number;
-
-		private var _cardHeight:Number;
-
-		private var _otLabel:TextField;
-
-		private var _newMarkImg:ImageLoader;
 		
 
 		public function set loadingAndError(value:Texture):void{
@@ -257,7 +253,7 @@ package com.application.ocgsee.views
 			}
 			if(selectionInvalid){
 				if(isSelected){
-					selectedSource=SELECTED_TEXTURE;
+					selectedSource=selectedTexture;
 				}else{
 					selectedSource=null;
 				}
