@@ -78,10 +78,10 @@ package com.application.ocgsee.views
 			_otLabel.hAlign=HAlign.RIGHT;
 			_otLabel.vAlign=VAlign.BOTTOM;
 			_otLabel.autoScale=true;
-//			_label.bold=true;
+			//			_label.bold=true;
 			_otLabel.y=_cardHeight-_otLabel.height-5;
 			_otLabel.x=_cardWidth-_otLabel.width-5;
-			this.addChild(_otLabel);
+//						this.addChild(_otLabel);
 			
 			this.addEventListener(TouchEvent.TOUCH, touchHandler);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
@@ -129,7 +129,8 @@ package com.application.ocgsee.views
 					//also, only change it if we're not selected. we're not a toggle.
 					if(this.hitTest(HELPER_POINT, true) != null )//&& !this._isSelected
 					{
-						if (!ApplicationFacade._.globalProxy.isDrawOpen){
+						if (!ApplicationFacade._.globalProxy.isDrawOpen)
+						{
 							this.isSelected = !this.isSelected;
 						}
 						
@@ -202,10 +203,8 @@ package com.application.ocgsee.views
 			this.invalidate(INVALIDATION_FLAG_DATA);
 		}
 		
-
-		
-
-		public function set loadingAndError(value:Texture):void{
+		public function set loadingAndError(value:Texture):void
+		{
 			_cardImage.loadingTexture=value;
 			_cardImage.errorTexture=value;
 		}
@@ -214,7 +213,7 @@ package com.application.ocgsee.views
 		{
 			return _cardImage.source;
 		}
-
+		
 		public function set cardSource(value:Object):void
 		{
 			_cardImage.source=value;
@@ -251,10 +250,14 @@ package com.application.ocgsee.views
 			{
 				this.commitData();
 			}
-			if(selectionInvalid){
-				if(isSelected){
+			if(selectionInvalid)
+			{
+				if(isSelected)
+				{
 					selectedSource=selectedTexture;
-				}else{
+				}
+				else
+				{
 					selectedSource=null;
 				}
 				
@@ -288,20 +291,32 @@ package com.application.ocgsee.views
 			//			}
 			return this.setSizeInternal(_cardWidth, _cardHeight, false);
 		}
-
-
-		public function set newMarkSource(value:Texture):void{
+		
+		
+		public function set newMarkSource(value:Texture):void
+		{
 			_newMarkImg.source=value;
 		}
-		public function set limitSource(source:Texture):void{
+		public function set limitSource(source:Texture):void
+		{
 			_limitMark.source=source;
 		}
-		public function set selectedSource(value:Texture):void{
+		public function set selectedSource(value:Texture):void
+		{
 			_selectImg.source=value;
 		}
-		public function setLabel(text:String,color:int):void{
+		public function setLabel(text:String,color:int):void
+		{
 			_otLabel.text=text;
 			_otLabel.color=color;
+			if(text=="")
+			{
+				this.removeChild(_otLabel);
+			}
+			else
+			{
+				this.addChild(_otLabel);
+			}
 		}
 		protected function commitData():void
 		{

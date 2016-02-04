@@ -15,7 +15,7 @@ package com.application.ocgsee.utils
 		{
 		}
 		private var _dict:Dictionary=new Dictionary(true);
-		private var _gcList:GCList=new GCList(80,remove);
+		private var _gcList:GCList=new GCList(60,remove);
 		public function take(key:String):Texture{
 			var re:Texture;
 			var vo:TextureVO=_dict[key];

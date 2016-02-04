@@ -9,14 +9,15 @@ package com.application.ocgsee.views
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.JPEGEncoderOptions;
-	import flash.events.IOErrorEvent;
 	import flash.filesystem.File;
 	import flash.utils.ByteArray;
+	import flash.events.Event;
 	
 	import feathers.controls.ImageLoader;
 	
 	import framework.log.LogUtils;
 	
+	import starling.events.Event;
 	import starling.textures.Texture;
 	
 	public class SaveImageLoader extends ImageLoader
@@ -24,10 +25,10 @@ package com.application.ocgsee.views
 		private static var map:ImageCache=ImageCache._;
 		public function SaveImageLoader()
 		{
-			this.addEventListener(IOErrorEvent.IO_ERROR,onIOError);
+			this.addEventListener(starling.events.Event.IO_ERROR,onIOError);
 			super();
 		}
-		private function onIOError(e:IOErrorEvent):void
+		private function onIOError(e:starling.events.Event):void
 		{
 			LogUtils.error(e);
 		}
