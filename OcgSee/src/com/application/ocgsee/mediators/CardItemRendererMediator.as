@@ -22,6 +22,7 @@ package com.application.ocgsee.mediators
 	import starling.core.Starling;
 	import starling.events.Event;
 	import starling.textures.Texture;
+	import starling.utils.formatString;
 	
 	public class CardItemRendererMediator extends Mediator_Lite
 	{
@@ -32,7 +33,7 @@ package com.application.ocgsee.mediators
 		{
 			index=createIndex;
 			createIndex++;
-			LogUtils.log("创建个数:"+createIndex);
+			LogUtils.log(formatString("创建个数:{0}",createIndex));
 			super(viewComponent);
 			view.loadingAndError=assetsProxy.loadingTexture;
 			view.selectedTexture=assetsProxy.selectedTexture;

@@ -8,6 +8,8 @@ package com.application.engine.utils
 	
 	import framework.log.LogUtils;
 	
+	import starling.utils.formatString;
+	
 	public class FileUtils
 	{
 		public function FileUtils()
@@ -22,7 +24,7 @@ package com.application.engine.utils
 //				setTimeout(stream.close, 1)
 				stream.close();
 			}else{
-				LogUtils.error("加载本地文件url:"+file.nativePath+"不存在");
+				LogUtils.error(formatString("加载本地文件url:{0}不存在",file.nativePath));
 			}
 			return re;
 		}
@@ -48,7 +50,7 @@ package com.application.engine.utils
 				stream.readBytes(re);//readUTFBytes(stream.bytesAvailable);
 				setTimeout(stream.close, 1)
 			}else{
-				LogUtils.error("加载本地文件url:"+file.nativePath+"不存在");
+				LogUtils.error(formatString("加载本地文件url:{0}不存在",file.nativePath));
 			}
 			return re;
 		}

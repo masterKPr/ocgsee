@@ -17,7 +17,6 @@ package com.application.ocgsee.views
 	
 	import framework.log.LogUtils;
 	
-	import starling.events.Event;
 	import starling.textures.Texture;
 	
 	public class SaveImageLoader extends ImageLoader
@@ -25,11 +24,10 @@ package com.application.ocgsee.views
 		private static var map:ImageCache=ImageCache._;
 		public function SaveImageLoader()
 		{
-			this.addEventListener(Event.COMPLETE,onLoaderComplete);
-			this.addEventListener(IOErrorEvent.IO_ERROR,onIOerror);
+			this.addEventListener(IOErrorEvent.IO_ERROR,onIOError);
 			super();
 		}
-		private function onIOerror(e:IOErrorEvent):void
+		private function onIOError(e:IOErrorEvent):void
 		{
 			LogUtils.error(e);
 		}
@@ -60,7 +58,7 @@ package com.application.ocgsee.views
 			FileUtils.writeFileBytes(localFile,bytes);
 		}
 		private function get globalProxy():GlobalProxy{
-			return ApplicationFacade._.globalProxy
+			return ApplicationFacade._.globalProxy;
 		}
 		protected override function loader_completeHandler(event:flash.events.Event):void{
 			
@@ -69,7 +67,7 @@ package com.application.ocgsee.views
 				var url:String=this.source as String;
 				//				this.
 				var cardJPG:String=globalProxy.getCardJPG(url);
-				if(globalProxy.isMCCardUri(url)){
+				if(globalProxy.isRemoteUri(url)){
 					saveLocal(url,bitmap.bitmapData.clone());
 				}
 				var texture:Texture=Texture.fromBitmapData(bitmap.bitmapData.clone());
@@ -81,32 +79,10 @@ package com.application.ocgsee.views
 			}else{
 				LogUtils.warn("不是string的加载类型"+this.source);
 			}
-			
 			super.loader_completeHandler(event);
-			
 			if(this.source is String){//迁移SDK 底层事件机制修改后 延时刷新界面
 				ApplicationFacade._.sendNotification(GlobalNotifications.REFRESH_CARD_TEXTURE,obj);
 			}
 		}
-		private function onLoaderComplete(e:Event):void
-		{
-			return;
-//			if(this.source is String ){
-//				var url:String=this.source as String;
-//				var cardJPG:String=globalProxy.getCardJPG(url);
-//				if(globalProxy.isMCCardUri(url)){
-//					saveLocal(url,this._pendingBitmapDataTexture);
-//				}
-//				var texture:Texture=Texture.fromBitmapData(this._pendingBitmapDataTexture.clone());
-//				map.save(cardJPG,texture);
-//				var obj:Object={
-//					id:globalProxy.get_ID_CardJPG(cardJPG)
-//				};
-//				ApplicationFacade._.sendNotification(GlobalNotifications.REFRESH_CARD_TEXTURE,obj);
-//			}else{
-//				LogUtils.warn("不是string的加载类型"+this.source);
-//			}
-		}
-		
 	}
 }

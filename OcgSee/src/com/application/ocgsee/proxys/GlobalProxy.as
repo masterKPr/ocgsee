@@ -45,21 +45,21 @@ package com.application.ocgsee.proxys
 			model.drawOpen = value;
 		}
 		
-		public function getMyCardUri(id:int):String{
+		public function getRemoteUri(id:int):String{
 			return formatString(model.PICS_API,id);
 		}
-		public function isMCCardUri(uri:String):Boolean{
+		public function isRemoteUri(uri:String):Boolean{
 			return uri.indexOf(model.SERVER_HEAD)!=-1
 		}
 		/**
-		 * 从MC uri里获取到xxx.jpg
-		 * @param mcUrl
+		 * 从Remote uri里获取到xxx.jpg
+		 * @param remoteUri
 		 * @return 
 		 * 
 		 */		
-		public function getCardJPG(mcUrl:String):String{
-			mcUrl=mcUrl.split("\\").join("/");
-			var temp:Array=mcUrl.split("/");
+		public function getCardJPG(remoteUri:String):String{
+			remoteUri=remoteUri.split("\\").join("/");
+			var temp:Array=remoteUri.split("/");
 			var id:String=temp[temp.length-1];
 			return id;
 		}
@@ -83,7 +83,7 @@ package com.application.ocgsee.proxys
 		}
 		
 		public function get_File_CardJPG(cardJPG:String):File{
-			var saveFile:File=File.applicationStorageDirectory.resolvePath("image/"+cardJPG);
+			var saveFile:File=File.applicationStorageDirectory.resolvePath(formatString("image/{0}",cardJPG));
 			return saveFile;
 		}
 	}

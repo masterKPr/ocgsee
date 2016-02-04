@@ -172,7 +172,7 @@ package com.application.ocgsee.mediators
 			smartTexture=smartTexture?smartTexture:assets.loadingTexture;
 			view.image.loadingTexture=smartTexture;
 			view.image.errorTexture=smartTexture;
-			view.image.source=globalProxy.getMyCardUri(value);
+			view.image.source=globalProxy.getRemoteUri(value);
 		}
 	}
 }

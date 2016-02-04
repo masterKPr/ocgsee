@@ -9,16 +9,18 @@ package com.application.ocgsee.proxys
 	
 	import mvclite.proxys.Proxy_Lite;
 	
+	import starling.utils.formatString;
+	
 	public class CardsSearchProxy extends Proxy_Lite
 	{
 		public var model:SearchEngine;
-
+		
 		public var fileName:String;
 		public function CardsSearchProxy(data:Object=null)
 		{
 			super(data);
 		}
-
+		
 		public  function open(reference:Object=null, openMode:String="create", autoCompact:Boolean=false, pageSize:int=1024, encryptionKey:ByteArray=null):void{
 			if(model.connection.connected){
 				model.connection.close();
@@ -33,7 +35,7 @@ package com.application.ocgsee.proxys
 			model.execute();
 			var result:Array=model.getResult().data;
 			if(!result)result=[];
-			LogUtils.log("查询结果-->数目:"+result.length);
+			LogUtils.log(formatString("查询结果-->数目:{0}",result.length));
 			resultHandler&&resultHandler(result);
 			return result
 		}

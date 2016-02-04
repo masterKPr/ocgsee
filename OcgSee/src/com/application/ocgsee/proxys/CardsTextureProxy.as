@@ -24,7 +24,7 @@ package com.application.ocgsee.proxys
 		 */		
 		public function cardTexture(id:int):*{
 			var re:*=cardTextureLocal(id);
-			var __api:String=globalProxy.getMyCardUri(id);
+			var __api:String=globalProxy.getRemoteUri(id);
 			var __cardJPG:String=globalProxy.getCardJPG(__api);
 			var loaded:Boolean=ImageCache._.has(__cardJPG);
 			if(loaded){
