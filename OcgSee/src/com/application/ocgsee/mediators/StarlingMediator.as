@@ -6,7 +6,7 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.LoaderProxy;
 	import com.application.ocgsee.themes.OcgseeTheme;
-	import com.application.ocgsee.views.ResultListView;
+	import com.application.ocgsee.views.BagView;
 	import com.application.ocgsee.views.SearchView;
 	
 	import flash.utils.setTimeout;
@@ -54,8 +54,8 @@ package com.application.ocgsee.mediators
 		
 		private function createView():void
 		{
-			var resultList:ResultListView=new ResultListView();
-			facade.registerMediator(new ResultListMediator(resultList));
+			var resultList:BagView=new BagView();
+			facade.registerMediator(new BagMediator(resultList));
 			
 			var searchView:SearchView=new SearchView();
 			facade.registerMediator(new SearchViewMediator(searchView));

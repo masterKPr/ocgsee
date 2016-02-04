@@ -313,5 +313,18 @@ package com.application.ocgsee.views
 			//			this.itemLabel.width = this.actualWidth;
 			//			this.itemLabel.height = this.actualHeight;
 		}
+		private var _factoryID:String;
+		public function get factoryID():String
+		{
+			// TODO Auto Generated method stub
+			return _factoryID;
+		}
+		
+		public function set factoryID(value:String):void
+		{
+			// TODO Auto Generated method stub
+			_factoryID=value;
+		}
+		
 	}
 }

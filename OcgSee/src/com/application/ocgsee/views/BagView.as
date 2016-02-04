@@ -7,7 +7,7 @@ package com.application.ocgsee.views
 	import feathers.skins.IStyleProvider;
 	
 	
-	public class ResultListView extends ScrollContainer
+	public class BagView extends ScrollContainer
 	{
 		
 		public var resultList:List;
@@ -17,7 +17,7 @@ package com.application.ocgsee.views
 		public var label:Label;
 		
 		
-		public function ResultListView()
+		public function BagView()
 		{
 			super();
 			create();

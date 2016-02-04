@@ -1,6 +1,6 @@
 package com.application.ocgsee.themes
 {
-	import com.application.ocgsee.views.ResultListView;
+	import com.application.ocgsee.views.BagView;
 	import com.application.ocgsee.views.SearchView;
 	import com.application.ocgsee.views.ShowCard;
 	
@@ -19,7 +19,7 @@ package com.application.ocgsee.themes
 		protected override function initializeStyleProviders():void{
 			super.initializeStyleProviders();
 			this.getStyleProviderForClass(SearchView).defaultStyleFunction=setSearchViewStyles;
-			this.getStyleProviderForClass(ResultListView).defaultStyleFunction=setResultViewStyles;
+			this.getStyleProviderForClass(BagView).defaultStyleFunction=setResultViewStyles;
 			this.getStyleProviderForClass(ShowCard).defaultStyleFunction=setShowCardStyles;
 		}
 		
@@ -50,7 +50,7 @@ package com.application.ocgsee.themes
 			
 		}
 		
-		private function setResultViewStyles(view:ResultListView):void
+		private function setResultViewStyles(view:BagView):void
 		{
 			var listLayoutData:AnchorLayoutData=new AnchorLayoutData(50,10,10,10,0,0);
 			view.resultList.layoutData=listLayoutData;

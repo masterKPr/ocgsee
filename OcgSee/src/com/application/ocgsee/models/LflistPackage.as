@@ -10,8 +10,9 @@ package com.application.ocgsee.models
 		{
 		}
 		public function parse(obj:Object):void{
-			if(obj==null){
+			if(!obj){
 				empty();
+				return;
 			}
 			this.forbidden=obj["forbidden"]||[];
 			this.limit=obj["limit"]||[];

@@ -8,7 +8,7 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.utils.CardSortUtils;
 	import com.application.ocgsee.views.CardItemRenderer;
-	import com.application.ocgsee.views.ResultListView;
+	import com.application.ocgsee.views.BagView;
 	
 	import feathers.controls.renderers.IListItemRenderer;
 	import feathers.data.ListCollection;
@@ -22,11 +22,11 @@ package com.application.ocgsee.mediators
 	import starling.events.Event;
 	
 	
-	public class ResultListMediator extends Mediator_Lite
+	public class BagMediator extends Mediator_Lite
 	{
-		public var view:ResultListView;
+		public var view:BagView;
 		
-		public function ResultListMediator(viewComponent:Object=null)
+		public function BagMediator(viewComponent:Object=null)
 		{
 			super(viewComponent);
 		}

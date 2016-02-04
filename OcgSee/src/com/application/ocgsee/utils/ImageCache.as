@@ -15,14 +15,14 @@ package com.application.ocgsee.utils
 		{
 		}
 		private var _dict:Dictionary=new Dictionary(true);
-		private var _gcList:GCList=new GCList(80);
+		private var _gcList:GCList=new GCList(10,remove);
 		public function take(key:String):Texture{
 			var re:Texture;
 			var vo:TextureVO=_dict[key];
 			if(vo){
 				re= vo.texture;
 			}
-			_gcList.push(key)
+			_gcList.push(key);
 			return re;
 		}
 		public function takeID(id:int):Texture{
@@ -36,10 +36,7 @@ package com.application.ocgsee.utils
 			if(_dict[key]){
 				LogUtils.error(key+"含有原有值");
 			}
-			var del:String=_gcList.push(key);
-			if(del){
-				remove(del);
-			}
+			_gcList.push(key);
 			_dict[key]= new TextureVO(key,value);
 			
 		}
@@ -53,6 +50,7 @@ package com.application.ocgsee.utils
 			var obj:Object={
 				id:texture.id
 			};
+			LogUtils.log("销毁材质:"+key);
 			texture.dispose();
 			delete _dict[key];
 

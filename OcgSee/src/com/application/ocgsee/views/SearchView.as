@@ -128,7 +128,9 @@ package com.application.ocgsee.views
 			this.addChild(layoutHeader);
 			
 			searchInput = new TextInput();
-			searchInput.styleNameList.add(TextInput.ALTERNATE_NAME_SEARCH_TEXT_INPUT);
+//			ALTERNATE_NAME_SEARCH_TEXT_INPUT
+//			ALTERNATE_STYLE_NAME_SEARCH_TEXT_INPUT
+			searchInput.styleNameList.add(TextInput.ALTERNATE_STYLE_NAME_SEARCH_TEXT_INPUT);
 			searchInput.prompt = localize("info_keyword");
 			this.addChild(this.searchInput);
 			

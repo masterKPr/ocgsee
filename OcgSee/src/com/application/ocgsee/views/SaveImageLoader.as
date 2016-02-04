@@ -6,6 +6,7 @@ package com.application.ocgsee.views
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.utils.ImageCache;
 	
+	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.JPEGEncoderOptions;
 	import flash.events.IOErrorEvent;
@@ -61,23 +62,50 @@ package com.application.ocgsee.views
 		private function get globalProxy():GlobalProxy{
 			return ApplicationFacade._.globalProxy
 		}
-		private function onLoaderComplete(e:Event):void
-		{
-			if(this.source is String ){
+		protected override function loader_completeHandler(event:flash.events.Event):void{
+			
+			var bitmap:Bitmap = Bitmap(this.loader.content);
+			if(this.source is String){
 				var url:String=this.source as String;
+				//				this.
 				var cardJPG:String=globalProxy.getCardJPG(url);
 				if(globalProxy.isMCCardUri(url)){
-					saveLocal(url,this._textureBitmapData);
+					saveLocal(url,bitmap.bitmapData.clone());
 				}
-				var texture:Texture=Texture.fromBitmapData(this._textureBitmapData.clone());
+				var texture:Texture=Texture.fromBitmapData(bitmap.bitmapData.clone());
 				map.save(cardJPG,texture);
 				var obj:Object={
 					id:globalProxy.get_ID_CardJPG(cardJPG)
 				};
-				ApplicationFacade._.sendNotification(GlobalNotifications.REFRESH_CARD_TEXTURE,obj);
+				
 			}else{
 				LogUtils.warn("不是string的加载类型"+this.source);
 			}
+			
+			super.loader_completeHandler(event);
+			
+			if(this.source is String){//迁移SDK 底层事件机制修改后 延时刷新界面
+				ApplicationFacade._.sendNotification(GlobalNotifications.REFRESH_CARD_TEXTURE,obj);
+			}
+		}
+		private function onLoaderComplete(e:Event):void
+		{
+			return;
+//			if(this.source is String ){
+//				var url:String=this.source as String;
+//				var cardJPG:String=globalProxy.getCardJPG(url);
+//				if(globalProxy.isMCCardUri(url)){
+//					saveLocal(url,this._pendingBitmapDataTexture);
+//				}
+//				var texture:Texture=Texture.fromBitmapData(this._pendingBitmapDataTexture.clone());
+//				map.save(cardJPG,texture);
+//				var obj:Object={
+//					id:globalProxy.get_ID_CardJPG(cardJPG)
+//				};
+//				ApplicationFacade._.sendNotification(GlobalNotifications.REFRESH_CARD_TEXTURE,obj);
+//			}else{
+//				LogUtils.warn("不是string的加载类型"+this.source);
+//			}
 		}
 		
 	}
