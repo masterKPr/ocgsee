@@ -49,6 +49,9 @@ package com.application.ocgsee.mediators
 		
 		private function gcDispose(notification:INotification):void
 		{
+			if(!view.data){
+				return;
+			}
 			var obj:Object=notification.getBody();
 			var id:int=obj.id;
 			if(view.data.id==id)
@@ -137,6 +140,9 @@ package com.application.ocgsee.mediators
 		}
 		private function refreshCardTexture(notification:INotification):void
 		{
+			if(!view.data){
+				return;
+			}
 			var obj:Object=notification.getBody();
 			var id:int=obj.id;
 			if(view.data.id==id)
