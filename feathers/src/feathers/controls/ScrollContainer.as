@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -42,7 +42,6 @@ package feathers.controls
 	 */
 	[Event(name="change",type="starling.events.Event")]
 
-	[DefaultProperty("mxmlContent")]
 	/**
 	 * A generic container that supports layout, scrolling, and a background
 	 * skin. For a lighter container, see <code>LayoutGroup</code>, which
@@ -73,11 +72,6 @@ package feathers.controls
 	public class ScrollContainer extends Scroller implements IScrollContainer, IFocusContainer
 	{
 		/**
-		 * @private
-		 */
-		protected static const INVALIDATION_FLAG_MXML_CONTENT:String = "mxmlContent";
-
-		/**
 		 * An alternate style name to use with <code>ScrollContainer</code> to
 		 * allow a theme to give it a toolbar style. If a theme does not provide
 		 * a style for the toolbar container, the theme will automatically fall
@@ -98,18 +92,6 @@ package feathers.controls
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const ALTERNATE_STYLE_NAME_TOOLBAR:String = "feathers-toolbar-scroll-container";
-
-		/**
-		 * DEPRECATED: Replaced by <code>ScrollContainer.ALTERNATE_STYLE_NAME_TOOLBAR</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see ScrollContainer#ALTERNATE_STYLE_NAME_TOOLBAR
-		 */
-		public static const ALTERNATE_NAME_TOOLBAR:String = ALTERNATE_STYLE_NAME_TOOLBAR;
 
 		/**
 		 * @copy feathers.controls.Scroller#SCROLL_POLICY_AUTO
@@ -148,6 +130,13 @@ package feathers.controls
 		 * @see feathers.controls.Scroller#scrollBarDisplayMode
 		 */
 		public static const SCROLL_BAR_DISPLAY_MODE_FIXED:String = "fixed";
+
+		/**
+		 * @copy feathers.controls.Scroller#SCROLL_BAR_DISPLAY_MODE_FIXED_FLOAT
+		 *
+		 * @see feathers.controls.Scroller#scrollBarDisplayMode
+		 */
+		public static const SCROLL_BAR_DISPLAY_MODE_FIXED_FLOAT:String = "fixedFloat";
 
 		/**
 		 * @copy feathers.controls.Scroller#SCROLL_BAR_DISPLAY_MODE_NONE
@@ -372,6 +361,7 @@ package feathers.controls
 				return;
 			}
 			this._autoSizeMode = value;
+			this._measureViewPort = this._autoSizeMode != AUTO_SIZE_MODE_STAGE;
 			if(this.stage)
 			{
 				if(this._autoSizeMode == AUTO_SIZE_MODE_STAGE)
@@ -384,48 +374,6 @@ package feathers.controls
 				}
 			}
 			this.invalidate(INVALIDATION_FLAG_SIZE);
-		}
-
-		/**
-		 * @private
-		 */
-		protected var _mxmlContentIsReady:Boolean = false;
-
-		/**
-		 * @private
-		 */
-		protected var _mxmlContent:Array;
-
-		[ArrayElementType("feathers.core.IFeathersControl")]
-		/**
-		 * @private
-		 */
-		public function get mxmlContent():Array
-		{
-			return this._mxmlContent;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set mxmlContent(value:Array):void
-		{
-			if(this._mxmlContent == value)
-			{
-				return;
-			}
-			if(this._mxmlContent && this._mxmlContentIsReady)
-			{
-				var childCount:int = this._mxmlContent.length;
-				for(var i:int = 0; i < childCount; i++)
-				{
-					var child:DisplayObject = DisplayObject(this._mxmlContent[i]);
-					this.removeChild(child, true);
-				}
-			}
-			this._mxmlContent = value;
-			this._mxmlContentIsReady = false;
-			this.invalidate(INVALIDATION_FLAG_MXML_CONTENT);
 		}
 
 		/**
@@ -522,6 +470,14 @@ package feathers.controls
 			}
 			this.displayListBypassEnabled = oldBypass;
 			return child;
+		}
+
+		/**
+		 * @private
+		 */
+		override public function addChild(child:DisplayObject):DisplayObject
+		{
+			return this.addChildAt(child, this.numChildren);
 		}
 
 		/**
@@ -627,8 +583,9 @@ package feathers.controls
 		{
 			var oldBypass:Boolean = this.displayListBypassEnabled;
 			this.displayListBypassEnabled = false;
-			return super.getChildIndex(child);
+			var index:int = super.getChildIndex(child);
 			this.displayListBypassEnabled = oldBypass;
+			return index;
 		}
 
 		/**
@@ -737,32 +694,9 @@ package feathers.controls
 		/**
 		 * @private
 		 */
-		override protected function initialize():void
-		{
-			super.initialize();
-			this.refreshMXMLContent();
-		}
-
-		/**
-		 * @private
-		 */
 		override protected function draw():void
 		{
-			var sizeInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_SIZE);
-			var stylesInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_STYLES);
-			var stateInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_STATE);
 			var layoutInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_LAYOUT);
-			var mxmlContentInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_MXML_CONTENT);
-
-			if(mxmlContentInvalid)
-			{
-				this.refreshMXMLContent();
-			}
-
-			if(sizeInvalid)
-			{
-				this.layoutViewPort.autoSizeMode = this._autoSizeMode;
-			}
 
 			if(layoutInvalid)
 			{
@@ -782,19 +716,19 @@ package feathers.controls
 		/**
 		 * @private
 		 */
-		protected function refreshMXMLContent():void
+		override protected function autoSizeIfNeeded():Boolean
 		{
-			if(!this._mxmlContent || this._mxmlContentIsReady)
+			var needsWidth:Boolean = this.explicitWidth !== this.explicitWidth; //isNaN
+			var needsHeight:Boolean = this.explicitHeight !== this.explicitHeight; //isNaN
+			if(!needsWidth && !needsHeight)
 			{
-				return;
+				return false;
 			}
-			var childCount:int = this._mxmlContent.length;
-			for(var i:int = 0; i < childCount; i++)
+			if(this._autoSizeMode == AUTO_SIZE_MODE_STAGE)
 			{
-				var child:DisplayObject = DisplayObject(this._mxmlContent[i]);
-				this.addChild(child);
+				return this.setSizeInternal(this.stage.stageWidth, this.stage.stageHeight, false);
 			}
-			this._mxmlContentIsReady = true;
+			return super.autoSizeIfNeeded();
 		}
 
 		/**

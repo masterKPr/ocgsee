@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -8,8 +8,14 @@ accordance with the terms of the accompanying license agreement.
 package feathers.controls.text
 {
 	import feathers.core.FeathersControl;
+	import feathers.core.IStateContext;
+	import feathers.core.IStateObserver;
 	import feathers.core.ITextRenderer;
+	import feathers.core.IToggle;
+	import feathers.events.FeathersEventType;
 	import feathers.skins.IStyleProvider;
+	import feathers.utils.geom.matrixToScaleX;
+	import feathers.utils.geom.matrixToScaleY;
 
 	import flash.display.BitmapData;
 	import flash.display3D.Context3DProfile;
@@ -34,9 +40,9 @@ package feathers.controls.text
 
 	/**
 	 * Renders text with a native <code>flash.text.TextField</code> and draws
-	 * it to <code>BitmapData</code> to convert to Starling textures. Textures
-	 * are completely managed by this component, and they will be automatically
-	 * disposed when the component is disposed.
+	 * it to <code>BitmapData</code> before uploading it to a texture on the
+	 * GPU. Textures are managed internally by this component, and they will be
+	 * automatically disposed when the component is disposed.
 	 *
 	 * <p>For longer passages of text, this component will stitch together
 	 * multiple individual textures both horizontally and vertically, as a grid,
@@ -44,10 +50,23 @@ package feathers.controls.text
 	 * exceeding the limits of some mobile devices, so use this component with
 	 * caution when displaying a lot of text.</p>
 	 *
-	 * @see ../../../help/text-renderers.html Introduction to Feathers text renderers
+	 * <p>The following example shows how to use
+	 * <code>TextFieldTextRenderer</code> with a <code>Label</code>:</p>
+	 *
+	 * <listing version="3.0">
+	 * var label:Label = new Label();
+	 * label.text = "I am the very model of a modern Major General";
+	 * label.textRendererFactory = function():ITextRenderer
+	 * {
+	 *     return new TextFieldTextRenderer();
+	 * };
+	 * this.addChild( label );</listing>
+	 *
+	 * @see ../../../../help/text-renderers.html Introduction to Feathers text renderers
+	 * @see ../../../../help/text-field-text-renderer.html How to use the Feathers TextFieldTextRenderer component
 	 * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/text/TextField.html flash.text.TextField
 	 */
-	public class TextFieldTextRenderer extends FeathersControl implements ITextRenderer
+	public class TextFieldTextRenderer extends FeathersControl implements ITextRenderer, IStateObserver
 	{
 		/**
 		 * @private
@@ -238,6 +257,16 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
+		protected var currentTextFormat:TextFormat;
+
+		/**
+		 * @private
+		 */
+		protected var _textFormatForState:Object;
+
+		/**
+		 * @private
+		 */
 		protected var _textFormat:TextFormat;
 
 		/**
@@ -250,7 +279,9 @@ package feathers.controls.text
 		 *
 		 * @default null
 		 *
+		 * @see #setTextFormatForState()
 		 * @see #disabledTextFormat
+		 * @see #selectedTextFormat
 		 * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/text/TextFormat.html flash.text.TextFormat
 		 */
 		public function get textFormat():TextFormat
@@ -277,7 +308,8 @@ package feathers.controls.text
 		protected var _disabledTextFormat:TextFormat;
 
 		/**
-		 * The font and styles used to draw the text when the component is disabled.
+		 * The font and styles used to draw the text when the component is
+		 * disabled.
 		 *
 		 * <p>In the following example, the disabled text format is changed:</p>
 		 *
@@ -288,6 +320,7 @@ package feathers.controls.text
 		 * @default null
 		 *
 		 * @see #textFormat
+		 * @see #selectedTextFormat
 		 * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/text/TextFormat.html flash.text.TextFormat
 		 */
 		public function get disabledTextFormat():TextFormat
@@ -305,6 +338,47 @@ package feathers.controls.text
 				return;
 			}
 			this._disabledTextFormat = value;
+			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _selectedTextFormat:TextFormat;
+
+		/**
+		 * The font and styles used to draw the text when the
+		 * <code>stateContext</code> implements the <code>IToggle</code>
+		 * interface, and it is selected.
+		 *
+		 * <p>In the following example, the selected text format is changed:</p>
+		 *
+		 * <listing version="3.0">
+		 * textRenderer.selectedTextFormat = new TextFormat( "Source Sans Pro" );</listing>
+		 *
+		 * @default null
+		 *
+		 * @see #stateContext
+		 * @see feathers.core.IToggle
+		 * @see #textFormat
+		 * @see #disabledTextFormat
+		 * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/text/TextFormat.html flash.text.TextFormat
+		 */
+		public function get selectedTextFormat():TextFormat
+		{
+			return this._selectedTextFormat;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set selectedTextFormat(value:TextFormat):void
+		{
+			if(this._selectedTextFormat == value)
+			{
+				return;
+			}
+			this._selectedTextFormat = value;
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 
@@ -417,7 +491,7 @@ package feathers.controls.text
 		protected var _wordWrap:Boolean = false;
 
 		/**
-		 * Determines if the TextField wraps text to the next line.
+		 * @inheritDoc
 		 *
 		 * <p>In the following example, word wrap is enabled:</p>
 		 *
@@ -484,7 +558,9 @@ package feathers.controls.text
 
 		/**
 		 * The type of anti-aliasing used for this text field, defined as
-		 * constants in the <code>flash.text.AntiAliasType</code> class.
+		 * constants in the <code>flash.text.AntiAliasType</code> class. You can
+		 * control this setting only if the font is embedded (with the
+		 * <code>embedFonts</code> property set to true).
 		 *
 		 * <p>In the following example, the anti-alias type is changed:</p>
 		 *
@@ -983,6 +1059,138 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
+		protected var _stateContext:IStateContext;
+
+		/**
+		 * When the text renderer observes a state context, the text renderer
+		 * may change its <code>TextFormat</code> based on the current state of
+		 * that context. Typically, a relevant component will automatically
+		 * assign itself as the state context of a text renderer, so this
+		 * property is typically meant for internal use only.
+		 *
+		 * @default null
+		 *
+		 * @see #setTextFormatForState()
+		 */
+		public function get stateContext():IStateContext
+		{
+			return this._stateContext;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set stateContext(value:IStateContext):void
+		{
+			if(this._stateContext === value)
+			{
+				return;
+			}
+			if(this._stateContext)
+			{
+				this._stateContext.removeEventListener(FeathersEventType.STATE_CHANGE, stateContext_stateChangeHandler);
+			}
+			this._stateContext = value;
+			if(this._stateContext)
+			{
+				this._stateContext.addEventListener(FeathersEventType.STATE_CHANGE, stateContext_stateChangeHandler);
+			}
+			this.invalidate(INVALIDATION_FLAG_STATE);
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _lastGlobalScaleX:Number = 0;
+
+		/**
+		 * @private
+		 */
+		protected var _lastGlobalScaleY:Number = 0;
+
+		/**
+		 * @private
+		 */
+		protected var _updateSnapshotOnScaleChange:Boolean = false;
+
+		/**
+		 * Refreshes the texture snapshot every time that the text renderer is
+		 * scaled. Based on the scale in global coordinates, so scaling the
+		 * parent will require a new snapshot.
+		 *
+		 * <p>Warning: setting this property to true may result in reduced
+		 * performance because every change of the scale requires uploading a
+		 * new texture to the GPU. Use with caution. Consider setting this
+		 * property to false temporarily during animations that modify the
+		 * scale.</p>
+		 *
+		 * <p>In the following example, the snapshot will be updated when the
+		 * text renderer is scaled:</p>
+		 *
+		 * <listing version="3.0">
+		 * textRenderer.updateSnapshotOnScaleChange = true;</listing>
+		 *
+		 * @default false
+		 */
+		public function get updateSnapshotOnScaleChange():Boolean
+		{
+			return this._updateSnapshotOnScaleChange;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set updateSnapshotOnScaleChange(value:Boolean):void
+		{
+			if(this._updateSnapshotOnScaleChange == value)
+			{
+				return;
+			}
+			this._updateSnapshotOnScaleChange = value;
+			this.invalidate(INVALIDATION_FLAG_DATA);
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _useSnapshotDelayWorkaround:Boolean = false;
+
+		/**
+		 * Fixes an issue where <code>flash.text.TextField</code> renders
+		 * incorrectly when drawn to <code>BitmapData</code> by waiting one
+		 * frame.
+		 *
+		 * <p>Warning: enabling this workaround may cause slight flickering
+		 * after the <code>text</code> property is changed.</p>
+		 *
+		 * <p>In the following example, the workaround is enabled:</p>
+		 *
+		 * <listing version="3.0">
+		 * textRenderer.useSnapshotDelayWorkaround = true;</listing>
+		 *
+		 * @default false
+		 */
+		public function get useSnapshotDelayWorkaround():Boolean
+		{
+			return this._useSnapshotDelayWorkaround;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set useSnapshotDelayWorkaround(value:Boolean):void
+		{
+			if(this._useSnapshotDelayWorkaround == value)
+			{
+				return;
+			}
+			this._useSnapshotDelayWorkaround = value;
+			this.invalidate(INVALIDATION_FLAG_DATA);
+		}
+
+		/**
+		 * @private
+		 */
 		override public function dispose():void
 		{
 			if(this.textSnapshot)
@@ -1006,6 +1214,8 @@ package feathers.controls.text
 			//from being garbage collected, freeing up the text field may help
 			//ease major memory pressure from native filters
 			this.textField = null;
+			
+			this.stateContext = null;
 
 			this._previousActualWidth = NaN;
 			this._previousActualHeight = NaN;
@@ -1025,6 +1235,18 @@ package feathers.controls.text
 			if(this.textSnapshot)
 			{
 				this.getTransformationMatrix(this.stage, HELPER_MATRIX);
+				if(this._updateSnapshotOnScaleChange)
+				{
+					var globalScaleX:Number = matrixToScaleX(HELPER_MATRIX);
+					var globalScaleY:Number = matrixToScaleY(HELPER_MATRIX);
+					if(globalScaleX != this._lastGlobalScaleX || globalScaleY != this._lastGlobalScaleY)
+					{
+						//the snapshot needs to be updated because the scale has
+						//changed since the last snapshot was taken.
+						this.invalidate(INVALIDATION_FLAG_SIZE);
+						this.validate();
+					}
+				}
 				var scaleFactor:Number = Starling.current.contentScaleFactor;
 				if(!this._nativeFilters || this._nativeFilters.length === 0)
 				{
@@ -1041,27 +1263,52 @@ package feathers.controls.text
 					offsetX += Math.round(HELPER_MATRIX.tx) - HELPER_MATRIX.tx;
 					offsetY += Math.round(HELPER_MATRIX.ty) - HELPER_MATRIX.ty;
 				}
-				this.textSnapshot.x = offsetX;
-				this.textSnapshot.y = offsetX;
-				if(this.textSnapshots)
+
+				var snapshotIndex:int = -1;
+				var totalBitmapWidth:Number = this._snapshotWidth;
+				var totalBitmapHeight:Number = this._snapshotHeight;
+				var xPosition:Number = offsetX;
+				var yPosition:Number = offsetY;
+				do
 				{
-					var snapshotSize:Number = this._maxTextureDimensions / scaleFactor;
-					var positionX:Number = offsetX + snapshotSize;
-					var positionY:Number = offsetY;
-					var snapshotCount:int = this.textSnapshots.length;
-					for(var i:int = 0; i < snapshotCount; i++)
+					var currentBitmapWidth:Number = totalBitmapWidth;
+					if(currentBitmapWidth > this._maxTextureDimensions)
 					{
-						if(positionX > this.actualWidth)
-						{
-							positionX = offsetX;
-							positionY += snapshotSize;
-						}
-						var snapshot:Image = this.textSnapshots[i];
-						snapshot.x = positionX;
-						snapshot.y = positionY;
-						positionX += snapshotSize;
+						currentBitmapWidth = this._maxTextureDimensions;
 					}
+					do
+					{
+						var currentBitmapHeight:Number = totalBitmapHeight;
+						if(currentBitmapHeight > this._maxTextureDimensions)
+						{
+							currentBitmapHeight = this._maxTextureDimensions;
+						}
+						if(snapshotIndex < 0)
+						{
+							var snapshot:Image = this.textSnapshot;
+						}
+						else
+						{
+							snapshot = this.textSnapshots[snapshotIndex];
+						}
+						snapshot.x = xPosition / scaleFactor;
+						snapshot.y = yPosition / scaleFactor;
+						if(this._updateSnapshotOnScaleChange)
+						{
+							snapshot.x /= this._lastGlobalScaleX;
+							snapshot.y /= this._lastGlobalScaleX;
+						}
+						snapshotIndex++;
+						yPosition += currentBitmapHeight;
+						totalBitmapHeight -= currentBitmapHeight;
+					}
+					while(totalBitmapHeight > 0)
+					xPosition += currentBitmapWidth;
+					totalBitmapWidth -= currentBitmapWidth;
+					yPosition = offsetY;
+					totalBitmapHeight = this._snapshotHeight;
 				}
+				while(totalBitmapWidth > 0)
 			}
 			super.render(support, parentAlpha);
 		}
@@ -1098,6 +1345,44 @@ package feathers.controls.text
 			result = this.measure(result);
 
 			return result;
+		}
+
+		/**
+		 * Sets the <code>TextFormat</code> to be used by the text renderer when
+		 * the <code>currentState</code> property of the
+		 * <code>stateContext</code> matches the specified state value.
+		 *
+		 * <p>If an <code>TextFormat</code> is not defined for a specific
+		 * state, the value of the <code>textFormat</code> property will be
+		 * used instead.</p>
+		 *
+		 * <p>If the <code>disabledTextFormat</code> property is not
+		 * <code>null</code> and the <code>isEnabled</code> property is
+		 * <code>false</code>, all other text formats will be ignored.</p>
+		 *
+		 * @see #stateContext
+		 * @see #textFormat
+		 */
+		public function setTextFormatForState(state:String, textFormat:TextFormat):void
+		{
+			if(textFormat)
+			{
+				if(!this._textFormatForState)
+				{
+					this._textFormatForState = {};
+				}
+				this._textFormatForState[state] = textFormat;
+			}
+			else
+			{
+				delete this._textFormatForState[state];
+			}
+			//if the context's current state is the state that we're modifying,
+			//we need to use the new value immediately.
+			if(this._stateContext && this._stateContext.currentState === state)
+			{
+				this.invalidate(INVALIDATION_FLAG_STATE);
+			}
 		}
 
 		/**
@@ -1140,6 +1425,11 @@ package feathers.controls.text
 			var stylesInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_STYLES);
 			var dataInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_DATA);
 			var stateInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_STATE);
+			
+			if(stylesInvalid || stateInvalid)
+			{
+				this.refreshTextFormat();
+			}
 
 			if(stylesInvalid)
 			{
@@ -1167,14 +1457,7 @@ package feathers.controls.text
 				else
 				{
 					this.textField.styleSheet = null;
-					if(!this._isEnabled && this._disabledTextFormat)
-					{
-						this.textField.defaultTextFormat = this._disabledTextFormat;
-					}
-					else if(this._textFormat)
-					{
-						this.textField.defaultTextFormat = this._textFormat;
-					}
+					this.textField.defaultTextFormat = this.currentTextFormat;
 				}
 				if(this._isHTML)
 				{
@@ -1299,8 +1582,16 @@ package feathers.controls.text
 			{
 				this.textField.width = this.actualWidth + gutterDimensionsOffset;
 				this.textField.height = this.actualHeight + gutterDimensionsOffset;
-				var rectangleSnapshotWidth:Number = this.actualWidth * scaleFactor;
-				var rectangleSnapshotHeight:Number = this.actualHeight * scaleFactor;
+				//these are getting put into an int later, so we don't want it
+				//to possibly round down and cut off part of the text. 
+				var rectangleSnapshotWidth:Number = Math.ceil(this.actualWidth * scaleFactor);
+				var rectangleSnapshotHeight:Number = Math.ceil(this.actualHeight * scaleFactor);
+				if(this._updateSnapshotOnScaleChange)
+				{
+					this.getTransformationMatrix(this.stage, HELPER_MATRIX);
+					rectangleSnapshotWidth *= matrixToScaleX(HELPER_MATRIX);
+					rectangleSnapshotHeight *= matrixToScaleY(HELPER_MATRIX);
+				}
 				if(rectangleSnapshotWidth >= 1 && rectangleSnapshotHeight >= 1 &&
 					this._nativeFilters && this._nativeFilters.length > 0)
 				{
@@ -1362,7 +1653,9 @@ package feathers.controls.text
 					}
 				}
 				var textureRoot:ConcreteTexture = this.textSnapshot ? this.textSnapshot.texture.root : null;
-				this._needsNewTexture = this._needsNewTexture || !this.textSnapshot || this._snapshotWidth != textureRoot.width || this._snapshotHeight != textureRoot.height;
+				this._needsNewTexture = this._needsNewTexture || !this.textSnapshot ||
+					(textureRoot && (textureRoot.scale != scaleFactor ||
+					this._snapshotWidth != textureRoot.nativeWidth || this._snapshotHeight != textureRoot.nativeHeight));
 				this._snapshotVisibleWidth = rectangleSnapshotWidth;
 				this._snapshotVisibleHeight = rectangleSnapshotHeight;
 			}
@@ -1379,9 +1672,16 @@ package feathers.controls.text
 				var hasText:Boolean = this._text.length > 0;
 				if(hasText)
 				{
-					//we need to wait a frame for the TextField to render
-					//properly. sometimes two, and this is a known issue.
-					this.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+					if(this._useSnapshotDelayWorkaround)
+					{
+						//we need to wait a frame for the TextField to render
+						//properly. sometimes two, and this is a known issue.
+						this.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+					}
+					else
+					{
+						this.refreshSnapshot();
+					}
 				}
 				if(this.textSnapshot)
 				{
@@ -1465,15 +1765,55 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
+		protected function refreshTextFormat():void
+		{
+			var textFormat:TextFormat;
+			if(this._stateContext && this._textFormatForState)
+			{
+				var currentState:String = this._stateContext.currentState;
+				if(currentState in this._textFormatForState)
+				{
+					textFormat = TextFormat(this._textFormatForState[currentState]);
+				}
+			}
+			if(!textFormat && !this._isEnabled && this._disabledTextFormat)
+			{
+				textFormat = this._disabledTextFormat;
+			}
+			if(!textFormat && this._selectedTextFormat &&
+				this._stateContext is IToggle && IToggle(this._stateContext).isSelected)
+			{
+				textFormat = this._selectedTextFormat;
+			}
+			if(!textFormat)
+			{
+				//let's fall back to using Starling's embedded mini font if no
+				//text format has been specified
+				if(!this._textFormat)
+				{
+					this._textFormat = new TextFormat();
+				}
+				textFormat = this._textFormat;
+			}
+			this.currentTextFormat = textFormat;
+		}
+
+		/**
+		 * @private
+		 */
 		protected function createTextureOnRestoreCallback(snapshot:Image):void
 		{
 			var self:TextFieldTextRenderer = this;
 			var texture:Texture = snapshot.texture;
 			texture.root.onRestore = function():void
 			{
+				var scaleFactor:Number = Starling.contentScaleFactor;
+				HELPER_MATRIX.identity();
+				HELPER_MATRIX.scale(scaleFactor, scaleFactor);
 				var bitmapData:BitmapData = self.drawTextFieldRegionToBitmapData(
-					snapshot.x, snapshot.y, snapshot.width, snapshot.height);
+					snapshot.x, snapshot.y, texture.nativeWidth, texture.nativeHeight);
 				texture.root.uploadBitmapData(bitmapData);
+				bitmapData.dispose();
 			};
 		}
 
@@ -1521,8 +1861,18 @@ package feathers.controls.text
 				return;
 			}
 			var scaleFactor:Number = Starling.contentScaleFactor;
+			if(this._updateSnapshotOnScaleChange)
+			{
+				this.getTransformationMatrix(this.stage, HELPER_MATRIX);
+				var globalScaleX:Number = matrixToScaleX(HELPER_MATRIX);
+				var globalScaleY:Number = matrixToScaleY(HELPER_MATRIX);
+			}
 			HELPER_MATRIX.identity();
 			HELPER_MATRIX.scale(scaleFactor, scaleFactor);
+			if(this._updateSnapshotOnScaleChange)
+			{
+				HELPER_MATRIX.scale(globalScaleX, globalScaleY);
+			}
 			var totalBitmapWidth:Number = this._snapshotWidth;
 			var totalBitmapHeight:Number = this._snapshotHeight;
 			var xPosition:Number = 0;
@@ -1543,11 +1893,17 @@ package feathers.controls.text
 					{
 						currentBitmapHeight = this._maxTextureDimensions;
 					}
-					bitmapData = this.drawTextFieldRegionToBitmapData(xPosition, yPosition, currentBitmapWidth, currentBitmapHeight, bitmapData);
+					bitmapData = this.drawTextFieldRegionToBitmapData(xPosition, yPosition,
+						currentBitmapWidth, currentBitmapHeight, bitmapData);
 					var newTexture:Texture;
 					if(!this.textSnapshot || this._needsNewTexture)
 					{
-						newTexture = Texture.fromBitmapData(bitmapData, false, false, scaleFactor);
+						//skip Texture.fromBitmapData() because we don't want
+						//it to create an onRestore function that will be
+						//immediately discarded for garbage collection. 
+						newTexture = Texture.empty(bitmapData.width / scaleFactor, bitmapData.height / scaleFactor,
+							true, false, false, scaleFactor);
+						newTexture.root.uploadBitmapData(bitmapData);
 					}
 					var snapshot:Image = null;
 					if(snapshotIndex >= 0)
@@ -1600,6 +1956,13 @@ package feathers.controls.text
 					}
 					snapshot.x = xPosition / scaleFactor;
 					snapshot.y = yPosition / scaleFactor;
+					if(this._updateSnapshotOnScaleChange)
+					{
+						snapshot.scaleX = 1 / globalScaleX;
+						snapshot.scaleY = 1 / globalScaleY;
+						snapshot.x /= globalScaleX;
+						snapshot.y /= globalScaleY;
+					}
 					snapshotIndex++;
 					yPosition += currentBitmapHeight;
 					totalBitmapHeight -= currentBitmapHeight;
@@ -1630,6 +1993,11 @@ package feathers.controls.text
 					this.textSnapshots.length = snapshotIndex;
 				}
 			}
+			if(this._updateSnapshotOnScaleChange)
+			{
+				this._lastGlobalScaleX = globalScaleX;
+				this._lastGlobalScaleY = globalScaleY;
+			}
 			this._needsNewTexture = false;
 		}
 
@@ -1640,6 +2008,14 @@ package feathers.controls.text
 		{
 			this.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
 			this.refreshSnapshot();
+		}
+
+		/**
+		 * @private
+		 */
+		protected function stateContext_stateChangeHandler(event:Event):void
+		{
+			this.invalidate(INVALIDATION_FLAG_STATE);
 		}
 	}
 }

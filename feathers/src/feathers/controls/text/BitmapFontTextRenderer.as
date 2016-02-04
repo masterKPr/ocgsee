@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -8,7 +8,11 @@ accordance with the terms of the accompanying license agreement.
 package feathers.controls.text
 {
 	import feathers.core.FeathersControl;
+	import feathers.core.IStateContext;
+	import feathers.core.IStateObserver;
 	import feathers.core.ITextRenderer;
+	import feathers.core.IToggle;
+	import feathers.events.FeathersEventType;
 	import feathers.skins.IStyleProvider;
 	import feathers.text.BitmapFontTextFormat;
 
@@ -20,6 +24,7 @@ package feathers.controls.text
 	import starling.core.RenderSupport;
 	import starling.display.Image;
 	import starling.display.QuadBatch;
+	import starling.events.Event;
 	import starling.text.BitmapChar;
 	import starling.text.BitmapFont;
 	import starling.text.TextField;
@@ -27,12 +32,26 @@ package feathers.controls.text
 	import starling.textures.TextureSmoothing;
 
 	/**
-	 * Renders text using <code>starling.text.BitmapFont</code>.
+	 * Renders text using
+	 * <a href="http://wiki.starling-framework.org/manual/displaying_text#bitmap_fonts" target="_top">bitmap fonts</a>.
 	 *
-	 * @see ../../../help/text-renderers.html Introduction to Feathers text renderers
-	 * @see http://doc.starling-framework.org/core/starling/text/BitmapFont.html starling.text.BitmapFont
+	 * <p>The following example shows how to use
+	 * <code>BitmapFontTextRenderer</code> with a <code>Label</code>:</p>
+	 *
+	 * <listing version="3.0">
+	 * var label:Label = new Label();
+	 * label.text = "I am the very model of a modern Major General";
+	 * label.textRendererFactory = function():ITextRenderer
+	 * {
+	 *     return new BitmapFontTextRenderer();
+	 * };
+	 * this.addChild( label );</listing>
+	 *
+	 * @see ../../../../help/text-renderers.html Introduction to Feathers text renderers
+	 * @see ../../../../help/bitmap-font-text-renderer.html How to use the Feathers BitmapFontTextRenderer component
+	 * @see http://wiki.starling-framework.org/manual/displaying_text#bitmap_fonts Starling Wiki: Displaying Text with Bitmap Fonts
 	 */
-	public class BitmapFontTextRenderer extends FeathersControl implements ITextRenderer
+	public class BitmapFontTextRenderer extends FeathersControl implements ITextRenderer, IStateObserver
 	{
 		/**
 		 * @private
@@ -134,6 +153,11 @@ package feathers.controls.text
 		{
 			return BitmapFontTextRenderer.globalStyleProvider;
 		}
+
+		/**
+		 * @private
+		 */
+		protected var _textFormatForState:Object;
 		
 		/**
 		 * @private
@@ -149,6 +173,10 @@ package feathers.controls.text
 		 * textRenderer.textFormat = new BitmapFontTextFormat( bitmapFont );</listing>
 		 *
 		 * @default null
+		 *
+		 * @see #setTextFormatForState()
+		 * @see #disabledTextFormat
+		 * @see #selectedTextFormat
 		 */
 		public function get textFormat():BitmapFontTextFormat
 		{
@@ -179,9 +207,13 @@ package feathers.controls.text
 		 * <p>In the following example, the disabled text format is changed:</p>
 		 *
 		 * <listing version="3.0">
+		 * textRenderer.isEnabled = false;
 		 * textRenderer.disabledTextFormat = new BitmapFontTextFormat( bitmapFont );</listing>
 		 *
 		 * @default null
+		 * 
+		 * @see #textFormat
+		 * @see #selectedTextFormat
 		 */
 		public function get disabledTextFormat():BitmapFontTextFormat
 		{
@@ -200,6 +232,46 @@ package feathers.controls.text
 			this._disabledTextFormat = value;
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
+
+		/**
+		 * @private
+		 */
+		protected var _selectedTextFormat:BitmapFontTextFormat;
+
+		/**
+		 * The font and styles used to draw the text when the
+		 * <code>stateContext</code> implements the <code>IToggle</code>
+		 * interface, and it is selected.
+		 *
+		 * <p>In the following example, the selected text format is changed:</p>
+		 *
+		 * <listing version="3.0">
+		 * textRenderer.selectedTextFormat = new BitmapFontTextFormat( bitmapFont );</listing>
+		 *
+		 * @default null
+		 *
+		 * @see #stateContext
+		 * @see feathers.core.IToggle
+		 * @see #textFormat
+		 * @see #disabledTextFormat
+		 */
+		public function get selectedTextFormat():BitmapFontTextFormat
+		{
+			return this._selectedTextFormat;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set selectedTextFormat(value:BitmapFontTextFormat):void
+		{
+			if(this._selectedTextFormat == value)
+			{
+				return;
+			}
+			this._selectedTextFormat = value;
+			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
 		
 		/**
 		 * @private
@@ -207,7 +279,7 @@ package feathers.controls.text
 		protected var _text:String = null;
 		
 		/**
-		 * The text to display.
+		 * @inheritDoc
 		 *
 		 * <p>In the following example, the text is changed:</p>
 		 *
@@ -276,8 +348,7 @@ package feathers.controls.text
 		protected var _wordWrap:Boolean = false;
 
 		/**
-		 * If the width or maxWidth values are set, then the text will continue
-		 * on the next line, if it is too long.
+		 * @inheritDoc
 		 *
 		 * <p>In the following example, word wrap is enabled:</p>
 		 *
@@ -467,11 +538,69 @@ package feathers.controls.text
 				fontSizeScale = 1;
 			}
 			var baseline:Number = font.baseline;
+			//for some reason, if we don't call a function right here,
+			//compiling with the flex 4.6 SDK will throw a VerifyError
+			//for a stack overflow.
+			//we could change the !== check back to isNaN() instead, but
+			//isNaN() can allocate an object, so we should call a different
+			//function without allocation.
+			this.doNothing();
 			if(baseline !== baseline) //isNaN
 			{
 				return font.lineHeight * fontSizeScale;
 			}
 			return baseline * fontSizeScale;
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _stateContext:IStateContext;
+
+		/**
+		 * When the text renderer observes a state context, the text renderer
+		 * may change its <code>BitmapFontTextFormat</code> based on the current
+		 * state of that context. Typically, a relevant component will
+		 * automatically assign itself as the state context of a text renderer,
+		 * so this property is typically meant for internal use only.
+		 *
+		 * @default null
+		 *
+		 * @see #setTextFormatForState()
+		 */
+		public function get stateContext():IStateContext
+		{
+			return this._stateContext;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set stateContext(value:IStateContext):void
+		{
+			if(this._stateContext === value)
+			{
+				return;
+			}
+			if(this._stateContext)
+			{
+				this._stateContext.removeEventListener(FeathersEventType.STATE_CHANGE, stateContext_stateChangeHandler);
+			}
+			this._stateContext = value;
+			if(this._stateContext)
+			{
+				this._stateContext.addEventListener(FeathersEventType.STATE_CHANGE, stateContext_stateChangeHandler);
+			}
+			this.invalidate(INVALIDATION_FLAG_STATE);
+		}
+
+		/**
+		 * @private
+		 */
+		override public function dispose():void
+		{
+			this.stateContext = null;
+			super.dispose();
 		}
 
 		/**
@@ -531,7 +660,7 @@ package feathers.controls.text
 			{
 				scale = 1;
 			}
-			var lineHeight:Number = font.lineHeight * scale;
+			var lineHeight:Number = font.lineHeight * scale + this.currentTextFormat.leading;
 			var maxLineWidth:Number = this.explicitWidth;
 			if(maxLineWidth !== maxLineWidth) //isNaN
 			{
@@ -649,8 +778,46 @@ package feathers.controls.text
 			}
 
 			result.x = maxX;
-			result.y = currentY + lineHeight;
+			result.y = currentY + lineHeight - this.currentTextFormat.leading;
 			return result;
+		}
+
+		/**
+		 * Sets the <code>BitmapFontTextFormat</code> to be used by the text
+		 * renderer when the <code>currentState</code> property of the
+		 * <code>stateContext</code> matches the specified state value.
+		 *
+		 * <p>If an <code>BitmapFontTextFormat</code> is not defined for a
+		 * specific state, the value of the <code>textFormat</code> property
+		 * will be used instead.</p>
+		 *
+		 * <p>If the <code>disabledTextFormat</code> property is not
+		 * <code>null</code> and the <code>isEnabled</code> property is
+		 * <code>false</code>, all other text formats will be ignored.</p>
+		 *
+		 * @see #stateContext
+		 * @see #textFormat
+		 */
+		public function setTextFormatForState(state:String, textFormat:BitmapFontTextFormat):void
+		{
+			if(textFormat)
+			{
+				if(!this._textFormatForState)
+				{
+					this._textFormatForState = {};
+				}
+				this._textFormatForState[state] = textFormat;
+			}
+			else
+			{
+				delete this._textFormatForState[state];
+			}
+			//if the context's current state is the state that we're modifying,
+			//we need to use the new value immediately.
+			if(this._stateContext && this._stateContext.currentState === state)
+			{
+				this.invalidate(INVALIDATION_FLAG_STATE);
+			}
 		}
 
 		/**
@@ -714,7 +881,7 @@ package feathers.controls.text
 			{
 				scale = 1;
 			}
-			var lineHeight:Number = font.lineHeight * scale;
+			var lineHeight:Number = font.lineHeight * scale + this.currentTextFormat.leading;
 
 			var hasExplicitWidth:Boolean = this.explicitWidth === this.explicitWidth; //!isNaN
 			var isAligned:Boolean = this.currentTextFormat.align != TextFormatAlign.LEFT;
@@ -816,7 +983,10 @@ package feathers.controls.text
 						this.addBufferToBatch(0);
 					}
 
-					if(!currentCharIsWhitespace && wordCountForLine > 0 && (currentX + offsetX) > maxLineWidth)
+					//floating point errors can cause unnecessary line breaks,
+					//so we're going to be a little bit fuzzy on the greater
+					//than check. such tiny numbers shouldn't break anything.
+					if(!currentCharIsWhitespace && wordCountForLine > 0 && ((currentX + offsetX) - maxLineWidth) > FUZZY_MAX_WIDTH_PADDING)
 					{
 						if(isAligned)
 						{
@@ -905,7 +1075,7 @@ package feathers.controls.text
 			this._characterBatch.x = this._batchX;
 
 			result.x = maxX;
-			result.y = currentY + lineHeight;
+			result.y = currentY + lineHeight - this.currentTextFormat.leading;
 			return result;
 		}
 
@@ -1034,11 +1204,25 @@ package feathers.controls.text
 		 */
 		protected function refreshTextFormat():void
 		{
-			if(!this._isEnabled && this._disabledTextFormat)
+			var textFormat:BitmapFontTextFormat;
+			if(this._stateContext && this._textFormatForState)
 			{
-				this.currentTextFormat = this._disabledTextFormat;
+				var currentState:String = this._stateContext.currentState;
+				if(currentState in this._textFormatForState)
+				{
+					textFormat = BitmapFontTextFormat(this._textFormatForState[currentState]);
+				}
 			}
-			else
+			if(!textFormat && !this._isEnabled && this._disabledTextFormat)
+			{
+				textFormat = this._disabledTextFormat;
+			}
+			if(!textFormat && this._selectedTextFormat &&
+				this._stateContext is IToggle && IToggle(this._stateContext).isSelected)
+			{
+				textFormat = this._selectedTextFormat;
+			}
+			if(!textFormat)
 			{
 				//let's fall back to using Starling's embedded mini font if no
 				//text format has been specified
@@ -1051,8 +1235,9 @@ package feathers.controls.text
 					}
 					this._textFormat = new BitmapFontTextFormat(BitmapFont.MINI, NaN, 0x000000);
 				}
-				this.currentTextFormat = this._textFormat;
+				textFormat = this._textFormat;
 			}
+			this.currentTextFormat = textFormat;
 		}
 
 		/**
@@ -1165,6 +1350,21 @@ package feathers.controls.text
 			}
 			return this._text;
 		}
+
+		/**
+		 * @private
+		 */
+		protected function stateContext_stateChangeHandler(event:Event):void
+		{
+			this.invalidate(INVALIDATION_FLAG_STATE);
+		}
+
+		/**
+		 * @private
+		 * This function is here to work around a bug in the Flex 4.6 SDK
+		 * compiler. For explanation, see the places where it gets called.
+		 */
+		protected function doNothing():void {}
 	}
 }
 

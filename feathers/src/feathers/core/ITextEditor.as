@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -145,7 +145,7 @@ package feathers.core
 	 * Handles the editing of text.
 	 *
 	 * @see feathers.controls.TextInput
-	 * @see ../../../help/text-editors Introduction to Feathers text editors
+	 * @see ../../../help/text-editors.html Introduction to Feathers text editors
 	 */
 	public interface ITextEditor extends IFeathersControl, ITextBaselineControl
 	{
@@ -192,6 +192,8 @@ package feathers.core
 
 		/**
 		 * Determines if the text is editable.
+		 * 
+		 * @see #isSelectable
 		 */
 		function get isEditable():Boolean;
 
@@ -199,6 +201,21 @@ package feathers.core
 		 * @private
 		 */
 		function set isEditable(value:Boolean):void;
+
+		/**
+		 * If the <code>isEditable</code> property is set to <code>false</code>,
+		 * the <code>isSelectable</code> property determines if the text is
+		 * selectable. If the <code>isEditable</code> property is set to
+		 * <code>true</code>, the text will always be selectable.
+		 *
+		 * @see #isEditable
+		 */
+		function get isSelectable():Boolean;
+
+		/**
+		 * @private
+		 */
+		function set isSelectable(value:Boolean):void;
 
 		/**
 		 * Determines if the owner should call <code>setFocus()</code> on

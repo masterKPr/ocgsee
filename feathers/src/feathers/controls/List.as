@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -14,6 +14,7 @@ package feathers.controls
 	import feathers.data.ListCollection;
 	import feathers.events.CollectionEventType;
 	import feathers.layout.ILayout;
+	import feathers.layout.ISpinnerLayout;
 	import feathers.layout.IVariableVirtualLayout;
 	import feathers.layout.VerticalLayout;
 	import feathers.skins.IStyleProvider;
@@ -121,7 +122,6 @@ package feathers.controls
 	 */
 	[Event(name="rendererRemove",type="starling.events.Event")]
 
-	[DefaultProperty("dataProvider")]
 	/**
 	 * Displays a one-dimensional list of items. Supports scrolling, custom
 	 * item renderers, and custom layouts.
@@ -209,6 +209,13 @@ package feathers.controls
 		 * @see feathers.controls.Scroller#scrollBarDisplayMode
 		 */
 		public static const SCROLL_BAR_DISPLAY_MODE_FIXED:String = "fixed";
+
+		/**
+		 * @copy feathers.controls.Scroller#SCROLL_BAR_DISPLAY_MODE_FIXED_FLOAT
+		 *
+		 * @see feathers.controls.Scroller#scrollBarDisplayMode
+		 */
+		public static const SCROLL_BAR_DISPLAY_MODE_FIXED_FLOAT:String = "fixedFloat";
 
 		/**
 		 * @copy feathers.controls.Scroller#SCROLL_BAR_DISPLAY_MODE_NONE
@@ -383,6 +390,10 @@ package feathers.controls
 			if(this._layout == value)
 			{
 				return;
+			}
+			if(!(this is SpinnerList) && value is ISpinnerLayout)
+			{
+				throw new ArgumentError("Layouts that implement the ISpinnerLayout interface should be used with the SpinnerList component.");
 			}
 			if(this._layout)
 			{
@@ -898,6 +909,11 @@ package feathers.controls
 			this._itemRendererType = value;
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
+
+		/**
+		 * @private
+		 */
+		protected var _itemRendererFactories:Object;
 		
 		/**
 		 * @private
@@ -929,6 +945,7 @@ package feathers.controls
 		 *
 		 * @see feathers.controls.renderers.IListItemRenderer
 		 * @see #itemRendererType
+		 * @see #setItemRendererFactoryWithID()
 		 */
 		public function get itemRendererFactory():Function
 		{
@@ -946,6 +963,75 @@ package feathers.controls
 			}
 			
 			this._itemRendererFactory = value;
+			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _factoryIDFunction:Function;
+
+		/**
+		 * When a list requires multiple item renderer types, this function is
+		 * used to determine which type of item renderer is required for a
+		 * specific item (or index). Returns the ID of the item renderer type
+		 * to use for the item, or <code>null</code> if the default
+		 * <code>itemRendererFactory</code> should be used.
+		 *
+		 * <p>The function is expected to have one of the following
+		 * signatures:</p>
+		 *
+		 * <pre>function(item:Object):String</pre>
+		 *
+		 * <pre>function(item:Object, index:int):String</pre>
+		 *
+		 * <p>The following example provides a <code>factoryIDFunction</code>:</p>
+		 *
+		 * <listing version="3.0">
+		 * function regularItemFactory():IListItemRenderer
+		 * {
+		 *     return new DefaultListItemRenderer();
+		 * }
+		 * function headerItemFactory():IListItemRenderer
+		 * {
+		 *     return new CustomItemRenderer();
+		 * }
+		 * list.setItemRendererFactoryWithID( "regular-item", regularItemFactory );
+		 * list.setItemRendererFactoryWithID( "header-item", listHeaderFactory );
+		 * 
+		 * list.factoryIDFunction = function( item:Object, index:int ):String
+		 * {
+		 *     if(index === 0)
+		 *     {
+		 *         return "header-item";
+		 *     }
+		 *     return "regular-item";
+		 * };</listing>
+		 *
+		 * @default null
+		 *
+		 * @see #setItemRendererFactoryWithID()
+		 * @see #itemRendererFactory
+		 */
+		public function get factoryIDFunction():Function
+		{
+			return this._factoryIDFunction;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set factoryIDFunction(value:Function):void
+		{
+			if(this._factoryIDFunction === value)
+			{
+				return;
+			}
+			this._factoryIDFunction = value;
+			if(value !== null && this._itemRendererFactories === null)
+			{
+				this._itemRendererFactories = {};
+			}
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 		
@@ -1031,50 +1117,35 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customItemRendererStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customItemRendererStyleName
-		 */
-		public function get itemRendererName():String
-		{
-			return this.customItemRendererStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set itemRendererName(value:String):void
-		{
-			this.customItemRendererStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _itemRendererProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to all of the list's item
-		 * renderers. These values are shared by each item renderer, so values
-		 * that cannot be shared (such as display objects that need to be added
-		 * to the display list) should be passed to the item renderers using an
-		 * <code>itemRendererFactory</code> or with a theme. The item renderers
-		 * are instances of <code>IListItemRenderer</code>. The available
-		 * properties depend on which <code>IListItemRenderer</code>
-		 * implementation is returned by <code>itemRendererFactory</code>.
+		 * An object that stores properties for all of the list's item
+		 * renderers, and the properties will be passed down to every item
+		 * renderer when the list validates. The available properties
+		 * depend on which <code>IListItemRenderer</code> implementation is
+		 * returned by <code>itemRendererFactory</code>.
+		 *
+		 * <p>By default, the <code>itemRendererFactory</code> will return a
+		 * <code>DefaultListItemRenderer</code> instance. If you aren't using a
+		 * custom item renderer, you can refer to
+		 * <a href="renderers/DefaultListItemRenderer.html"><code>feathers.controls.renderers.DefaultListItemRenderer</code></a>
+		 * for a list of available properties.</p>
+		 *
+		 * <p>These properties are shared by every item renderer, so anything
+		 * that cannot be shared (such as display objects, which cannot be added
+		 * to multiple parents) should be passed to item renderers using the
+		 * <code>itemRendererFactory</code> or in the theme.</p>
 		 *
 		 * <p>The following example customizes some item renderer properties
 		 * (this example assumes that the item renderer's label text renderer
 		 * is a <code>BitmapFontTextRenderer</code>):</p>
 		 *
 		 * <listing version="3.0">
-		 * list.itemRendererProperties.&#64;defaultLabelProperties.textFormat = new BitmapFontTextFormat( bitmapFont );
-		 * list.itemRendererProperties.padding = 20;</listing>
+		 * list.itemRendererProperties.labelField = "text";
+		 * list.itemRendererProperties.accessoryField = "control";</listing>
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1216,8 +1287,10 @@ package feathers.controls
 		 */
 		public function scrollToDisplayIndex(index:int, animationDuration:Number = 0):void
 		{
-			this.pendingHorizontalPageIndex = -1;
-			this.pendingVerticalPageIndex = -1;
+			//cancel any pending scroll to a different page or scroll position.
+			//we can have only one type of pending scroll at a time.
+			this.hasPendingHorizontalPageIndex = false;
+			this.hasPendingVerticalPageIndex = false;
 			this.pendingHorizontalScrollPosition = NaN;
 			this.pendingVerticalScrollPosition = NaN;
 			if(this.pendingItemIndex == index &&
@@ -1228,6 +1301,51 @@ package feathers.controls
 			this.pendingItemIndex = index;
 			this.pendingScrollDuration = animationDuration;
 			this.invalidate(INVALIDATION_FLAG_PENDING_SCROLL);
+		}
+
+		/**
+		 * Returns the item renderer factory associated with a specific ID.
+		 * Returns <code>null</code> if no factory is associated with the ID.
+		 *
+		 * @see #setItemRendererFactoryWithID()
+		 */
+		public function getItemRendererFactoryWithID(id:String):Function
+		{
+			if(this._itemRendererFactories && (id in this._itemRendererFactories))
+			{
+				return this._itemRendererFactories[id] as Function;
+			}
+			return null;
+		}
+
+		/**
+		 * Associates an item renderer factory with an ID to allow multiple
+		 * types of item renderers may be displayed in the list. A custom
+		 * <code>factoryIDFunction</code> may be specified to return the ID of
+		 * the factory to use for a specific item in the data provider.
+		 * 
+		 * @see #factoryIDFunction
+		 * @see #getItemRendererFactoryWithID()
+		 */
+		public function setItemRendererFactoryWithID(id:String, factory:Function):void
+		{
+			if(id === null)
+			{
+				this.itemRendererFactory = factory;
+				return;
+			}
+			if(this._itemRendererFactories === null)
+			{
+				this._itemRendererFactories = {};
+			}
+			if(factory !== null)
+			{
+				this._itemRendererFactories[id] = factory;
+			}
+			else
+			{
+				delete this._itemRendererFactories[id];
+			}
 		}
 
 		/**
@@ -1301,6 +1419,8 @@ package feathers.controls
 			this.dataViewPort.dataProvider = this._dataProvider;
 			this.dataViewPort.itemRendererType = this._itemRendererType;
 			this.dataViewPort.itemRendererFactory = this._itemRendererFactory;
+			this.dataViewPort.itemRendererFactories = this._itemRendererFactories;
+			this.dataViewPort.factoryIDFunction = this._factoryIDFunction;
 			this.dataViewPort.itemRendererProperties = this._itemRendererProperties;
 			this.dataViewPort.customItemRendererStyleName = this._customItemRendererStyleName;
 			this.dataViewPort.typicalItem = this._typicalItem;

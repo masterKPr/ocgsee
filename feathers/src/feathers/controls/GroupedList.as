@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -122,7 +122,6 @@ package feathers.controls
 	 */
 	[Event(name="rendererRemove",type="starling.events.Event")]
 
-	[DefaultProperty("dataProvider")]
 	/**
 	 * Displays a list of items divided into groups or sections. Takes a
 	 * hierarchical provider limited to two levels of hierarchy. This component
@@ -226,35 +225,11 @@ package feathers.controls
 		public static const ALTERNATE_STYLE_NAME_INSET_GROUPED_LIST:String = "feathers-inset-grouped-list";
 
 		/**
-		 * DEPRECATED: Replaced by <code>GroupedList.ALTERNATE_STYLE_NAME_INSET_GROUPED_LIST</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see GroupedList#ALTERNATE_STYLE_NAME_INSET_GROUPED_LIST
-		 */
-		public static const ALTERNATE_NAME_INSET_GROUPED_LIST:String = ALTERNATE_STYLE_NAME_INSET_GROUPED_LIST;
-
-		/**
 		 * The default name to use with header renderers.
 		 *
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const DEFAULT_CHILD_STYLE_NAME_HEADER_RENDERER:String = "feathers-grouped-list-header-renderer";
-
-		/**
-		 * DEPRECATED: Replaced by <code>GroupedList.DEFAULT_CHILD_STYLE_NAME_HEADER_RENDERER</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see GroupedList#DEFAULT_CHILD_STYLE_NAME_HEADER_RENDERER
-		 */
-		public static const DEFAULT_CHILD_NAME_HEADER_RENDERER:String = DEFAULT_CHILD_STYLE_NAME_HEADER_RENDERER;
 
 		/**
 		 * An alternate name to use with header renderers to give them an inset
@@ -271,35 +246,11 @@ package feathers.controls
 		public static const ALTERNATE_CHILD_STYLE_NAME_INSET_HEADER_RENDERER:String = "feathers-grouped-list-inset-header-renderer";
 
 		/**
-		 * DEPRECATED: Replaced by <code>GroupedList.ALTERNATE_CHILD_STYLE_NAME_INSET_HEADER_RENDERER</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see GroupedList#ALTERNATE_CHILD_STYLE_NAME_INSET_HEADER_RENDERER
-		 */
-		public static const ALTERNATE_CHILD_NAME_INSET_HEADER_RENDERER:String = ALTERNATE_CHILD_STYLE_NAME_INSET_HEADER_RENDERER;
-
-		/**
 		 * The default name to use with footer renderers.
 		 *
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const DEFAULT_CHILD_STYLE_NAME_FOOTER_RENDERER:String = "feathers-grouped-list-footer-renderer";
-
-		/**
-		 * DEPRECATED: Replaced by <code>GroupedList.DEFAULT_CHILD_STYLE_NAME_FOOTER_RENDERER</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see GroupedList#DEFAULT_CHILD_STYLE_NAME_FOOTER_RENDERER
-		 */
-		public static const DEFAULT_CHILD_NAME_FOOTER_RENDERER:String = DEFAULT_CHILD_STYLE_NAME_FOOTER_RENDERER;
 
 		/**
 		 * An alternate name to use with footer renderers to give them an inset
@@ -314,18 +265,6 @@ package feathers.controls
 		public static const ALTERNATE_CHILD_STYLE_NAME_INSET_FOOTER_RENDERER:String = "feathers-grouped-list-inset-footer-renderer";
 
 		/**
-		 * DEPRECATED: Replaced by <code>GroupedList.ALTERNATE_CHILD_STYLE_NAME_INSET_FOOTER_RENDERER</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see GroupedList#ALTERNATE_CHILD_STYLE_NAME_INSET_FOOTER_RENDERER
-		 */
-		public static const ALTERNATE_CHILD_NAME_INSET_FOOTER_RENDERER:String = ALTERNATE_CHILD_STYLE_NAME_INSET_FOOTER_RENDERER;
-
-		/**
 		 * An alternate name to use with item renderers to give them an inset
 		 * style. This name is usually only referenced inside themes.
 		 *
@@ -338,18 +277,6 @@ package feathers.controls
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const ALTERNATE_CHILD_STYLE_NAME_INSET_ITEM_RENDERER:String = "feathers-grouped-list-inset-item-renderer";
-
-		/**
-		 * DEPRECATED: Replaced by <code>GroupedList.ALTERNATE_CHILD_STYLE_NAME_INSET_ITEM_RENDERER</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see GroupedList#ALTERNATE_CHILD_STYLE_NAME_INSET_ITEM_RENDERER
-		 */
-		public static const ALTERNATE_CHILD_NAME_INSET_ITEM_RENDERER:String = ALTERNATE_CHILD_STYLE_NAME_INSET_ITEM_RENDERER;
 
 		/**
 		 * An alternate name to use for item renderers to give them an inset
@@ -367,18 +294,6 @@ package feathers.controls
 		public static const ALTERNATE_CHILD_STYLE_NAME_INSET_FIRST_ITEM_RENDERER:String = "feathers-grouped-list-inset-first-item-renderer";
 
 		/**
-		 * DEPRECATED: Replaced by <code>GroupedList.ALTERNATE_CHILD_STYLE_NAME_INSET_FIRST_ITEM_RENDERER</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see GroupedList#ALTERNATE_CHILD_STYLE_NAME_INSET_FIRST_ITEM_RENDERER
-		 */
-		public static const ALTERNATE_CHILD_NAME_INSET_FIRST_ITEM_RENDERER:String = ALTERNATE_CHILD_STYLE_NAME_INSET_FIRST_ITEM_RENDERER;
-
-		/**
 		 * An alternate name to use for item renderers to give them an inset
 		 * style. Typically meant to be used for the renderer of the last item
 		 * in a group. This name is usually only referenced inside themes.
@@ -392,18 +307,6 @@ package feathers.controls
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const ALTERNATE_CHILD_STYLE_NAME_INSET_LAST_ITEM_RENDERER:String = "feathers-grouped-list-inset-last-item-renderer";
-
-		/**
-		 * DEPRECATED: Replaced by <code>GroupedList.ALTERNATE_CHILD_STYLE_NAME_INSET_LAST_ITEM_RENDERER</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see GroupedList#ALTERNATE_CHILD_STYLE_NAME_INSET_LAST_ITEM_RENDERER
-		 */
-		public static const ALTERNATE_CHILD_NAME_INSET_LAST_ITEM_RENDERER:String = ALTERNATE_CHILD_STYLE_NAME_INSET_LAST_ITEM_RENDERER;
 
 		/**
 		 * An alternate name to use for item renderers to give them an inset
@@ -420,18 +323,6 @@ package feathers.controls
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const ALTERNATE_CHILD_STYLE_NAME_INSET_SINGLE_ITEM_RENDERER:String = "feathers-grouped-list-inset-single-item-renderer";
-
-		/**
-		 * DEPRECATED: Replaced by <code>GroupedList.ALTERNATE_CHILD_STYLE_NAME_INSET_SINGLE_ITEM_RENDERER</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see GroupedList#ALTERNATE_CHILD_STYLE_NAME_INSET_SINGLE_ITEM_RENDERER
-		 */
-		public static const ALTERNATE_CHILD_NAME_INSET_SINGLE_ITEM_RENDERER:String = ALTERNATE_CHILD_STYLE_NAME_INSET_SINGLE_ITEM_RENDERER;
 
 		/**
 		 * @copy feathers.controls.Scroller#SCROLL_POLICY_AUTO
@@ -470,6 +361,13 @@ package feathers.controls
 		 * @see feathers.controls.Scroller#scrollBarDisplayMode
 		 */
 		public static const SCROLL_BAR_DISPLAY_MODE_FIXED:String = "fixed";
+
+		/**
+		 * @copy feathers.controls.Scroller#SCROLL_BAR_DISPLAY_MODE_FIXED_FLOAT
+		 *
+		 * @see feathers.controls.Scroller#scrollBarDisplayMode
+		 */
+		public static const SCROLL_BAR_DISPLAY_MODE_FIXED_FLOAT:String = "fixedFloat";
 
 		/**
 		 * @copy feathers.controls.Scroller#SCROLL_BAR_DISPLAY_MODE_NONE
@@ -986,6 +884,11 @@ package feathers.controls
 		/**
 		 * @private
 		 */
+		protected var _itemRendererFactories:Object;
+
+		/**
+		 * @private
+		 */
 		protected var _itemRendererFactory:Function;
 
 		/**
@@ -1019,9 +922,7 @@ package feathers.controls
 		 *
 		 * @see feathers.controls.renderers.IGroupedListItemRenderer
 		 * @see #itemRendererType
-		 * @see #firstItemRendererFactory
-		 * @see #lastItemRendererFactory
-		 * @see #singleItemRendererFactory
+		 * @see #setItemRendererFactoryWithID()
 		 */
 		public function get itemRendererFactory():Function
 		{
@@ -1039,6 +940,75 @@ package feathers.controls
 			}
 
 			this._itemRendererFactory = value;
+			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _factoryIDFunction:Function;
+
+		/**
+		 * When a list requires multiple item renderer types, this function is
+		 * used to determine which type of item renderer is required for a
+		 * specific item (or index). Returns the ID of the item renderer type
+		 * to use for the item, or <code>null</code> if the default
+		 * <code>itemRendererFactory</code> should be used.
+		 *
+		 * <p>The function is expected to have one of the following
+		 * signatures:</p>
+		 *
+		 * <pre>function(item:Object):String</pre>
+		 *
+		 * <pre>function(item:Object, groupIndex:int, itemIndex:int):String</pre>
+		 *
+		 * <p>The following example provides a <code>factoryIDFunction</code>:</p>
+		 *
+		 * <listing version="3.0">
+		 * function regularItemFactory():IGroupedListItemRenderer
+		 * {
+		 *     return new DefaultGroupedListItemRenderer();
+		 * }
+		 * function firstItemFactory():IGroupedListItemRenderer
+		 * {
+		 *     return new CustomItemRenderer();
+		 * }
+		 * list.setItemRendererFactoryWithID( "regular-item", regularItemFactory );
+		 * list.setItemRendererFactoryWithID( "first-item", firstItemFactory );
+		 *
+		 * list.factoryIDFunction = function( item:Object, groupIndex:int, itemIndex:int ):String
+		 * {
+		 *     if(index === 0)
+		 *     {
+		 *         return "first-item";
+		 *     }
+		 *     return "regular-item";
+		 * };</listing>
+		 *
+		 * @default null
+		 *
+		 * @see #setItemRendererFactoryWithID()
+		 * @see #itemRendererFactory
+		 */
+		public function get factoryIDFunction():Function
+		{
+			return this._factoryIDFunction;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set factoryIDFunction(value:Function):void
+		{
+			if(this._factoryIDFunction === value)
+			{
+				return;
+			}
+			this._factoryIDFunction = value;
+			if(value !== null && this._itemRendererFactories === null)
+			{
+				this._itemRendererFactories = {};
+			}
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 
@@ -1128,50 +1098,35 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customItemRendererStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customItemRendererStyleName
-		 */
-		public function get itemRendererName():String
-		{
-			return this.customItemRendererStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set itemRendererName(value:String):void
-		{
-			this.customItemRendererStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _itemRendererProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to all of the list's item
-		 * renderers. These values are shared by each item renderer, so values
-		 * that cannot be shared (such as display objects that need to be added
-		 * to the display list) should be passed to the item renderers using the
-		 * <code>itemRendererFactory</code> or with a theme. The item renderers
-		 * are instances of <code>IGroupedListItemRenderer</code>. The available
-		 * properties depend on which <code>IGroupedListItemRenderer</code>
-		 * implementation is returned by <code>itemRendererFactory</code>.
+		 * An object that stores properties for all of the list's item
+		 * renderers, and the properties will be passed down to every item
+		 * renderer when the list validates. The available properties
+		 * depend on which <code>IGroupedListItemRenderer</code> implementation
+		 * is returned by <code>itemRendererFactory</code>.
+		 * 
+		 * <p>By default, the <code>itemRendererFactory</code> will return a
+		 * <code>DefaultGroupedListItemRenderer</code> instance. If you aren't
+		 * using a custom item renderer, you can refer to
+		 * <a href="renderers/DefaultGroupedListItemRenderer.html"><code>feathers.controls.renderers.DefaultGroupedListItemRenderer</code></a>
+		 * for a list of available properties.</p>
+		 *
+		 * <p>These properties are shared by every item renderer, so anything
+		 * that cannot be shared (such as display objects, which cannot be added
+		 * to multiple parents) should be passed to item renderers using the
+		 * <code>itemRendererFactory</code> or in the theme.</p>
 		 *
 		 * <p>The following example customizes some item renderer properties
 		 * (this example assumes that the item renderer's label text renderer
 		 * is a <code>BitmapFontTextRenderer</code>):</p>
 		 *
 		 * <listing version="3.0">
-		 * list.itemRendererProperties.&#64;defaultLabelProperties.textFormat = new BitmapFontTextFormat( bitmapFont );
-		 * list.itemRendererProperties.padding = 20;</listing>
+		 * list.itemRendererProperties.labelField = "text";
+		 * list.itemRendererProperties.accessoryField = "control";</listing>
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1379,29 +1334,6 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customFirstItemRendererStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customFirstItemRendererStyleName
-		 */
-		public function get firstItemRendererName():String
-		{
-			return this.customFirstItemRendererStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set firstItemRendererName(value:String):void
-		{
-			this.customFirstItemRendererStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _lastItemRendererType:Class;
@@ -1546,29 +1478,6 @@ package feathers.controls
 			}
 			this._customLastItemRendererStyleName = value;
 			this.invalidate(INVALIDATION_FLAG_STYLES);
-		}
-
-		/**
-		 * DEPRECATED: Replaced by <code>customLastItemRendererStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customLastItemRendererStyleName
-		 */
-		public function get lastItemRendererName():String
-		{
-			return this.customLastItemRendererStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set lastItemRendererName(value:String):void
-		{
-			this.customLastItemRendererStyleName = value;
 		}
 
 		/**
@@ -1719,29 +1628,6 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customLastItemRendererStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customLastItemRendererStyleName
-		 */
-		public function get singleItemRendererName():String
-		{
-			return this.customSingleItemRendererStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set singleItemRendererName(value:String):void
-		{
-			this.customSingleItemRendererStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _headerRendererType:Class = DefaultGroupedListHeaderOrFooterRenderer;
@@ -1782,6 +1668,11 @@ package feathers.controls
 		/**
 		 * @private
 		 */
+		protected var _headerRendererFactories:Object;
+
+		/**
+		 * @private
+		 */
 		protected var _headerRendererFactory:Function;
 
 		/**
@@ -1810,6 +1701,7 @@ package feathers.controls
 		 *
 		 * @see feathers.controls.renderers.IGroupedListHeaderOrFooterRenderer
 		 * @see #headerRendererType
+		 * @see #setHeaderRendererFactoryWithID()
 		 */
 		public function get headerRendererFactory():Function
 		{
@@ -1827,6 +1719,76 @@ package feathers.controls
 			}
 
 			this._headerRendererFactory = value;
+			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _headerFactoryIDFunction:Function;
+
+		/**
+		 * When a list requires multiple header renderer types, this function is
+		 * used to determine which type of header renderer is required for a
+		 * specific header (or group index). Returns the ID of the factory
+		 * to use for the header, or <code>null</code> if the default
+		 * <code>headerRendererFactory</code> should be used.
+		 *
+		 * <p>The function is expected to have one of the following
+		 * signatures:</p>
+		 *
+		 * <pre>function(header:Object):String</pre>
+		 *
+		 * <pre>function(header:Object, groupIndex:int):String</pre>
+		 *
+		 * <p>The following example provides a <code>headerFactoryIDFunction</code>:</p>
+		 *
+		 * <listing version="3.0">
+		 * function regularHeaderFactory():IGroupedListHeaderRenderer
+		 * {
+		 *     return new DefaultGroupedListHeaderOrFooterRenderer();
+		 * }
+		 * function customHeaderFactory():IGroupedListHeaderRenderer
+		 * {
+		 *     return new CustomHeaderRenderer();
+		 * }
+		 * list.setHeaderRendererFactoryWithID( "regular-header", regularHeaderFactory );
+		 * list.setHeaderRendererFactoryWithID( "custom-header", customHeaderFactory );
+		 *
+		 * list.headerFactoryIDFunction = function( header:Object, groupIndex:int ):String
+		 * {
+		 *     //check if the subTitle property exists in the header data
+		 *     if( "subTitle" in header )
+		 *     {
+		 *         return "custom-header";
+		 *     }
+		 *     return "regular-header";
+		 * };</listing>
+		 *
+		 * @default null
+		 *
+		 * @see #setHeaderRendererFactoryWithID()
+		 * @see #headerRendererFactory
+		 */
+		public function get headerFactoryIDFunction():Function
+		{
+			return this._headerFactoryIDFunction;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set headerFactoryIDFunction(value:Function):void
+		{
+			if(this._headerFactoryIDFunction === value)
+			{
+				return;
+			}
+			this._headerFactoryIDFunction = value;
+			if(value !== null && this._headerRendererFactories === null)
+			{
+				this._headerRendererFactories = {};
+			}
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 
@@ -1874,49 +1836,33 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customHeaderRendererStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customHeaderRendererStyleName
-		 */
-		public function get headerRendererName():String
-		{
-			return this.customHeaderRendererStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set headerRendererName(value:String):void
-		{
-			this.customHeaderRendererStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _headerRendererProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to all of the grouped
-		 * list's header renderers. These values are shared by each header
-		 * renderer, so values that cannot be shared (such as display objects
-		 * that need to be added to the display list) should be passed to the
-		 * header renderers using the <code>headerRendererFactory</code> or in a
-		 * theme. The header renderers are instances of
-		 * <code>IGroupedListHeaderOrFooterRenderer</code>. The available
-		 * properties depend on which <code>IGroupedListItemRenderer</code>
+		 * An object that stores properties for all of the list's header
+		 * renderers, and the properties will be passed down to every header
+		 * renderer when the list validates. The available properties
+		 * depend on which <code>IGroupedListHeaderOrFooterRenderer</code>
 		 * implementation is returned by <code>headerRendererFactory</code>.
+		 *
+		 * <p>By default, the <code>headerRendererFactory</code> will return a
+		 * <code>DefaultGroupedListHeaderOrFooterRenderer</code> instance. If
+		 * you aren't using a custom header renderer, you can refer to
+		 * <a href="renderers/DefaultGroupedListHeaderOrFooterRenderer.html"><code>feathers.controls.renderers.DefaultGroupedListHeaderOrFooterRenderer</code></a>
+		 * for a list of available properties.</p>
+		 *
+		 * <p>These properties are shared by every header renderer, so anything
+		 * that cannot be shared (such as display objects, which cannot be added
+		 * to multiple parents) should be passed to header renderers using the
+		 * <code>headerRendererFactory</code> or in the theme.</p>
 		 *
 		 * <p>The following example customizes some header renderer properties:</p>
 		 *
 		 * <listing version="3.0">
-		 * list.headerRendererProperties.&#64;contentLabelProperties.textFormat = new BitmapFontTextFormat( bitmapFont );
-		 * list.headerRendererProperties.padding = 20;</listing>
+		 * list.headerRendererProperties.contentLabelField = "headerText";
+		 * list.headerRendererProperties.contentLabelStyleName = "custom-header-renderer-content-label";</listing>
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -2018,6 +1964,11 @@ package feathers.controls
 		/**
 		 * @private
 		 */
+		protected var _footerRendererFactories:Object;
+
+		/**
+		 * @private
+		 */
 		protected var _footerRendererFactory:Function;
 
 		/**
@@ -2046,6 +1997,7 @@ package feathers.controls
 		 *
 		 * @see feathers.controls.renderers.IGroupedListHeaderOrFooterRenderer
 		 * @see #footerRendererType
+		 * @see #setFooterRendererFactoryWithID()
 		 */
 		public function get footerRendererFactory():Function
 		{
@@ -2063,6 +2015,76 @@ package feathers.controls
 			}
 
 			this._footerRendererFactory = value;
+			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _footerFactoryIDFunction:Function;
+
+		/**
+		 * When a list requires multiple footer renderer types, this function is
+		 * used to determine which type of footer renderer is required for a
+		 * specific footer (or group index). Returns the ID of the factory
+		 * to use for the footer, or <code>null</code> if the default
+		 * <code>footerRendererFactory</code> should be used.
+		 *
+		 * <p>The function is expected to have one of the following
+		 * signatures:</p>
+		 *
+		 * <pre>function(footer:Object):String</pre>
+		 *
+		 * <pre>function(footer:Object, groupIndex:int):String</pre>
+		 *
+		 * <p>The following example provides a <code>footerFactoryIDFunction</code>:</p>
+		 *
+		 * <listing version="3.0">
+		 * function regularFooterFactory():IGroupedListFooterRenderer
+		 * {
+		 *     return new DefaultGroupedListHeaderOrFooterRenderer();
+		 * }
+		 * function customFooterFactory():IGroupedListFooterRenderer
+		 * {
+		 *     return new CustomFooterRenderer();
+		 * }
+		 * list.setFooterRendererFactoryWithID( "regular-footer", regularFooterFactory );
+		 * list.setFooterRendererFactoryWithID( "custom-footer", customFooterFactory );
+		 *
+		 * list.footerFactoryIDFunction = function( footer:Object, groupIndex:int ):String
+		 * {
+		 *     //check if the footerAccessory property exists in the footer data
+		 *     if( "footerAccessory" in footer )
+		 *     {
+		 *         return "custom-footer";
+		 *     }
+		 *     return "regular-footer";
+		 * };</listing>
+		 *
+		 * @default null
+		 *
+		 * @see #setFooterRendererFactoryWithID()
+		 * @see #footerRendererFactory
+		 */
+		public function get footerFactoryIDFunction():Function
+		{
+			return this._footerFactoryIDFunction;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set footerFactoryIDFunction(value:Function):void
+		{
+			if(this._footerFactoryIDFunction === value)
+			{
+				return;
+			}
+			this._footerFactoryIDFunction = value;
+			if(value !== null && this._footerRendererFactories === null)
+			{
+				this._footerRendererFactories = {};
+			}
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 
@@ -2110,49 +2132,33 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customFooterRendererStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customFooterRendererStyleName
-		 */
-		public function get footerRendererName():String
-		{
-			return this.customFooterRendererStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set footerRendererName(value:String):void
-		{
-			this.customFooterRendererStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _footerRendererProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to all of the grouped
-		 * list's footer renderers. These values are shared by each footer
-		 * renderer, so values that cannot be shared (such as display objects
-		 * that need to be added to the display list) should be passed to the
-		 * footer renderers using a <code>footerRendererFactory</code> or with
-		 * a theme. The header renderers are instances of
-		 * <code>IGroupedListHeaderOrFooterRenderer</code>. The available
-		 * properties depend on which <code>IGroupedListItemRenderer</code>
-		 * implementation is returned by <code>headerRendererFactory</code>.
+		 * An object that stores properties for all of the list's footer
+		 * renderers, and the properties will be passed down to every footer
+		 * renderer when the list validates. The available properties
+		 * depend on which <code>IGroupedListHeaderOrFooterRenderer</code>
+		 * implementation is returned by <code>footerRendererFactory</code>.
 		 *
-		 * <p>The following example customizes some header renderer properties:</p>
+		 * <p>By default, the <code>footerRendererFactory</code> will return a
+		 * <code>DefaultGroupedListHeaderOrFooterRenderer</code> instance. If
+		 * you aren't using a custom footer renderer, you can refer to
+		 * <a href="renderers/DefaultGroupedListHeaderOrFooterRenderer.html"><code>feathers.controls.renderers.DefaultGroupedListHeaderOrFooterRenderer</code></a>
+		 * for a list of available properties.</p>
+		 *
+		 * <p>These properties are shared by every footer renderer, so anything
+		 * that cannot be shared (such as display objects, which cannot be added
+		 * to multiple parents) should be passed to footer renderers using the
+		 * <code>footerRendererFactory</code> or in the theme.</p>
+		 *
+		 * <p>The following example customizes some footer renderer properties:</p>
 		 *
 		 * <listing version="3.0">
-		 * list.footerRendererProperties.&#64;contentLabelProperties.textFormat = new BitmapFontTextFormat( bitmapFont );
-		 * list.footerRendererProperties.padding = 20;</listing>
+		 * list.footerRendererProperties.contentLabelField = "footerText";
+		 * list.footerRendererProperties.contentLabelStyleName = "custom-footer-renderer-content-label";</listing>
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -2480,17 +2486,29 @@ package feathers.controls
 		 * After the next validation, scrolls the list so that the specified
 		 * item is visible. If <code>animationDuration</code> is greater than
 		 * zero, the scroll will animate. The duration is in seconds.
+		 * 
+		 * <p>The <code>itemIndex</code> parameter is optional. If set to
+		 * <code>-1</code>, the list will scroll to the start of the specified
+		 * group.</p>
 		 *
 		 * <p>In the following example, the list is scrolled to display the
 		 * third item in the second group:</p>
 		 *
 		 * <listing version="3.0">
 		 * list.scrollToDisplayIndex( 1, 2 );</listing>
+		 *
+		 * <p>In the following example, the list is scrolled to display the
+		 * third group:</p>
+		 *
+		 * <listing version="3.0">
+		 * list.scrollToDisplayIndex( 2 );</listing>
 		 */
-		public function scrollToDisplayIndex(groupIndex:int, itemIndex:int, animationDuration:Number = 0):void
+		public function scrollToDisplayIndex(groupIndex:int, itemIndex:int = -1, animationDuration:Number = 0):void
 		{
-			this.pendingHorizontalPageIndex = -1;
-			this.pendingVerticalPageIndex = -1;
+			//cancel any pending scroll to a different page or scroll position.
+			//we can have only one type of pending scroll at a time.
+			this.hasPendingHorizontalPageIndex = false;
+			this.hasPendingVerticalPageIndex = false;
 			this.pendingHorizontalScrollPosition = NaN;
 			this.pendingVerticalScrollPosition = NaN;
 			if(this.pendingGroupIndex == groupIndex &&
@@ -2538,6 +2556,141 @@ package feathers.controls
 
 			this.invalidate(INVALIDATION_FLAG_SELECTED);
 			this.dispatchEventWith(Event.CHANGE);
+		}
+
+		/**
+		 * Returns the item renderer factory associated with a specific ID.
+		 * Returns <code>null</code> if no factory is associated with the ID.
+		 *
+		 * @see #setItemRendererFactoryWithID()
+		 */
+		public function getItemRendererFactoryWithID(id:String):Function
+		{
+			if(this._itemRendererFactories && (id in this._itemRendererFactories))
+			{
+				return this._itemRendererFactories[id] as Function;
+			}
+			return null;
+		}
+
+		/**
+		 * Associates an item renderer factory with an ID to allow multiple
+		 * types of item renderers may be displayed in the list. A custom
+		 * <code>factoryIDFunction</code> may be specified to return the ID of
+		 * the factory to use for a specific item in the data provider.
+		 *
+		 * @see #factoryIDFunction
+		 * @see #getItemRendererFactoryWithID()
+		 */
+		public function setItemRendererFactoryWithID(id:String, factory:Function):void
+		{
+			if(id === null)
+			{
+				this.itemRendererFactory = factory;
+				return;
+			}
+			if(this._itemRendererFactories === null)
+			{
+				this._itemRendererFactories = {};
+			}
+			if(factory !== null)
+			{
+				this._itemRendererFactories[id] = factory;
+			}
+			else
+			{
+				delete this._itemRendererFactories[id];
+			}
+		}
+
+		/**
+		 * Returns the header renderer factory associated with a specific ID.
+		 * Returns <code>null</code> if no factory is associated with the ID.
+		 *
+		 * @see #setHeaderRendererFactoryWithID()
+		 */
+		public function getHeaderRendererFactoryWithID(id:String):Function
+		{
+			if(this._headerRendererFactories && (id in this._headerRendererFactories))
+			{
+				return this._headerRendererFactories[id] as Function;
+			}
+			return null;
+		}
+
+		/**
+		 * Associates a header renderer factory with an ID to allow multiple
+		 * types of header renderers may be displayed in the list. A custom
+		 * <code>headerFactoryIDFunction</code> may be specified to return the
+		 * ID of the factory to use for a specific header in the data provider.
+		 *
+		 * @see #headerFactoryIDFunction
+		 * @see #getHeaderRendererFactoryWithID()
+		 */
+		public function setHeaderRendererFactoryWithID(id:String, factory:Function):void
+		{
+			if(id === null)
+			{
+				this.headerRendererFactory = factory;
+				return;
+			}
+			if(this._headerRendererFactories === null)
+			{
+				this._headerRendererFactories = {};
+			}
+			if(factory !== null)
+			{
+				this._headerRendererFactories[id] = factory;
+			}
+			else
+			{
+				delete this._headerRendererFactories[id];
+			}
+		}
+
+		/**
+		 * Returns the footer renderer factory associated with a specific ID.
+		 * Returns <code>null</code> if no factory is associated with the ID.
+		 *
+		 * @see #setFooterRendererFactoryWithID()
+		 */
+		public function getFooterRendererFactoryWithID(id:String):Function
+		{
+			if(this._footerRendererFactories && (id in this._footerRendererFactories))
+			{
+				return this._footerRendererFactories[id] as Function;
+			}
+			return null;
+		}
+
+		/**
+		 * Associates a footer renderer factory with an ID to allow multiple
+		 * types of footer renderers may be displayed in the list. A custom
+		 * <code>footerFactoryIDFunction</code> may be specified to return the
+		 * ID of the factory to use for a specific footer in the data provider.
+		 *
+		 * @see #footerFactoryIDFunction
+		 * @see #getFooterRendererFactoryWithID()
+		 */
+		public function setFooterRendererFactoryWithID(id:String, factory:Function):void
+		{
+			if(id === null)
+			{
+				this.footerRendererFactory = factory;
+				return;
+			}
+			if(this._footerRendererFactories === null)
+			{
+				this._footerRendererFactories = {};
+			}
+			if(factory !== null)
+			{
+				this._footerRendererFactories[id] = factory;
+			}
+			else
+			{
+				delete this._footerRendererFactories[id];
+			}
 		}
 
 		/**
@@ -2608,6 +2761,7 @@ package feathers.controls
 				layout.gap = 0;
 				layout.horizontalAlign = VerticalLayout.HORIZONTAL_ALIGN_JUSTIFY;
 				layout.verticalAlign = VerticalLayout.VERTICAL_ALIGN_TOP;
+				layout.stickyHeader = !this._styleNameList.contains(ALTERNATE_STYLE_NAME_INSET_GROUPED_LIST);
 				this.layout = layout;
 			}
 		}
@@ -2633,6 +2787,8 @@ package feathers.controls
 
 			this.dataViewPort.itemRendererType = this._itemRendererType;
 			this.dataViewPort.itemRendererFactory = this._itemRendererFactory;
+			this.dataViewPort.itemRendererFactories = this._itemRendererFactories;
+			this.dataViewPort.factoryIDFunction = this._factoryIDFunction;
 			this.dataViewPort.itemRendererProperties = this._itemRendererProperties;
 			this.dataViewPort.customItemRendererStyleName = this._customItemRendererStyleName;
 
@@ -2650,11 +2806,15 @@ package feathers.controls
 
 			this.dataViewPort.headerRendererType = this._headerRendererType;
 			this.dataViewPort.headerRendererFactory = this._headerRendererFactory;
+			this.dataViewPort.headerRendererFactories = this._headerRendererFactories;
+			this.dataViewPort.headerFactoryIDFunction = this._headerFactoryIDFunction;
 			this.dataViewPort.headerRendererProperties = this._headerRendererProperties;
 			this.dataViewPort.customHeaderRendererStyleName = this._customHeaderRendererStyleName;
 
 			this.dataViewPort.footerRendererType = this._footerRendererType;
 			this.dataViewPort.footerRendererFactory = this._footerRendererFactory;
+			this.dataViewPort.footerRendererFactories = this._footerRendererFactories;
+			this.dataViewPort.footerFactoryIDFunction = this._footerFactoryIDFunction;
 			this.dataViewPort.footerRendererProperties = this._footerRendererProperties;
 			this.dataViewPort.customFooterRendererStyleName = this._customFooterRendererStyleName;
 
@@ -2666,10 +2826,17 @@ package feathers.controls
 		 */
 		override protected function handlePendingScroll():void
 		{
-			if(this.pendingGroupIndex >= 0 && this.pendingItemIndex >= 0)
+			if(this.pendingGroupIndex >= 0)
 			{
-				var item:Object = this._dataProvider.getItemAt(this.pendingGroupIndex, this.pendingItemIndex);
-				if(item is Object)
+				if(this.pendingItemIndex >= 0)
+				{
+					var pendingData:Object = this._dataProvider.getItemAt(this.pendingGroupIndex, this.pendingItemIndex);
+				}
+				else
+				{
+					pendingData = this._dataProvider.getItemAt(this.pendingGroupIndex);
+				}
+				if(pendingData is Object)
 				{
 					this.dataViewPort.getScrollPositionForIndex(this.pendingGroupIndex, this.pendingItemIndex, HELPER_POINT);
 					this.pendingGroupIndex = -1;

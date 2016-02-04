@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -8,8 +8,10 @@ accordance with the terms of the accompanying license agreement.
 package feathers.controls.text
 {
 	import feathers.core.FocusManager;
+	import feathers.core.INativeFocusOwner;
 	import feathers.core.ITextEditor;
 	import feathers.events.FeathersEventType;
+	import feathers.skins.IStyleProvider;
 	import feathers.utils.text.TextInputNavigation;
 	import feathers.utils.text.TextInputRestrict;
 
@@ -17,8 +19,10 @@ package feathers.controls.text
 	import flash.desktop.ClipboardFormats;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.InteractiveObject;
+	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.events.TextEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextFormatAlign;
@@ -124,20 +128,36 @@ package feathers.controls.text
 	[Event(name="focusOut",type="starling.events.Event")]
 
 	/**
-	 * Renders text with a native <code>flash.text.engine.TextBlock</code> from
-	 * Flash Text Engine (FTE) that may be edited at runtime by the user. Draws
-	 * the text to <code>BitmapData</code> to convert to Starling textures.
-	 * Textures are completely managed by this component, and they will be
-	 * automatically disposed when the component is disposed from the stage.
+	 * Text that may be edited at runtime by the user with the
+	 * <code>TextInput</code> component, rendered with a native
+	 * <code>flash.text.engine.TextBlock</code> from
+	 * <a href="http://help.adobe.com/en_US/as3/dev/WS9dd7ed846a005b294b857bfa122bd808ea6-8000.html" target="_top">Flash Text Engine</a>
+	 * (sometimes abbreviated as FTE). Draws the text to <code>BitmapData</code>
+	 * to convert to Starling textures. Textures are managed internally by this
+	 * component, and they will be automatically disposed when the component is
+	 * disposed.
 	 *
 	 * <p><strong>Warning:</strong> This text editor is intended for use in
 	 * desktop applications only, and it does not provide support for software
 	 * keyboards on mobile devices.</p>
 	 *
-	 * @see ../../../help/text-editors.html Introduction to Feathers text editors
+	 * <p>The following example shows how to use
+	 * <code>TextBlockTextEditor</code> with a <code>TextInput</code>:</p>
+	 *
+	 * <listing version="3.0">
+	 * var input:TextInput = new TextInput();
+	 * input.textEditorFactory = function():ITextEditor
+	 * {
+	 *     return new TextBlockTextEditor();
+	 * };
+	 * this.addChild( input );</listing>
+	 *
+	 * @see feathers.controls.TextInput
+	 * @see ../../../../help/text-editors.html Introduction to Feathers text editors
+	 * @see http://help.adobe.com/en_US/as3/dev/WS9dd7ed846a005b294b857bfa122bd808ea6-8000.html Using the Flash Text Engine in ActionScript 3.0 Developer's Guide
 	 * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/text/engine/TextBlock.html flash.text.engine.TextBlock
 	 */
-	public class TextBlockTextEditor extends TextBlockTextRenderer implements ITextEditor
+	public class TextBlockTextEditor extends TextBlockTextRenderer implements ITextEditor, INativeFocusOwner
 	{
 		/**
 		 * @private
@@ -166,6 +186,15 @@ package feathers.controls.text
 		public static const TEXT_ALIGN_RIGHT:String = "right";
 
 		/**
+		 * The default <code>IStyleProvider</code> for all <code>TextBlockTextEditor</code>
+		 * components.
+		 *
+		 * @default null
+		 * @see feathers.core.FeathersControl#styleProvider
+		 */
+		public static var globalStyleProvider:IStyleProvider;
+
+		/**
 		 * Constructor.
 		 */
 		public function TextBlockTextEditor()
@@ -182,10 +211,18 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
+		override protected function get defaultStyleProvider():IStyleProvider
+		{
+			return globalStyleProvider;
+		}
+
+		/**
+		 * @private
+		 */
 		protected var _selectionSkin:DisplayObject;
 
 		/**
-		 *
+		 * The skin that indicates the currently selected range of text.
 		 */
 		public function get selectionSkin():DisplayObject
 		{
@@ -220,7 +257,8 @@ package feathers.controls.text
 		protected var _cursorSkin:DisplayObject;
 
 		/**
-		 *
+		 * The skin that indicates the current position where text may be
+		 * entered.
 		 */
 		public function get cursorSkin():DisplayObject
 		{
@@ -260,15 +298,11 @@ package feathers.controls.text
 		protected var _displayAsPassword:Boolean = false;
 
 		/**
-		 * Indicates whether the text field is a password text field that hides
-		 * input characters using a substitute character.
+		 * <p>This property is managed by the <code>TextInput</code>.</p>
+		 * 
+		 * @copy feathers.controls.TextInput#displayAsPassword
 		 *
-		 * <p>In the following example, the text is displayed as a password:</p>
-		 *
-		 * <listing version="3.0">
-		 * textEditor.displayAsPassword = true;</listing>
-		 *
-		 * @default false
+		 * @see feathers.controls.TextInput#displayAsPassword
 		 *
 		 * @see #passwordCharCode
 		 */
@@ -347,15 +381,11 @@ package feathers.controls.text
 		protected var _isEditable:Boolean = true;
 
 		/**
-		 * Determines if the text input is editable. If the text input is not
-		 * editable, it will still appear enabled.
+		 * <p>This property is managed by the <code>TextInput</code>.</p>
+		 * 
+		 * @copy feathers.controls.TextInput#isEditable
 		 *
-		 * <p>In the following example, the text is not editable:</p>
-		 *
-		 * <listing version="3.0">
-		 * textEditor.isEditable = false;</listing>
-		 *
-		 * @default true
+		 * @see feathers.controls.TextInput#isEditable
 		 */
 		public function get isEditable():Boolean
 		{
@@ -372,6 +402,36 @@ package feathers.controls.text
 				return;
 			}
 			this._isEditable = value;
+			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _isSelectable:Boolean = true;
+
+		/**
+		 * <p>This property is managed by the <code>TextInput</code>.</p>
+		 * 
+		 * @copy feathers.controls.TextInput#isSelectable
+		 *
+		 * @see feathers.controls.TextInput#isSelectable
+		 */
+		public function get isSelectable():Boolean
+		{
+			return this._isSelectable;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set isSelectable(value:Boolean):void
+		{
+			if(this._isSelectable == value)
+			{
+				return;
+			}
+			this._isSelectable = value;
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 
@@ -450,17 +510,11 @@ package feathers.controls.text
 		protected var _maxChars:int = 0;
 
 		/**
-		 * Indicates the maximum number of characters that a user can enter into
-		 * the text editor. A script can insert more text than <code>maxChars</code>
-		 * allows. If <code>maxChars</code> equals zero, a user can enter an
-		 * unlimited amount of text into the text editor.
+		 * <p>This property is managed by the <code>TextInput</code>.</p>
+		 * 
+		 * @copy feathers.controls.TextInput#maxChars
 		 *
-		 * <p>In the following example, the maximum character count is changed:</p>
-		 *
-		 * <listing version="3.0">
-		 * textEditor.maxChars = 10;</listing>
-		 *
-		 * @default 0
+		 * @see feathers.controls.TextInput#maxChars
 		 */
 		public function get maxChars():int
 		{
@@ -486,16 +540,11 @@ package feathers.controls.text
 		protected var _restrict:TextInputRestrict;
 
 		/**
-		 * Restricts the set of characters that a user can enter into the text
-		 * field. Only user interaction is restricted; a script can put any text
-		 * into the text field.
+		 * <p>This property is managed by the <code>TextInput</code>.</p>
+		 * 
+		 * @copy feathers.controls.TextInput#restrict
 		 *
-		 * <p>In the following example, the text is restricted to numbers:</p>
-		 *
-		 * <listing version="3.0">
-		 * textEditor.restrict = "0-9";</listing>
-		 *
-		 * @default null
+		 * @see feathers.controls.TextInput#restrict
 		 */
 		public function get restrict():String
 		{
@@ -577,40 +626,14 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
-		protected var _nativeFocus:InteractiveObject;
+		protected var _nativeFocus:Sprite;
 
 		/**
-		 * @private
+		 * @copy feathers.core.INativeFocusOwner#nativeFocus
 		 */
-		protected function get nativeFocus():InteractiveObject
+		public function get nativeFocus():InteractiveObject
 		{
 			return this._nativeFocus;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set nativeFocus(value:InteractiveObject):void
-		{
-			if(this._nativeFocus == value)
-			{
-				return;
-			}
-			if(this._nativeFocus)
-			{
-				this._nativeFocus.removeEventListener(flash.events.Event.CUT, nativeStage_cutHandler);
-				this._nativeFocus.removeEventListener(flash.events.Event.COPY, nativeStage_copyHandler);
-				this._nativeFocus.removeEventListener(flash.events.Event.PASTE, nativeStage_pasteHandler);
-				this._nativeFocus.removeEventListener(flash.events.Event.SELECT_ALL, nativeStage_selectAllHandler);
-			}
-			this._nativeFocus = value;
-			if(this._nativeFocus)
-			{
-				this._nativeFocus.addEventListener(flash.events.Event.CUT, nativeStage_cutHandler, false, 0, true);
-				this._nativeFocus.addEventListener(flash.events.Event.COPY, nativeStage_copyHandler, false, 0, true);
-				this._nativeFocus.addEventListener(flash.events.Event.PASTE, nativeStage_pasteHandler, false, 0, true);
-				this._nativeFocus.addEventListener(flash.events.Event.SELECT_ALL, nativeStage_selectAllHandler, false, 0, true);
-			}
 		}
 
 		/**
@@ -623,13 +646,24 @@ package feathers.controls.text
 		 */
 		public function setFocus(position:Point = null):void
 		{
-			//we already have focus, so there's no reason to change
-			if(this._hasFocus && !position)
+			if(!this._isEditable && !this._isSelectable)
 			{
+				//if the text can't be edited or selected, then all focus is
+				//disabled.
 				return;
 			}
-			if(this.isCreated)
+			if(this._hasFocus && !position)
 			{
+				//we already have focus, and there isn't a touch position, we
+				//can ignore this because nothing would change
+				return;
+			}
+			if(this._nativeFocus)
+			{
+				if(!this._nativeFocus.parent)
+				{
+					Starling.current.nativeStage.addChild(this._nativeFocus);
+				}
 				var newIndex:int = -1;
 				if(position)
 				{
@@ -661,7 +695,19 @@ package feathers.controls.text
 			this._selectionSkin.visible = false;
 			this.stage.removeEventListener(TouchEvent.TOUCH, stage_touchHandler);
 			this.stage.removeEventListener(KeyboardEvent.KEY_DOWN, stage_keyDownHandler);
-			this.nativeFocus = null;
+			this.removeEventListener(starling.events.Event.ENTER_FRAME, hasFocus_enterFrameHandler);
+			var nativeStage:Stage = Starling.current.nativeStage;
+			if(nativeStage.focus === this._nativeFocus)
+			{
+				//only clear the native focus when our native target has focus
+				//because otherwise another component may lose focus.
+
+				//for consistency with StageTextTextEditor and
+				//TextFieldTextEditor, we set the native stage's focus to null
+				//here instead of setting it to the native stage due to issues
+				//with those text editors on Android.
+				nativeStage.focus = null;
+			}
 			this.dispatchEventWith(FeathersEventType.FOCUS_OUT);
 		}
 
@@ -670,6 +716,10 @@ package feathers.controls.text
 		 */
 		public function selectRange(beginIndex:int, endIndex:int):void
 		{
+			if(!this._isEditable && !this._isSelectable)
+			{
+				return;
+			}
 			if(endIndex < beginIndex)
 			{
 				var temp:int = endIndex;
@@ -695,14 +745,20 @@ package feathers.controls.text
 				this._cursorSkin.visible = false;
 				this._selectionSkin.visible = true;
 			}
-			var cursorIndex:int = endIndex;
-			if(this.touchPointID >= 0 && this._selectionAnchorIndex >= 0 && this._selectionAnchorIndex == endIndex)
-			{
-				cursorIndex = beginIndex;
-			}
-			this.positionCursorAtCharIndex(cursorIndex);
-			this.positionSelectionBackground();
 			this.invalidate(INVALIDATION_FLAG_SELECTED);
+		}
+
+		/**
+		 * @private
+		 */
+		override public function dispose():void
+		{
+			if(this._nativeFocus && this._nativeFocus.parent)
+			{
+				this._nativeFocus.parent.removeChild(this._nativeFocus);
+			}
+			this._nativeFocus = null;
+			super.dispose();
 		}
 
 		/**
@@ -723,6 +779,22 @@ package feathers.controls.text
 		 */
 		override protected function initialize():void
 		{
+			if(!this._nativeFocus)
+			{
+				this._nativeFocus = new Sprite();
+				//let's ensure that this can only get focus through code
+				this._nativeFocus.tabEnabled = false;
+				this._nativeFocus.tabChildren = false;
+				this._nativeFocus.mouseEnabled = false;
+				this._nativeFocus.mouseChildren = false;
+				//adds support for mobile
+				this._nativeFocus.needsSoftKeyboard = true;
+			}
+			this._nativeFocus.addEventListener(flash.events.Event.CUT, nativeFocus_cutHandler, false, 0, true);
+			this._nativeFocus.addEventListener(flash.events.Event.COPY, nativeFocus_copyHandler, false, 0, true);
+			this._nativeFocus.addEventListener(flash.events.Event.PASTE, nativeFocus_pasteHandler, false, 0, true);
+			this._nativeFocus.addEventListener(flash.events.Event.SELECT_ALL, nativeFocus_selectAllHandler, false, 0, true);
+			this._nativeFocus.addEventListener(TextEvent.TEXT_INPUT, nativeFocus_textInputHandler, false, 0, true);
 			if(!this._cursorSkin)
 			{
 				this.cursorSkin = new Quad(1, 1, 0x000000);
@@ -732,6 +804,18 @@ package feathers.controls.text
 				this.selectionSkin = new Quad(1, 1, 0x000000);
 			}
 			super.initialize();
+		}
+
+		override protected function draw():void
+		{
+			var dataInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_DATA);
+			var selectionInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_SELECTED);
+			super.draw();
+			if(dataInvalid || selectionInvalid)
+			{
+				this.positionCursorAtCharIndex(this.getCursorIndexFromSelectionRange());
+				this.positionSelectionBackground();
+			}
 		}
 
 		/**
@@ -769,19 +853,12 @@ package feathers.controls.text
 			var showCursor:Boolean = this._selectionBeginIndex >= 0 && this._selectionBeginIndex == this._selectionEndIndex;
 			this._cursorSkin.visible = showCursor;
 			this._selectionSkin.visible = !showCursor;
-			var nativeStage:Stage = Starling.current.nativeStage;
-			//this is before the hasFocus check because the native stage may
-			//have lost focus when clicking on the text editor, so we may need
-			//to put it back in focus
-			if(!FocusManager.isEnabledForStage(this.stage) && !nativeStage.focus)
+			if(!FocusManager.isEnabledForStage(this.stage))
 			{
-				//something needs to be focused so that we can receive cut,
-				//copy, and paste events
-				nativeStage.focus = nativeStage;
+				//if there isn't a focus manager, we need to set focus manually
+				Starling.current.nativeStage.focus = this._nativeFocus;
 			}
-			//it shouldn't have changed, but let's be sure we're listening to
-			//the right object for cut/copy/paste events.
-			this.nativeFocus = nativeStage.focus;
+			this._nativeFocus.requestSoftKeyboard();
 			if(this._hasFocus)
 			{
 				return;
@@ -790,6 +867,7 @@ package feathers.controls.text
 			//that the focus manager can see, it's not being used anyway.
 			this._hasFocus = true;
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, stage_keyDownHandler);
+			this.addEventListener(starling.events.Event.ENTER_FRAME, hasFocus_enterFrameHandler);
 			this.dispatchEventWith(FeathersEventType.FOCUS_IN);
 		}
 
@@ -907,6 +985,19 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
+		protected function getCursorIndexFromSelectionRange():int
+		{
+			var cursorIndex:int = this._selectionEndIndex;
+			if(this.touchPointID >= 0 && this._selectionAnchorIndex >= 0 && this._selectionAnchorIndex == this._selectionEndIndex)
+			{
+				cursorIndex = this._selectionBeginIndex;
+			}
+			return cursorIndex;
+		}
+
+		/**
+		 * @private
+		 */
 		protected function positionSelectionBackground():void
 		{
 			var startX:Number = this.getXPositionOfCharIndex(this._selectionBeginIndex) - this._textSnapshotScrollX;
@@ -918,6 +1009,10 @@ package feathers.controls.text
 			if(endX < 0)
 			{
 				endX = 0;
+			}
+			else if(endX > this.actualWidth)
+			{
+				endX = this.actualWidth;
 			}
 			this._selectionSkin.x = startX;
 			this._selectionSkin.width = endX - startX;
@@ -979,9 +1074,27 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
+		protected function hasFocus_enterFrameHandler(event:starling.events.Event):void
+		{
+			var target:DisplayObject = this;
+			do
+			{
+				if(!target.hasVisibleArea)
+				{
+					this.clearFocus();
+					break;
+				}
+				target = target.parent;
+			}
+			while(target)
+		}
+
+		/**
+		 * @private
+		 */
 		protected function textEditor_touchHandler(event:TouchEvent):void
 		{
-			if(!this._isEnabled || !this._isEditable)
+			if(!this._isEnabled || (!this._isEditable && !this._isSelectable))
 			{
 				this.touchPointID = -1;
 				return;
@@ -1056,7 +1169,8 @@ package feathers.controls.text
 		 */
 		protected function stage_keyDownHandler(event:KeyboardEvent):void
 		{
-			if(!this._isEnabled || !this._isEditable || this.touchPointID >= 0)
+			if(!this._isEnabled || (!this._isEditable && !this._isSelectable) ||
+				this.touchPointID >= 0 || event.isDefaultPrevented())
 			{
 				return;
 			}
@@ -1172,17 +1286,23 @@ package feathers.controls.text
 			}
 			if(newIndex < 0)
 			{
-				var currentValue:String = this._text;
-				if(this._displayAsPassword)
-				{
-					currentValue = this._unmaskedText;
-				}
 				if(event.keyCode == Keyboard.ENTER)
 				{
 					this.dispatchEventWith(FeathersEventType.ENTER);
 					return;
 				}
-				else if(event.keyCode == Keyboard.DELETE)
+				//everything after this point edits the text, so return if the text
+				//editor isn't editable.
+				if(!this._isEditable)
+				{
+					return;
+				}
+				var currentValue:String = this._text;
+				if(this._displayAsPassword)
+				{
+					currentValue = this._unmaskedText;
+				}
+				if(event.keyCode == Keyboard.DELETE)
 				{
 					if(event.altKey || event.ctrlKey)
 					{
@@ -1215,21 +1335,11 @@ package feathers.controls.text
 						this.text = currentValue.substr(0, this._selectionBeginIndex - 1) + currentValue.substr(this._selectionEndIndex);
 					}
 				}
-				else if(charCode >= 32 && !event.ctrlKey && !event.altKey) //ignore control characters
-				{
-					if(!this._restrict || this._restrict.isCharacterAllowed(charCode))
-					{
-						this.replaceSelectedText(String.fromCharCode(charCode));
-					}
-					else
-					{
-						return;
-					}
-				}
 			}
 			if(newIndex >= 0)
 			{
 				this.validate();
+				this._selectionAnchorIndex = newIndex;
 				this.selectRange(newIndex, newIndex);
 			}
 		}
@@ -1237,34 +1347,63 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
-		protected function nativeStage_selectAllHandler(event:flash.events.Event):void
+		protected function nativeFocus_textInputHandler(event:TextEvent):void
 		{
 			if(!this._isEditable || !this._isEnabled)
 			{
 				return;
 			}
+			var text:String = event.text;
+			if(text === CARRIAGE_RETURN || text === LINE_FEED)
+			{
+				//ignore new lines
+				return;
+			}
+			var charCode:int = text.charCodeAt(0);
+			if(!this._restrict || this._restrict.isCharacterAllowed(charCode))
+			{
+				this.replaceSelectedText(text);
+			}
+		}
+
+		/**
+		 * @private
+		 */
+		protected function nativeFocus_selectAllHandler(event:flash.events.Event):void
+		{
+			if(!this._isEnabled || (!this._isEditable && !this._isSelectable))
+			{
+				return;
+			}
+			this._selectionAnchorIndex = 0;
 			this.selectRange(0, this._text.length);
 		}
 
 		/**
 		 * @private
 		 */
-		protected function nativeStage_cutHandler(event:flash.events.Event):void
+		protected function nativeFocus_cutHandler(event:flash.events.Event):void
 		{
-			if(!this._isEditable || !this._isEnabled || this._selectionBeginIndex == this._selectionEndIndex || this._displayAsPassword)
+			if(!this._isEnabled || (!this._isEditable && !this._isSelectable) ||
+				this._selectionBeginIndex == this._selectionEndIndex || this._displayAsPassword)
 			{
 				return;
 			}
 			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, this.getSelectedText());
+			if(!this._isEditable)
+			{
+				return;
+			}
 			this.deleteSelectedText();
 		}
 
 		/**
 		 * @private
 		 */
-		protected function nativeStage_copyHandler(event:flash.events.Event):void
+		protected function nativeFocus_copyHandler(event:flash.events.Event):void
 		{
-			if(!this._isEditable || !this._isEnabled || this._selectionBeginIndex == this._selectionEndIndex || this._displayAsPassword)
+			if(!this._isEnabled || (!this._isEditable && !this._isSelectable) ||
+				this._selectionBeginIndex == this._selectionEndIndex || this._displayAsPassword)
 			{
 				return;
 			}
@@ -1274,13 +1413,18 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
-		protected function nativeStage_pasteHandler(event:flash.events.Event):void
+		protected function nativeFocus_pasteHandler(event:flash.events.Event):void
 		{
 			if(!this._isEditable || !this._isEnabled)
 			{
 				return;
 			}
 			var pastedText:String = Clipboard.generalClipboard.getData(ClipboardFormats.TEXT_FORMAT) as String;
+			if(pastedText === null)
+			{
+				//the clipboard doesn't contain any text to paste
+				return;
+			}
 			if(this._restrict)
 			{
 				pastedText = this._restrict.filterText(pastedText);

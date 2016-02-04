@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -45,7 +45,20 @@ package feathers.core
 		public function ValidationQueue(starling:Starling)
 		{
 			this._starling = starling;
+			try
+			{
+				//strangely hasOwnProperty() and "insertAt" in this._queue don't
+				//work in this case. it will throw a runtime error in versions
+				//of the runtime before 19, though.
+				this._queue["insertAt"];
+			}
+			catch(error:ReferenceError)
+			{
+				this._hasInsertAt = false;
+			}
 		}
+		
+		private var _hasInsertAt:Boolean = true;
 
 		private var _starling:Starling;
 
@@ -127,6 +140,10 @@ package feathers.core
 				{
 					currentQueue[queueLength] = control;
 				}
+				else if(this._hasInsertAt)
+				{
+					currentQueue["insertAt"](i, control);
+				}
 				else
 				{
 					currentQueue.splice(i, 0, control);
@@ -143,7 +160,7 @@ package feathers.core
 		 */
 		public function advanceTime(time:Number):void
 		{
-			if(this._isValidating)
+			if(this._isValidating || !this._starling.contextValid)
 			{
 				return;
 			}
@@ -157,6 +174,11 @@ package feathers.core
 			while(this._queue.length > 0) //rechecking length after the shift
 			{
 				var item:IValidating = this._queue.shift();
+				if(item.depth < 0)
+				{
+					//skip items that are no longer on the display list
+					continue;
+				}
 				item.validate();
 			}
 			var temp:Vector.<IValidating> = this._queue;

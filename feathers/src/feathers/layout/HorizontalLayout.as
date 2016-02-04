@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -582,46 +582,6 @@ package feathers.layout
 		/**
 		 * @private
 		 */
-		protected var _manageVisibility:Boolean = false;
-
-		/**
-		 * Determines if items will be set invisible if they are outside the
-		 * view port. If <code>true</code>, you will not be able to manually
-		 * change the <code>visible</code> property of any items in the layout.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.0. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.
-		 * Originally, the <code>manageVisibility</code> property could be used
-		 * to improve performance of non-virtual layouts by hiding items that
-		 * were outside the view port. However, other performance improvements
-		 * have made it so that setting <code>manageVisibility</code> can now
-		 * sometimes hurt performance instead of improving it.</p>
-		 *
-		 * @default false
-		 */
-		public function get manageVisibility():Boolean
-		{
-			return this._manageVisibility;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set manageVisibility(value:Boolean):void
-		{
-			if(this._manageVisibility == value)
-			{
-				return;
-			}
-			this._manageVisibility = value;
-			this.dispatchEventWith(Event.CHANGE);
-		}
-
-		/**
-		 * @private
-		 */
 		protected var _beforeVirtualizedItemCount:int = 0;
 
 		/**
@@ -867,7 +827,7 @@ package feathers.layout
 		 */
 		public function get requiresLayoutOnScroll():Boolean
 		{
-			return this._useVirtualLayout || this._manageVisibility;
+			return this._useVirtualLayout;
 		}
 
 		/**
@@ -955,6 +915,10 @@ package feathers.layout
 			this._discoveredItemsCache.length = 0;
 			var discoveredItemsCacheLastIndex:int = 0;
 
+			//if there are no items in layout, then we don't want to subtract
+			//any gap when calculating the total width, so default to 0.
+			var gap:Number = 0;
+
 			//this first loop sets the x position of items, and it calculates
 			//the total width of all items
 			for(var i:int = 0; i < itemCount; i++)
@@ -966,7 +930,7 @@ package feathers.layout
 
 				//pick the gap that will follow this item. the first and second
 				//to last items may have different gaps.
-				var gap:Number = this._gap;
+				gap = this._gap;
 				if(hasFirstGap && iNormalized == 0)
 				{
 					gap = this._firstGap;
@@ -1109,7 +1073,7 @@ package feathers.layout
 			}
 
 			//this is the total width of all items
-			var totalWidth:Number = positionX - this._gap + this._paddingRight - boundsX;
+			var totalWidth:Number = positionX - gap + this._paddingRight - boundsX;
 			//the available width is the width of the viewport. if the explicit
 			//width is NaN, we need to calculate the viewport width ourselves
 			//based on the total width of all items.
@@ -1223,18 +1187,21 @@ package feathers.layout
 					}
 					//handle all other vertical alignment values (we handled
 					//justify already). the y position of all items is set here.
+					var verticalAlignHeight:Number = availableHeight;
+					if(totalHeight > verticalAlignHeight)
+					{
+						verticalAlignHeight = totalHeight;
+					}
 					switch(this._verticalAlign)
 					{
 						case VERTICAL_ALIGN_BOTTOM:
 						{
-							item.y = item.pivotY + boundsY + availableHeight - this._paddingBottom - item.height;
+							item.y = item.pivotY + boundsY + verticalAlignHeight - this._paddingBottom - item.height;
 							break;
 						}
 						case VERTICAL_ALIGN_MIDDLE:
 						{
-							//round to the nearest pixel when dividing by 2 to
-							//align in the middle
-							item.y = item.pivotY + boundsY + this._paddingTop + Math.round((availableHeight - this._paddingTop - this._paddingBottom - item.height) / 2);
+							item.y = item.pivotY + boundsY + this._paddingTop + Math.round((verticalAlignHeight - this._paddingTop - this._paddingBottom - item.height) / 2);
 							break;
 						}
 						default: //top
@@ -1242,11 +1209,6 @@ package feathers.layout
 							item.y = item.pivotY + boundsY + this._paddingTop;
 						}
 					}
-				}
-
-				if(this._manageVisibility)
-				{
-					item.visible = ((item.x - item.pivotX + item.width) >= (boundsX + scrollX)) && ((item.x - item.pivotX) < (scrollX + availableWidth));
 				}
 			}
 			//we don't want to keep a reference to any of the items, so clear
@@ -1606,8 +1568,11 @@ package feathers.layout
 			{
 				if(this._hasVariableItemDimensions)
 				{
-					//we know it will be cached in the call to calculateMaxScrollXOfIndex()
 					var itemWidth:Number = this._widthCache[index];
+					if(itemWidth !== itemWidth)
+					{
+						itemWidth = this._typicalItem.width;
+					}
 				}
 				else
 				{
@@ -1659,25 +1624,28 @@ package feathers.layout
 			{
 				if(this._hasVariableItemDimensions)
 				{
-					//we know it will be cached in the call to calculateMaxScrollXOfIndex()
-					var lastItemWidth:Number = this._widthCache[index];
+					var itemWidth:Number = this._widthCache[index];
+					if(itemWidth !== itemWidth)
+					{
+						itemWidth = this._typicalItem.width;
+					}
 				}
 				else
 				{
-					lastItemWidth = this._typicalItem.width;
+					itemWidth = this._typicalItem.width;
 				}
 			}
 			else
 			{
-				lastItemWidth = items[index].width;
+				itemWidth = items[index].width;
 			}
 			if(this._scrollPositionHorizontalAlign == HORIZONTAL_ALIGN_CENTER)
 			{
-				maxScrollX -= Math.round((width - lastItemWidth) / 2);
+				maxScrollX -= Math.round((width - itemWidth) / 2);
 			}
 			else if(this._scrollPositionHorizontalAlign == HORIZONTAL_ALIGN_RIGHT)
 			{
-				maxScrollX -= (width - lastItemWidth);
+				maxScrollX -= (width - itemWidth);
 			}
 			result.x = maxScrollX;
 			result.y = 0;
@@ -1742,12 +1710,24 @@ package feathers.layout
 			{
 				this._typicalItem.width = this._typicalItemWidth;
 			}
+			var hasSetHeight:Boolean = false;
 			if(this._verticalAlign == VERTICAL_ALIGN_JUSTIFY &&
 				justifyHeight === justifyHeight) //!isNaN
 			{
+				hasSetHeight = true;
 				this._typicalItem.height = justifyHeight;
 			}
-			else if(this._resetTypicalItemDimensionsOnMeasure)
+			else if(this._typicalItem is ILayoutDisplayObject)
+			{
+				var layoutItem:ILayoutDisplayObject = ILayoutDisplayObject(this._typicalItem);
+				var layoutData:VerticalLayoutData = layoutItem.layoutData as VerticalLayoutData;
+				if(layoutData && layoutData.percentHeight === layoutData.percentHeight)
+				{
+					hasSetHeight = true;
+					this._typicalItem.height = justifyHeight * layoutData.percentHeight / 100;
+				}
+			}
+			if(!hasSetHeight && this._resetTypicalItemDimensionsOnMeasure)
 			{
 				this._typicalItem.height = this._typicalItemHeight;
 			}
@@ -1917,6 +1897,13 @@ package feathers.layout
 						}
 					}
 					layoutItem.width = itemWidth;
+					if(layoutItem is IValidating)
+					{
+						//changing the width of the item may cause its height
+						//to change, so we need to validate. the height is
+						//needed for measurement.
+						IValidating(layoutItem).validate();
+					}
 				}
 			}
 			while(needsAnotherPass)

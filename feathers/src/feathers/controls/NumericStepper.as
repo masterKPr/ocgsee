@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -8,7 +8,8 @@ accordance with the terms of the accompanying license agreement.
 package feathers.controls
 {
 	import feathers.core.FeathersControl;
-	import feathers.core.IFocusDisplayObject;
+	import feathers.core.INativeFocusOwner;
+	import feathers.core.ITextBaselineControl;
 	import feathers.core.PropertyProxy;
 	import feathers.events.ExclusiveTouch;
 	import feathers.events.FeathersEventType;
@@ -17,6 +18,7 @@ package feathers.controls
 	import feathers.utils.math.roundToNearest;
 	import feathers.utils.math.roundToPrecision;
 
+	import flash.display.InteractiveObject;
 	import flash.events.TimerEvent;
 	import flash.ui.Keyboard;
 	import flash.utils.Timer;
@@ -54,8 +56,8 @@ package feathers.controls
 	 * Select a value between a minimum and a maximum by using increment and
 	 * decrement buttons or typing in a value in a text input.
 	 *
-	 * <p>The following example sets the stepper's values and listens for when
-	 * when the value changes:</p>
+	 * <p>The following example sets the stepper's range and listens for when
+	 * the value changes:</p>
 	 *
 	 * <listing version="3.0">
 	 * var stepper:NumericStepper = new NumericStepper();
@@ -68,7 +70,7 @@ package feathers.controls
 	 *
 	 * @see ../../../help/numeric-stepper.html How to use the Feathers NumericStepper component
 	 */
-	public class NumericStepper extends FeathersControl implements IRange, IFocusDisplayObject
+	public class NumericStepper extends FeathersControl implements IRange, INativeFocusOwner, ITextBaselineControl
 	{
 		/**
 		 * @private
@@ -94,18 +96,6 @@ package feathers.controls
 		public static const DEFAULT_CHILD_STYLE_NAME_DECREMENT_BUTTON:String = "feathers-numeric-stepper-decrement-button";
 
 		/**
-		 * DEPRECATED: Replaced by <code>NumericStepper.DEFAULT_CHILD_STYLE_NAME_DECREMENT_BUTTON</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see NumericStepper#DEFAULT_CHILD_STYLE_NAME_DECREMENT_BUTTON
-		 */
-		public static const DEFAULT_CHILD_NAME_DECREMENT_BUTTON:String = DEFAULT_CHILD_STYLE_NAME_DECREMENT_BUTTON;
-
-		/**
 		 * The default value added to the <code>styleNameList</code> of the increment
 		 * button.
 		 *
@@ -114,36 +104,12 @@ package feathers.controls
 		public static const DEFAULT_CHILD_STYLE_NAME_INCREMENT_BUTTON:String = "feathers-numeric-stepper-increment-button";
 
 		/**
-		 * DEPRECATED: Replaced by <code>NumericStepper.DEFAULT_CHILD_STYLE_NAME_INCREMENT_BUTTON</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see NumericStepper#DEFAULT_CHILD_STYLE_NAME_INCREMENT_BUTTON
-		 */
-		public static const DEFAULT_CHILD_NAME_INCREMENT_BUTTON:String = DEFAULT_CHILD_STYLE_NAME_INCREMENT_BUTTON;
-
-		/**
 		 * The default value added to the <code>styleNameList</code> of the text
 		 * input.
 		 *
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const DEFAULT_CHILD_STYLE_NAME_TEXT_INPUT:String = "feathers-numeric-stepper-text-input";
-
-		/**
-		 * DEPRECATED: Replaced by <code>NumericStepper.DEFAULT_CHILD_STYLE_NAME_TEXT_INPUT</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see NumericStepper#DEFAULT_CHILD_STYLE_NAME_TEXT_INPUT
-		 */
-		public static const DEFAULT_CHILD_NAME_TEXT_INPUT:String = DEFAULT_CHILD_STYLE_NAME_TEXT_INPUT;
 
 		/**
 		 * The decrement button will be placed on the left side of the text
@@ -229,29 +195,6 @@ package feathers.controls
 		protected var decrementButtonStyleName:String = DEFAULT_CHILD_STYLE_NAME_DECREMENT_BUTTON;
 
 		/**
-		 * DEPRECATED: Replaced by <code>decrementButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #decrementButtonStyleName
-		 */
-		protected function get decrementButtonName():String
-		{
-			return this.decrementButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set decrementButtonName(value:String):void
-		{
-			this.decrementButtonStyleName = value;
-		}
-
-		/**
 		 * The value added to the <code>styleNameList</code> of the increment
 		 * button. This variable is <code>protected</code> so that sub-classes
 		 * can customize the increment button style name in their constructors
@@ -267,29 +210,6 @@ package feathers.controls
 		protected var incrementButtonStyleName:String = DEFAULT_CHILD_STYLE_NAME_INCREMENT_BUTTON;
 
 		/**
-		 * DEPRECATED: Replaced by <code>incrementButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #incrementButtonStyleName
-		 */
-		protected function get incrementButtonName():String
-		{
-			return this.incrementButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set incrementButtonName(value:String):void
-		{
-			this.incrementButtonStyleName = value;
-		}
-
-		/**
 		 * The value added to the <code>styleNameList</code> of the text input.
 		 * This variable is <code>protected</code> so that sub-classes can
 		 * customize the text input style name in their constructors instead of
@@ -303,29 +223,6 @@ package feathers.controls
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		protected var textInputStyleName:String = DEFAULT_CHILD_STYLE_NAME_TEXT_INPUT;
-
-		/**
-		 * DEPRECATED: Replaced by <code>textInputStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #textInputStyleName
-		 */
-		protected function get textInputName():String
-		{
-			return this.textInputStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set textInputName(value:String):void
-		{
-			this.textInputStyleName = value;
-		}
 
 		/**
 		 * The decrement button sub-component.
@@ -365,6 +262,22 @@ package feathers.controls
 		override protected function get defaultStyleProvider():IStyleProvider
 		{
 			return NumericStepper.globalStyleProvider;
+		}
+
+		/**
+		 * A text input's text editor may be an <code>INativeFocusOwner</code>,
+		 * so we need to return the value of its <code>nativeFocus</code>
+		 * property.
+		 *
+		 * @see feathers.core.INativeFocusOwner
+		 */
+		public function get nativeFocus():InteractiveObject
+		{
+			if(this.textInput)
+			{
+				return this.textInput.nativeFocus;
+			}
+			return null;
 		}
 
 		/**
@@ -880,38 +793,15 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customDecrementButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customDecrementButtonStyleName
-		 */
-		public function get customDecrementButtonName():String
-		{
-			return this.customDecrementButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customDecrementButtonName(value:String):void
-		{
-			this.customDecrementButtonStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _decrementButtonProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to the numeric stepper's
-		 * decrement button sub-component. The decrement button is a
-		 * <code>feathers.controls.Button</code> instance that is created by
-		 * <code>decrementButtonFactory</code>.
+		 * An object that stores properties for the numeric stepper's decrement
+		 * button sub-component, and the properties will be passed down to the
+		 * decrement button when the numeric stepper validates. For a list of
+		 * available properties, refer to <a href="Button.html"><code>feathers.controls.Button</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1111,38 +1001,15 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customIncrementButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customIncrementButtonStyleName
-		 */
-		public function get customIncrementButtonName():String
-		{
-			return this.customIncrementButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customIncrementButtonName(value:String):void
-		{
-			this.customIncrementButtonStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _incrementButtonProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to the numeric stepper's
-		 * increment button sub-component. The increment button is a
-		 * <code>feathers.controls.Button</code> instance that is created by
-		 * <code>incrementButtonFactory</code>.
+		 * An object that stores properties for the numeric stepper's increment
+		 * button sub-component, and the properties will be passed down to the
+		 * increment button when the numeric stepper validates. For a list of
+		 * available properties, refer to <a href="Button.html"><code>feathers.controls.Button</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1341,38 +1208,15 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customTextInputStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customTextInputStyleName
-		 */
-		public function get customTextInputName():String
-		{
-			return this.customTextInputStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customTextInputName(value:String):void
-		{
-			this.customTextInputStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _textInputProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to the numeric stepper's
-		 * text input sub-component. The text input is a
-		 * <code>feathers.controls.TextInput</code> instance that is created by
-		 * <code>textInputFactory</code>.
+		 * An object that stores properties for the numeric stepper's text
+		 * input sub-component, and the properties will be passed down to the
+		 * text input when the numeric stepper validates. For a list of
+		 * available properties, refer to <a href="TextInput.html"><code>feathers.controls.TextInput</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1436,6 +1280,18 @@ package feathers.controls
 				this._textInputProperties.addOnChangeCallback(childProperties_onChange);
 			}
 			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get baseline():Number
+		{
+			if(!this.textInput)
+			{
+				return this.scaledActualHeight;
+			}
+			return this.scaleY * (this.textInput.y + this.textInput.baseline);
 		}
 
 		/**
@@ -1738,7 +1594,10 @@ package feathers.controls
 			this.textInput.styleNameList.add(textInputStyleName);
 			this.textInput.addEventListener(FeathersEventType.ENTER, textInput_enterHandler);
 			this.textInput.addEventListener(FeathersEventType.FOCUS_OUT, textInput_focusOutHandler);
-			this.textInput.isFocusEnabled = this._focusManager == null;
+			//while we're setting isFocusEnabled to false on the text input when
+			//we have a focus manager, we'll still be able to call setFocus() on
+			//the text input manually.
+			this.textInput.isFocusEnabled = !this._focusManager;
 			this.addChild(this.textInput);
 		}
 
@@ -2084,18 +1943,26 @@ package feathers.controls
 		{
 			if(event.keyCode == Keyboard.HOME)
 			{
+				//prevent default so that text input selection doesn't change
+				event.preventDefault();
 				this.toMinimum();
 			}
 			else if(event.keyCode == Keyboard.END)
 			{
+				//prevent default so that text input selection doesn't change
+				event.preventDefault();
 				this.toMaximum();
 			}
 			else if(event.keyCode == Keyboard.UP)
 			{
+				//prevent default so that text input selection doesn't change
+				event.preventDefault();
 				this.increment();
 			}
 			else if(event.keyCode == Keyboard.DOWN)
 			{
+				//prevent default so that text input selection doesn't change
+				event.preventDefault();
 				this.decrement();
 			}
 		}

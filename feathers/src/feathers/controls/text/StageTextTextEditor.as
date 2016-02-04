@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -8,9 +8,12 @@ accordance with the terms of the accompanying license agreement.
 package feathers.controls.text
 {
 	import feathers.core.FeathersControl;
+	import feathers.core.FocusManager;
 	import feathers.core.IMultilineTextEditor;
 	import feathers.events.FeathersEventType;
+	import feathers.skins.IStyleProvider;
 	import feathers.text.StageTextField;
+	import feathers.utils.display.stageToStarling;
 	import feathers.utils.geom.matrixToScaleX;
 	import feathers.utils.geom.matrixToScaleY;
 
@@ -20,8 +23,10 @@ package feathers.controls.text
 	import flash.events.KeyboardEvent;
 	import flash.events.SoftKeyboardEvent;
 	import flash.geom.Matrix;
+	import flash.geom.Matrix3D;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.geom.Vector3D;
 	import flash.system.Capabilities;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -40,6 +45,7 @@ package feathers.controls.text
 	import starling.textures.ConcreteTexture;
 	import starling.textures.Texture;
 	import starling.utils.MatrixUtil;
+	import starling.utils.SystemUtil;
 
 	/**
 	 * Dispatched when the text property changes.
@@ -178,21 +184,45 @@ package feathers.controls.text
 	[Event(name="softKeyboardDeactivate",type="starling.events.Event")]
 
 	/**
-	 * A Feathers text editor that uses the native <code>flash.text.StageText</code>
-	 * class in Adobe AIR, and the custom <code>feathers.text.StageTextField</code>
-	 * class (that simulates <code>StageText</code> using
-	 * <code>flash.text.TextField</code>) in Adobe Flash Player.
+	 * Text that may be edited at runtime by the user with the
+	 * <code>TextInput</code> component, rendered with the native
+	 * <code>flash.text.StageText</code> class in Adobe AIR and the custom
+	 * <code>feathers.text.StageTextField</code> class in Adobe Flash Player
+	 * (<code>StageTextField</code> simulates <code>StageText</code> using
+	 * <code>flash.text.TextField</code>). When not in focus, the
+	 * <code>StageText</code> (or <code>StageTextField</code>) is drawn to
+	 * <code>BitmapData</code> and uploaded to a texture on the GPU. Textures
+	 * are managed internally by this component, and they will be automatically
+	 * disposed when the component is disposed.
 	 *
-	 * <p>Note: Due to quirks with how the runtime manages focus with
-	 * <code>StageText</code>, <code>StageTextTextEditor</code> is not
-	 * compatible with the Feathers <code>FocusManager</code>.</p>
+	 * <p>The following example shows how to use
+	 * <code>StageTextTextEditor</code> with a <code>TextInput</code>:</p>
 	 *
-	 * @see ../../../help/text-editors.html Introduction to Feathers text editors
+	 * <listing version="3.0">
+	 * var input:TextInput = new TextInput();
+	 * input.textEditorFactory = function():ITextEditor
+	 * {
+	 *     return new StageTextTextEditor();
+	 * };
+	 * this.addChild( input );</listing>
+	 *
+	 * @see feathers.controls.TextInput
+	 * @see ../../../../help/text-editors.html Introduction to Feathers text editors
 	 * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/text/StageText.html flash.text.StageText
 	 * @see feathers.text.StageTextField
 	 */
 	public class StageTextTextEditor extends FeathersControl implements IMultilineTextEditor
 	{
+		/**
+		 * @private
+		 */
+		private static var HELPER_MATRIX3D:Matrix3D;
+		
+		/**
+		 * @private
+		 */
+		private static var HELPER_POINT3D:Vector3D;
+		
 		/**
 		 * @private
 		 */
@@ -204,9 +234,13 @@ package feathers.controls.text
 		private static const HELPER_POINT:Point = new Point();
 
 		/**
-		 * @private
+		 * The default <code>IStyleProvider</code> for all <code>StageTextTextEditor</code>
+		 * components.
+		 *
+		 * @default null
+		 * @see feathers.core.FeathersControl#styleProvider
 		 */
-		protected static const INVALIDATION_FLAG_POSITION:String = "position";
+		public static var globalStyleProvider:IStyleProvider;
 
 		/**
 		 * Constructor.
@@ -221,33 +255,11 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
-		override public function set x(value:Number):void
+		override protected function get defaultStyleProvider():IStyleProvider
 		{
-			if(super.x == value)
-			{
-				return;
-			}
-			super.x = value;
-			//we need to know when the position changes to change the position
-			//of the StageText instance.
-			this.invalidate(INVALIDATION_FLAG_POSITION);
+			return globalStyleProvider;
 		}
-
-		/**
-		 * @private
-		 */
-		override public function set y(value:Number):void
-		{
-			if(super.y == value)
-			{
-				return;
-			}
-			super.y = value;
-			//we need to know when the position changes to change the position
-			//of the StageText instance.
-			this.invalidate(INVALIDATION_FLAG_POSITION);
-		}
-
+		
 		/**
 		 * The StageText instance. It's typed Object so that a replacement class
 		 * can be used in browser-based Flash Player.
@@ -547,16 +559,11 @@ package feathers.controls.text
 		protected var _displayAsPassword:Boolean = false;
 
 		/**
-		 * Indicates whether the text field is a password text field that hides
-		 * input characters using a substitute character.
+		 * <p>This property is managed by the <code>TextInput</code>.</p>
+		 * 
+		 * @copy feathers.controls.TextInput#displayAsPassword
 		 *
-		 * <p>In the following example, the text is displayed as a password:</p>
-		 *
-		 * <listing version="3.0">
-		 * textEditor.displayAsPassword = true;</listing>
-		 *
-		 * @default false
-		 *
+		 * @see feathers.controls.TextInput#displayAsPassword
 		 * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/text/StageText.html#displayAsPassword Full description of flash.text.StageText.displayAsPassword in Adobe's Flash Platform API Reference
 		 */
 		public function get displayAsPassword():Boolean
@@ -583,15 +590,11 @@ package feathers.controls.text
 		protected var _isEditable:Boolean = true;
 
 		/**
-		 * Determines if the text input is editable. If the text input is not
-		 * editable, it will still appear enabled.
+		 * <p>This property is managed by the <code>TextInput</code>.</p>
+		 * 
+		 * @copy feathers.controls.TextInput#isEditable
 		 *
-		 * <p>In the following example, the text is not editable:</p>
-		 *
-		 * <listing version="3.0">
-		 * textEditor.isEditable = false;</listing>
-		 *
-		 * @default true
+		 * @see feathers.controls.TextInput#isEditable
 		 */
 		public function get isEditable():Boolean
 		{
@@ -608,6 +611,36 @@ package feathers.controls.text
 				return;
 			}
 			this._isEditable = value;
+			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _isSelectable:Boolean = true;
+
+		/**
+		 * <p>This property is managed by the <code>TextInput</code>.</p>
+		 * 
+		 * @copy feathers.controls.TextInput#isSelectable
+		 *
+		 * @see feathers.controls.TextInput#isSelectable
+		 */
+		public function get isSelectable():Boolean
+		{
+			return this._isEditable;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set isSelectable(value:Boolean):void
+		{
+			if(this._isSelectable == value)
+			{
+				return;
+			}
+			this._isSelectable = value;
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 
@@ -809,18 +842,11 @@ package feathers.controls.text
 		protected var _maxChars:int = 0;
 
 		/**
-		 * Indicates the maximum number of characters that a user can enter into
-		 * the text editor. A script can insert more text than <code>maxChars</code>
-		 * allows. If <code>maxChars</code> equals zero, a user can enter an
-		 * unlimited amount of text into the text editor.
+		 * <p>This property is managed by the <code>TextInput</code>.</p>
+		 * 
+		 * @copy feathers.controls.TextInput#maxChars
 		 *
-		 * <p>In the following example, the maximum character count is changed:</p>
-		 *
-		 * <listing version="3.0">
-		 * textEditor.maxChars = 10;</listing>
-		 *
-		 * @default 0
-		 *
+		 * @see feathers.controls.TextInput#maxChars
 		 * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/text/StageText.html#maxChars Full description of flash.text.StageText.maxChars in Adobe's Flash Platform API Reference
 		 */
 		public function get maxChars():int
@@ -891,17 +917,11 @@ package feathers.controls.text
 		protected var _restrict:String;
 
 		/**
-		 * Restricts the set of characters that a user can enter into the text
-		 * field. Only user interaction is restricted; a script can put any text
-		 * into the text field.
+		 * <p>This property is managed by the <code>TextInput</code>.</p>
+		 * 
+		 * @copy feathers.controls.TextInput#restrict
 		 *
-		 * <p>In the following example, the text is restricted to numbers:</p>
-		 *
-		 * <listing version="3.0">
-		 * textEditor.restrict = "0-9";</listing>
-		 *
-		 * @default null
-		 *
+		 * @see feathers.controls.TextInput#restrict
 		 * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/text/StageText.html#restrict Full description of flash.text.StageText.restrict in Adobe's Flash Platform API Reference
 		 */
 		public function get restrict():String
@@ -1042,6 +1062,58 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
+		protected var _lastGlobalScaleX:Number = 0;
+
+		/**
+		 * @private
+		 */
+		protected var _lastGlobalScaleY:Number = 0;
+
+		/**
+		 * @private
+		 */
+		protected var _updateSnapshotOnScaleChange:Boolean = false;
+
+		/**
+		 * Refreshes the texture snapshot every time that the text editor is
+		 * scaled. Based on the scale in global coordinates, so scaling the
+		 * parent will require a new snapshot.
+		 *
+		 * <p>Warning: setting this property to true may result in reduced
+		 * performance because every change of the scale requires uploading a
+		 * new texture to the GPU. Use with caution. Consider setting this
+		 * property to false temporarily during animations that modify the
+		 * scale.</p>
+		 *
+		 * <p>In the following example, the snapshot will be updated when the
+		 * text editor is scaled:</p>
+		 *
+		 * <listing version="3.0">
+		 * textEditor.updateSnapshotOnScaleChange = true;</listing>
+		 *
+		 * @default false
+		 */
+		public function get updateSnapshotOnScaleChange():Boolean
+		{
+			return this._updateSnapshotOnScaleChange;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set updateSnapshotOnScaleChange(value:Boolean):void
+		{
+			if(this._updateSnapshotOnScaleChange == value)
+			{
+				return;
+			}
+			this._updateSnapshotOnScaleChange = value;
+			this.invalidate(INVALIDATION_FLAG_DATA);
+		}
+
+		/**
+		 * @private
+		 */
 		override public function dispose():void
 		{
 			if(this._measureTextField)
@@ -1072,59 +1144,28 @@ package feathers.controls.text
 		 */
 		override public function render(support:RenderSupport, parentAlpha:Number):void
 		{
-			var desktopGutterPositionOffset:Number = 0;
-			var desktopGutterDimensionsOffset:Number = 0;
-			if(this._stageTextIsTextField)
-			{
-				desktopGutterPositionOffset = 2;
-				desktopGutterDimensionsOffset = 4;
-			}
-			HELPER_POINT.x = HELPER_POINT.y = 0;
-			this.getTransformationMatrix(this.stage, HELPER_MATRIX);
-			MatrixUtil.transformCoords(HELPER_MATRIX, -desktopGutterPositionOffset, -desktopGutterPositionOffset, HELPER_POINT);
-			var starlingViewPort:Rectangle = Starling.current.viewPort;
-			var stageTextViewPort:Rectangle = this.stageText.viewPort;
-			if(!stageTextViewPort)
-			{
-				stageTextViewPort = new Rectangle();
-			}
-			var nativeScaleFactor:Number = 1;
-			if(Starling.current.supportHighResolutions)
-			{
-				nativeScaleFactor = Starling.current.nativeStage.contentsScaleFactor;
-			}
-			var scaleFactor:Number = Starling.contentScaleFactor / nativeScaleFactor;
-			stageTextViewPort.x = Math.round(starlingViewPort.x + (HELPER_POINT.x * scaleFactor));
-			stageTextViewPort.y = Math.round(starlingViewPort.y + (HELPER_POINT.y * scaleFactor));
-			this.stageText.viewPort = stageTextViewPort;
-
-			if(this.stageText.visible)
+			if(this.textSnapshot && this._updateSnapshotOnScaleChange)
 			{
 				this.getTransformationMatrix(this.stage, HELPER_MATRIX);
-				var globalScaleX:Number = matrixToScaleX(HELPER_MATRIX);
-				var globalScaleY:Number = matrixToScaleY(HELPER_MATRIX);
-				var smallerGlobalScale:Number = globalScaleX;
-				if(globalScaleY < globalScaleX)
+				if(matrixToScaleX(HELPER_MATRIX) != this._lastGlobalScaleX || matrixToScaleY(HELPER_MATRIX) != this._lastGlobalScaleY)
 				{
-					smallerGlobalScale = globalScaleY;
+					//the snapshot needs to be updated because the scale has
+					//changed since the last snapshot was taken.
+					this.invalidate(INVALIDATION_FLAG_SIZE);
+					this.validate();
 				}
-				//for some reason, we don't need to account for the native scale factor here
-				scaleFactor = Starling.contentScaleFactor;
-				var newFontSize:Number = this._fontSize * scaleFactor * smallerGlobalScale;
-				if(this.stageText.fontSize != newFontSize)
-				{
-					//we need to check if this value has changed because on iOS
-					//if displayAsPassword is set to true, the new character
-					//will not be shown if the font size changes. instead, it
-					//immediately changes to a bullet. (Github issue #881)
-					this.stageText.fontSize = newFontSize;
-				}
+			}
+			
+			//we'll skip this if the text field isn't visible to avoid running
+			//that code every frame.
+			if(this.stageText && this.stageText.visible)
+			{
+				this.refreshViewPortAndFontSize();
 			}
 
 			if(this.textSnapshot)
 			{
-				this.textSnapshot.x = Math.round(HELPER_MATRIX.tx) - HELPER_MATRIX.tx - desktopGutterPositionOffset;
-				this.textSnapshot.y = Math.round(HELPER_MATRIX.ty) - HELPER_MATRIX.ty - desktopGutterPositionOffset;
+				this.positionSnapshot();
 			}
 
 			super.render(support, parentAlpha);
@@ -1135,6 +1176,16 @@ package feathers.controls.text
 		 */
 		public function setFocus(position:Point = null):void
 		{
+			//setting the editable property of a StageText to false seems to be
+			//ignored on Android, so this is the workaround
+			if(!this._isEditable && SystemUtil.platform === "AND")
+			{
+				return;
+			}
+			if(!this._isEditable && !this._isSelectable)
+			{
+				return;
+			}
 			if(this.stage && !this.stageText.stage)
 			{
 				this.stageText.stage = Starling.current.nativeStage;
@@ -1215,7 +1266,11 @@ package feathers.controls.text
 			{
 				return;
 			}
-			Starling.current.nativeStage.focus = Starling.current.nativeStage;
+			//setting the focus to Starling.current.nativeStage doesn't work
+			//here, so we need to use null. on Android, if we give focus to the
+			//nativeStage, focus will be removed from the StageText, but the
+			//soft keyboard will incorrectly remain open.
+			Starling.current.nativeStage.focus = null;
 		}
 
 		/**
@@ -1331,7 +1386,7 @@ package feathers.controls.text
 
 			var oldIgnoreStageTextChanges:Boolean = this._ignoreStageTextChanges;
 			this._ignoreStageTextChanges = true;
-			if(stylesInvalid)
+			if(stateInvalid || stylesInvalid)
 			{
 				this.refreshStageTextProperties();
 			}
@@ -1429,18 +1484,20 @@ package feathers.controls.text
 			var stateInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_STATE);
 			var stylesInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_STYLES);
 			var dataInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_DATA);
-			var positionInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_POSITION);
 			var skinInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_SKIN);
 
-			if(positionInvalid || sizeInvalid || stylesInvalid || skinInvalid || stateInvalid)
+			if(sizeInvalid || stylesInvalid || skinInvalid || stateInvalid)
 			{
-				this.refreshViewPort();
+				this.refreshViewPortAndFontSize();
+				this.refreshMeasureTextFieldDimensions()
 				var viewPort:Rectangle = this.stageText.viewPort;
 				var textureRoot:ConcreteTexture = this.textSnapshot ? this.textSnapshot.texture.root : null;
-				this._needsNewTexture = this._needsNewTexture || !this.textSnapshot || viewPort.width != textureRoot.width || viewPort.height != textureRoot.height;
+				this._needsNewTexture = this._needsNewTexture || !this.textSnapshot ||
+					textureRoot.scale != Starling.contentScaleFactor ||
+					viewPort.width != textureRoot.width || viewPort.height != textureRoot.height;
 			}
 
-			if(!this._stageTextHasFocus && (stylesInvalid || dataInvalid || sizeInvalid || this._needsNewTexture))
+			if(!this._stageTextHasFocus && (stateInvalid || stylesInvalid || dataInvalid || sizeInvalid || this._needsNewTexture))
 			{
 				var hasText:Boolean = this._text.length > 0;
 				if(hasText)
@@ -1558,19 +1615,6 @@ package feathers.controls.text
 			this.stageText.displayAsPassword = this._displayAsPassword;
 			this.stageText.fontFamily = this._fontFamily;
 			this.stageText.fontPosture = this._fontPosture;
-
-			this.getTransformationMatrix(this.stage, HELPER_MATRIX);
-			var globalScaleX:Number = matrixToScaleX(HELPER_MATRIX);
-			var globalScaleY:Number = matrixToScaleY(HELPER_MATRIX);
-			var smallerGlobalScale:Number = globalScaleX;
-			if(globalScaleY < globalScaleX)
-			{
-				smallerGlobalScale = globalScaleY;
-			}
-			//for some reason, we don't need to account for the native scale factor here
-			var scaleFactor:Number = Starling.contentScaleFactor;
-			this.stageText.fontSize = this._fontSize * scaleFactor * smallerGlobalScale;
-
 			this.stageText.fontWeight = this._fontWeight;
 			this.stageText.locale = this._locale;
 			this.stageText.maxChars = this._maxChars;
@@ -1611,15 +1655,24 @@ package feathers.controls.text
 		 */
 		protected function texture_onRestore():void
 		{
-			this.refreshSnapshot();
-			if(this.textSnapshot)
+			if(this.textSnapshot.texture.scale != Starling.contentScaleFactor)
 			{
-				this.textSnapshot.visible = !this._stageTextHasFocus;
-				this.textSnapshot.alpha = this._text.length > 0 ? 1 : 0;
+				//if we've changed between scale factors, we need to recreate
+				//the texture to match the new scale factor.
+				this.invalidate(INVALIDATION_FLAG_SIZE);
 			}
-			if(!this._stageTextHasFocus)
+			else
 			{
-				this.stageText.visible = false;
+				this.refreshSnapshot();
+				if(this.textSnapshot)
+				{
+					this.textSnapshot.visible = !this._stageTextHasFocus;
+					this.textSnapshot.alpha = this._text.length > 0 ? 1 : 0;
+				}
+				if(!this._stageTextHasFocus)
+				{
+					this.stageText.visible = false;
+				}
 			}
 		}
 
@@ -1673,7 +1726,13 @@ package feathers.controls.text
 			var newTexture:Texture;
 			if(!this.textSnapshot || this._needsNewTexture)
 			{
-				newTexture = Texture.fromBitmapData(bitmapData, false, false, Starling.contentScaleFactor);
+				var scaleFactor:Number = Starling.contentScaleFactor;
+				//skip Texture.fromBitmapData() because we don't want
+				//it to create an onRestore function that will be
+				//immediately discarded for garbage collection. 
+				newTexture = Texture.empty(bitmapData.width / scaleFactor, bitmapData.height / scaleFactor,
+					true, false, false, scaleFactor);
+				newTexture.root.uploadBitmapData(bitmapData);
 				newTexture.root.onRestore = texture_onRestore;
 			}
 			if(!this.textSnapshot)
@@ -1697,10 +1756,24 @@ package feathers.controls.text
 				}
 			}
 			this.getTransformationMatrix(this.stage, HELPER_MATRIX);
-			this.textSnapshot.scaleX = 1 / matrixToScaleX(HELPER_MATRIX);
-			this.textSnapshot.scaleY = 1 / matrixToScaleY(HELPER_MATRIX);
+			var globalScaleX:Number = matrixToScaleX(HELPER_MATRIX);
+			var globalScaleY:Number = matrixToScaleY(HELPER_MATRIX);
+			if(this._updateSnapshotOnScaleChange)
+			{
+				this.textSnapshot.scaleX = 1 / globalScaleX;
+				this.textSnapshot.scaleY = 1 / globalScaleY;
+				this._lastGlobalScaleX = globalScaleX;
+				this._lastGlobalScaleY = globalScaleY;
+			}
+			else
+			{
+				this.textSnapshot.scaleX = 1;
+				this.textSnapshot.scaleY = 1;
+			}
 			if(nativeScaleFactor > 1 && bitmapData.width == viewPort.width)
 			{
+				//when we fall back to using a snapshot that is half size on
+				//older runtimes, we need to scale it up.
 				this.textSnapshot.scaleX *= nativeScaleFactor;
 				this.textSnapshot.scaleY *= nativeScaleFactor;
 			}
@@ -1711,15 +1784,8 @@ package feathers.controls.text
 		/**
 		 * @private
 		 */
-		protected function refreshViewPort():void
+		protected function refreshViewPortAndFontSize():void
 		{
-			var starlingViewPort:Rectangle = Starling.current.viewPort;
-			var stageTextViewPort:Rectangle = this.stageText.viewPort;
-			if(!stageTextViewPort)
-			{
-				stageTextViewPort = new Rectangle();
-			}
-
 			HELPER_POINT.x = HELPER_POINT.y = 0;
 			var desktopGutterPositionOffset:Number = 0;
 			var desktopGutterDimensionsOffset:Number = 0;
@@ -1729,15 +1795,44 @@ package feathers.controls.text
 				desktopGutterDimensionsOffset = 4;
 			}
 			this.getTransformationMatrix(this.stage, HELPER_MATRIX);
-			var globalScaleX:Number = matrixToScaleX(HELPER_MATRIX);
-			var globalScaleY:Number = matrixToScaleY(HELPER_MATRIX);
-			MatrixUtil.transformCoords(HELPER_MATRIX, -desktopGutterPositionOffset, -desktopGutterPositionOffset, HELPER_POINT);
+			if(this._stageTextHasFocus || this._updateSnapshotOnScaleChange)
+			{
+				var globalScaleX:Number = matrixToScaleX(HELPER_MATRIX);
+				var globalScaleY:Number = matrixToScaleY(HELPER_MATRIX);
+				var smallerGlobalScale:Number = globalScaleX;
+				if(globalScaleY < smallerGlobalScale)
+				{
+					smallerGlobalScale = globalScaleY;
+				}
+			}
+			else
+			{
+				globalScaleX = 1;
+				globalScaleY = 1;
+				smallerGlobalScale = 1;
+			}
+			if(this.is3D)
+			{
+				HELPER_MATRIX3D = this.getTransformationMatrix3D(this.stage, HELPER_MATRIX3D);
+				HELPER_POINT3D = MatrixUtil.transformCoords3D(HELPER_MATRIX3D, -desktopGutterPositionOffset, -desktopGutterPositionOffset, 0, HELPER_POINT3D);
+				HELPER_POINT.setTo(HELPER_POINT3D.x, HELPER_POINT3D.y);
+			}
+			else
+			{
+				MatrixUtil.transformCoords(HELPER_MATRIX, -desktopGutterPositionOffset, -desktopGutterPositionOffset, HELPER_POINT);
+			}
 			var nativeScaleFactor:Number = 1;
 			if(Starling.current.supportHighResolutions)
 			{
 				nativeScaleFactor = Starling.current.nativeStage.contentsScaleFactor;
 			}
 			var scaleFactor:Number = Starling.contentScaleFactor / nativeScaleFactor;
+			var starlingViewPort:Rectangle = Starling.current.viewPort;
+			var stageTextViewPort:Rectangle = this.stageText.viewPort;
+			if(!stageTextViewPort)
+			{
+				stageTextViewPort = new Rectangle();
+			}
 			stageTextViewPort.x = Math.round(starlingViewPort.x + HELPER_POINT.x * scaleFactor);
 			stageTextViewPort.y = Math.round(starlingViewPort.y + HELPER_POINT.y * scaleFactor);
 			var viewPortWidth:Number = Math.round((this.actualWidth + desktopGutterDimensionsOffset) * scaleFactor * globalScaleX);
@@ -1756,9 +1851,45 @@ package feathers.controls.text
 			stageTextViewPort.height = viewPortHeight;
 			this.stageText.viewPort = stageTextViewPort;
 
+			//for some reason, we don't need to account for the native scale factor here
+			scaleFactor = Starling.contentScaleFactor;
+			//StageText's fontSize property is an int, so we need to
+			//specifically avoid using Number here.
+			var newFontSize:int = this._fontSize * scaleFactor * smallerGlobalScale;
+			if(this.stageText.fontSize != newFontSize)
+			{
+				//we need to check if this value has changed because on iOS
+				//if displayAsPassword is set to true, the new character
+				//will not be shown if the font size changes. instead, it
+				//immediately changes to a bullet. (Github issue #881)
+				this.stageText.fontSize = newFontSize;
+			}
+			
+		}
+
+		/**
+		 * @private
+		 */
+		protected function refreshMeasureTextFieldDimensions():void
+		{
 			//the +4 is accounting for the TextField gutter
 			this._measureTextField.width = this.actualWidth + 4;
 			this._measureTextField.height = this.actualHeight;
+		}
+
+		/**
+		 * @private
+		 */
+		protected function positionSnapshot():void
+		{
+			this.getTransformationMatrix(this.stage, HELPER_MATRIX);
+			var desktopGutterPositionOffset:Number = 0;
+			if(this._stageTextIsTextField)
+			{
+				desktopGutterPositionOffset = 2;
+			}
+			this.textSnapshot.x = Math.round(HELPER_MATRIX.tx) - HELPER_MATRIX.tx - desktopGutterPositionOffset;
+			this.textSnapshot.y = Math.round(HELPER_MATRIX.ty) - HELPER_MATRIX.ty - desktopGutterPositionOffset;
 		}
 
 		/**
@@ -1816,6 +1947,16 @@ package feathers.controls.text
 			this.stageText.addEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_DEACTIVATE, stageText_softKeyboardDeactivateHandler);
 			this.stageText.addEventListener(flash.events.Event.COMPLETE, stageText_completeHandler);
 			this.invalidate();
+		}
+
+		/**
+		 * @private
+		 */
+		protected function dispatchKeyFocusChangeEvent(event:KeyboardEvent):void
+		{
+			var starling:Starling = stageToStarling(this.stage);
+			var focusEvent:FocusEvent = new FocusEvent(FocusEvent.KEY_FOCUS_CHANGE, true, false, null, event.shiftKey, event.keyCode);
+			starling.nativeStage.dispatchEvent(focusEvent);
 		}
 
 		/**
@@ -1926,6 +2067,11 @@ package feathers.controls.text
 				event.preventDefault();
 				Starling.current.nativeStage.focus = Starling.current.nativeStage;
 			}
+			if(event.keyCode === Keyboard.TAB && FocusManager.isEnabledForStage(this.stage))
+			{
+				event.preventDefault();
+				this.dispatchKeyFocusChangeEvent(event);
+			}
 		}
 
 		/**
@@ -1934,6 +2080,10 @@ package feathers.controls.text
 		protected function stageText_keyUpHandler(event:KeyboardEvent):void
 		{
 			if(!this._multiline && (event.keyCode == Keyboard.ENTER || event.keyCode == Keyboard.NEXT))
+			{
+				event.preventDefault();
+			}
+			if(event.keyCode === Keyboard.TAB && FocusManager.isEnabledForStage(this.stage))
 			{
 				event.preventDefault();
 			}

@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -8,6 +8,7 @@ accordance with the terms of the accompanying license agreement.
 package feathers.controls.text
 {
 	import feathers.controls.Scroller;
+	import feathers.skins.IStyleProvider;
 	import feathers.utils.geom.matrixToRotation;
 	import feathers.utils.geom.matrixToScaleX;
 	import feathers.utils.geom.matrixToScaleY;
@@ -42,6 +43,15 @@ package feathers.controls.text
 		private static const HELPER_POINT:Point = new Point();
 
 		/**
+		 * The default <code>IStyleProvider</code> for all <code>TextFieldTextEditorViewPort</code>
+		 * components.
+		 *
+		 * @default null
+		 * @see feathers.core.FeathersControl#styleProvider
+		 */
+		public static var globalStyleProvider:IStyleProvider;
+
+		/**
 		 * Constructor.
 		 */
 		public function TextFieldTextEditorViewPort()
@@ -50,6 +60,14 @@ package feathers.controls.text
 			this.multiline = true;
 			this.wordWrap = true;
 			this.resetScrollOnFocusOut = false;
+		}
+
+		/**
+		 * @private
+		 */
+		override protected function get defaultStyleProvider():IStyleProvider
+		{
+			return globalStyleProvider;
 		}
 
 		/**
@@ -314,6 +332,14 @@ package feathers.controls.text
 		}
 
 		/**
+		 * @private
+		 */
+		override public function get baseline():Number
+		{
+			return super.baseline + this._paddingTop + this._verticalScrollPosition;
+		}
+
+		/**
 		 * Quickly sets all padding properties to the same value. The
 		 * <code>padding</code> getter always returns the value of
 		 * <code>paddingTop</code>, but the other padding values may be
@@ -497,6 +523,17 @@ package feathers.controls.text
 			{
 				newHeight += 4;
 			}
+			if(this._visibleHeight === this._visibleHeight) //!isNaN
+			{
+				if(newHeight < this._visibleHeight)
+				{
+					newHeight = this._visibleHeight;
+				}
+			}
+			else if(newHeight < this._minVisibleHeight)
+			{
+				newHeight = this._minVisibleHeight;
+			}
 
 			result.x = newWidth;
 			result.y = newHeight;
@@ -545,22 +582,31 @@ package feathers.controls.text
 
 			this._textFieldOffsetX = 0;
 			this._textFieldOffsetY = 0;
-			this._textFieldClipRect.x = 0;
-			this._textFieldClipRect.y = 0;
+			this._textFieldSnapshotClipRect.x = 0;
+			this._textFieldSnapshotClipRect.y = 0;
 
-			this.getTransformationMatrix(this.stage, HELPER_MATRIX);
-			var clipWidth:Number = textFieldWidth * Starling.contentScaleFactor * matrixToScaleX(HELPER_MATRIX);
+			var scaleFactor:Number = Starling.contentScaleFactor;
+			var clipWidth:Number = textFieldWidth * scaleFactor;
+			if(this._updateSnapshotOnScaleChange)
+			{
+				this.getTransformationMatrix(this.stage, HELPER_MATRIX);
+				clipWidth *= matrixToScaleX(HELPER_MATRIX);
+			}
 			if(clipWidth < 0)
 			{
 				clipWidth = 0;
 			}
-			var clipHeight:Number = textFieldHeight * Starling.contentScaleFactor * matrixToScaleY(HELPER_MATRIX);
+			var clipHeight:Number = textFieldHeight * scaleFactor;
+			if(this._updateSnapshotOnScaleChange)
+			{
+				clipHeight *= matrixToScaleY(HELPER_MATRIX);
+			}
 			if(clipHeight < 0)
 			{
 				clipHeight = 0;
 			}
-			this._textFieldClipRect.width = clipWidth;
-			this._textFieldClipRect.height = clipHeight;
+			this._textFieldSnapshotClipRect.width = clipWidth;
+			this._textFieldSnapshotClipRect.height = clipHeight;
 		}
 
 		/**

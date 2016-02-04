@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -226,26 +226,6 @@ package feathers.controls.supportClasses
 			super.dispose();
 		}
 
-		override protected function draw():void
-		{
-			var layoutInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_LAYOUT);
-			var sizeInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_SIZE);
-			var scrollInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_SCROLL);
-
-			super.draw();
-
-			if(scrollInvalid || sizeInvalid || layoutInvalid)
-			{
-				if(this._layout)
-				{
-					this._contentX = this._layoutResult.contentX;
-					this._contentY = this._layoutResult.contentY;
-					this._actualVisibleWidth = this._layoutResult.viewPortWidth;
-					this._actualVisibleHeight = this._layoutResult.viewPortHeight;
-				}
-			}
-		}
-
 		override protected function refreshViewPortBounds():void
 		{
 			this.viewPortBounds.x = 0;
@@ -276,18 +256,37 @@ package feathers.controls.supportClasses
 			this.viewPortBounds.maxHeight = this._maxVisibleHeight;
 		}
 
+		override protected function handleLayoutResult():void
+		{
+			this.setSizeInternal(this._layoutResult.contentWidth,
+				this._layoutResult.contentHeight, false);
+			this._contentX = this._layoutResult.contentX;
+			this._contentY = this._layoutResult.contentY;
+			this._actualVisibleWidth = this._layoutResult.viewPortWidth;
+			this._actualVisibleHeight = this._layoutResult.viewPortHeight;
+		}
+
 		override protected function handleManualLayout():void
 		{
 			var minX:Number = 0;
 			var minY:Number = 0;
 			var explicitViewPortWidth:Number = this.viewPortBounds.explicitWidth;
 			var maxX:Number = explicitViewPortWidth;
+			//for some reason, if we don't call a function right here,
+			//compiling with the flex 4.6 SDK will throw a VerifyError
+			//for a stack overflow.
+			//we could change the !== check back to isNaN() instead, but
+			//isNaN() can allocate an object, so we should call a different
+			//function without allocation.
+			this.doNothing();
 			if(maxX !== maxX) //isNaN
 			{
 				maxX = 0;
 			}
 			var explicitViewPortHeight:Number = this.viewPortBounds.explicitHeight;
 			var maxY:Number = explicitViewPortHeight;
+			//see explanation above the previous call to this function.
+			this.doNothing();
 			if(maxY !== maxY) //isNaN
 			{
 				maxY = 0;
@@ -371,8 +370,15 @@ package feathers.controls.supportClasses
 			this._layoutResult.contentY = 0;
 			this._layoutResult.contentWidth = calculatedWidth;
 			this._layoutResult.contentHeight = calculatedHeight;
-			this._layoutResult.viewPortWidth = this._actualVisibleWidth;
-			this._layoutResult.viewPortHeight = this._actualVisibleHeight;
+			this._layoutResult.viewPortWidth = calculatedWidth;//this._actualVisibleWidth;
+			this._layoutResult.viewPortHeight = calculatedHeight;//this._actualVisibleHeight;
 		}
+
+		/**
+		 * @private
+		 * This function is here to work around a bug in the Flex 4.6 SDK
+		 * compiler. For explanation, see the places where it gets called.
+		 */
+		protected function doNothing():void {}
 	}
 }

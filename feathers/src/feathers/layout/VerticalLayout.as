@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -14,6 +14,7 @@ package feathers.layout
 	import flash.geom.Point;
 
 	import starling.display.DisplayObject;
+	import starling.display.DisplayObjectContainer;
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 
@@ -73,7 +74,7 @@ package feathers.layout
 	 *
 	 * @see ../../../help/vertical-layout.html How to use VerticalLayout with Feathers containers
 	 */
-	public class VerticalLayout extends EventDispatcher implements IVariableVirtualLayout, ITrimmedVirtualLayout
+	public class VerticalLayout extends EventDispatcher implements IVariableVirtualLayout, ITrimmedVirtualLayout, IGroupedLayout
 	{
 		/**
 		 * If the total item height is smaller than the height of the bounds,
@@ -451,6 +452,63 @@ package feathers.layout
 			this._horizontalAlign = value;
 			this.dispatchEventWith(Event.CHANGE);
 		}
+		/**
+		 * @private
+		 */
+		protected var _stickyHeader:Boolean = false;
+
+		/**
+		 * If a non-null value for the <code>headerIndices</code> property is
+		 * provided (by a component like <code>GroupedList</code>), and the
+		 * <code>stickyHeader</code> property is set to <code>true</code>, a
+		 * header will stick to the top of the view port until the current group
+		 * completely scrolls out of the view port.
+		 *
+		 * @default false
+		 */
+		public function get stickyHeader():Boolean
+		{
+			return this._stickyHeader;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set stickyHeader(value:Boolean):void
+		{
+			if(this._stickyHeader == value)
+			{
+				return;
+			}
+			this._stickyHeader = value;
+			this.dispatchEventWith(Event.CHANGE);
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _headerIndices:Vector.<int>;
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get headerIndices():Vector.<int>
+		{
+			return this._headerIndices;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set headerIndices(value:Vector.<int>):void
+		{
+			if(this._headerIndices == value)
+			{
+				return;
+			}
+			this._headerIndices = value;
+			this.dispatchEventWith(Event.CHANGE);
+		}
 
 		/**
 		 * @private
@@ -576,46 +634,6 @@ package feathers.layout
 				return;
 			}
 			this._requestedRowCount = value;
-			this.dispatchEventWith(Event.CHANGE);
-		}
-
-		/**
-		 * @private
-		 */
-		protected var _manageVisibility:Boolean = false;
-
-		/**
-		 * Determines if items will be set invisible if they are outside the
-		 * view port. If <code>true</code>, you will not be able to manually
-		 * change the <code>visible</code> property of any items in the layout.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.0. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.
-		 * Originally, the <code>manageVisibility</code> property could be used
-		 * to improve performance of non-virtual layouts by hiding items that
-		 * were outside the view port. However, other performance improvements
-		 * have made it so that setting <code>manageVisibility</code> can now
-		 * sometimes hurt performance instead of improving it.</p>
-		 *
-		 * @default false
-		 */
-		public function get manageVisibility():Boolean
-		{
-			return this._manageVisibility;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set manageVisibility(value:Boolean):void
-		{
-			if(this._manageVisibility == value)
-			{
-				return;
-			}
-			this._manageVisibility = value;
 			this.dispatchEventWith(Event.CHANGE);
 		}
 
@@ -867,7 +885,8 @@ package feathers.layout
 		 */
 		public function get requiresLayoutOnScroll():Boolean
 		{
-			return this._useVirtualLayout || this._manageVisibility;
+			return this._useVirtualLayout ||
+				(this._headerIndices && this._stickyHeader); //the header needs to stick!
 		}
 
 		/**
@@ -933,7 +952,8 @@ package feathers.layout
 			var hasFirstGap:Boolean = this._firstGap === this._firstGap; //!isNaN
 			var hasLastGap:Boolean = this._lastGap === this._lastGap; //!isNaN
 			var maxItemWidth:Number = this._useVirtualLayout ? calculatedTypicalItemWidth : 0;
-			var positionY:Number = boundsY + this._paddingTop;
+			var startPositionY:Number = boundsY + this._paddingTop;
+			var positionY:Number = startPositionY;
 			var indexOffset:int = 0;
 			var itemCount:int = items.length;
 			var totalItemCount:int = itemCount;
@@ -957,6 +977,24 @@ package feathers.layout
 			this._discoveredItemsCache.length = 0;
 			var discoveredItemsCacheLastIndex:int = 0;
 
+			//if there are no items in layout, then we don't want to subtract
+			//any gap when calculating the total height, so default to 0.
+			var gap:Number = 0;
+			
+			var headerIndicesIndex:int = -1;
+			var nextHeaderIndex:int = -1;
+			var headerCount:int = 0;
+			var stickyHeaderMaxY:Number = Number.POSITIVE_INFINITY;
+			if(this._headerIndices && this._stickyHeader)
+			{
+				headerCount = this._headerIndices.length;
+				if(headerCount > 0)
+				{
+					headerIndicesIndex = 0;
+					nextHeaderIndex = this._headerIndices[headerIndicesIndex];
+				}
+			}
+			
 			//this first loop sets the y position of items, and it calculates
 			//the total height of all items
 			for(var i:int = 0; i < itemCount; i++)
@@ -965,10 +1003,36 @@ package feathers.layout
 				//if we're trimming some items at the beginning, we need to
 				//adjust i to account for the missing items in the array
 				var iNormalized:int = i + indexOffset;
+				
+				if(nextHeaderIndex === iNormalized)
+				{
+					//if the sticky header is enabled, we need to find its index
+					//we look for the first header that is visible at the top of
+					//the view port. the previous one should be sticky.
+					if((positionY - startPositionY) < scrollY)
+					{
+						headerIndicesIndex++;
+						if(headerIndicesIndex < headerCount)
+						{
+							nextHeaderIndex = this._headerIndices[headerIndicesIndex];
+						}
+					}
+					else
+					{
+						headerIndicesIndex--;
+						if(headerIndicesIndex >= 0)
+						{
+							//this is the index of the "sticky" header, but we
+							//need to save it for later.
+							nextHeaderIndex = this._headerIndices[headerIndicesIndex];
+							stickyHeaderMaxY = positionY;
+						}
+					}
+				}
 
 				//pick the gap that will follow this item. the first and second
 				//to last items may have different gaps.
-				var gap:Number = this._gap;
+				gap = this._gap;
 				if(hasFirstGap && iNormalized == 0)
 				{
 					gap = this._firstGap;
@@ -1085,6 +1149,13 @@ package feathers.layout
 					positionY = positionY - this._gap + this._lastGap;
 				}
 			}
+			if(nextHeaderIndex >= 0)
+			{
+				//position the "sticky" header at the top of the view port.
+				//it should not cover the following header.
+				var header:DisplayObject = items[nextHeaderIndex];
+				this.positionStickyHeader(header, scrollY, stickyHeaderMaxY);
+			}
 
 			//this array will contain all items that are not null. see the
 			//comment above where the discoveredItemsCache is initialized for
@@ -1111,7 +1182,7 @@ package feathers.layout
 			}
 
 			//this is the total height of all items
-			var totalHeight:Number = positionY - this._gap + this._paddingBottom - boundsY;
+			var totalHeight:Number = positionY - gap + this._paddingBottom - boundsY;
 			//the available height is the height of the viewport. if the explicit
 			//height is NaN, we need to calculate the viewport height ourselves
 			//based on the total height of all items.
@@ -1226,18 +1297,23 @@ package feathers.layout
 					}
 					//handle all other horizontal alignment values (we handled
 					//justify already). the x position of all items is set.
+					var horizontalAlignWidth:Number = availableWidth;
+					if(totalWidth > horizontalAlignWidth)
+					{
+						horizontalAlignWidth = totalWidth;
+					}
 					switch(this._horizontalAlign)
 					{
 						case HORIZONTAL_ALIGN_RIGHT:
 						{
-							item.x = item.pivotX + boundsX + availableWidth - this._paddingRight - item.width;
+							item.x = item.pivotX + boundsX + horizontalAlignWidth - this._paddingRight - item.width;
 							break;
 						}
 						case HORIZONTAL_ALIGN_CENTER:
 						{
 							//round to the nearest pixel when dividing by 2 to
 							//align in the center
-							item.x = item.pivotX + boundsX + this._paddingLeft + Math.round((availableWidth - this._paddingLeft - this._paddingRight - item.width) / 2);
+							item.x = item.pivotX + boundsX + this._paddingLeft + Math.round((horizontalAlignWidth - this._paddingLeft - this._paddingRight - item.width) / 2);
 							break;
 						}
 						default: //left
@@ -1245,11 +1321,6 @@ package feathers.layout
 							item.x = item.pivotX + boundsX + this._paddingLeft;
 						}
 					}
-				}
-
-				if(this._manageVisibility)
-				{
-					item.visible = ((item.y - item.pivotY + item.height) >= (boundsY + scrollY)) && ((item.y - item.pivotY) < (scrollY + availableHeight));
 				}
 			}
 			//we don't want to keep a reference to any of the items, so clear
@@ -1521,11 +1592,49 @@ package feathers.layout
 				}
 				return result;
 			}
+
+			var headerIndicesIndex:int = -1;
+			var nextHeaderIndex:int = -1;
+			var headerCount:int = 0;
+			if(this._headerIndices && this._stickyHeader)
+			{
+				headerCount = this._headerIndices.length;
+				if(headerCount > 0)
+				{
+					headerIndicesIndex = 0;
+					nextHeaderIndex = this._headerIndices[headerIndicesIndex];
+				}
+			}
+			
 			var secondToLastIndex:int = itemCount - 2;
 			var maxPositionY:Number = scrollY + height;
-			var positionY:Number = this._paddingTop;
+			var startPositionY:Number = this._paddingTop;
+			var foundSticky:Boolean = false;
+			var positionY:Number = startPositionY;
 			for(i = 0; i < itemCount; i++)
 			{
+				if(nextHeaderIndex === i)
+				{
+					if((positionY - startPositionY) < scrollY)
+					{
+						headerIndicesIndex++;
+						if(headerIndicesIndex < headerCount)
+						{
+							nextHeaderIndex = this._headerIndices[headerIndicesIndex];
+						}
+					}
+					else
+					{
+						headerIndicesIndex--;
+						if(headerIndicesIndex >= 0)
+						{
+							//this is the index of the "sticky" header
+							nextHeaderIndex = this._headerIndices[headerIndicesIndex];
+							foundSticky = true;
+						}
+					}
+				}
+				
 				var gap:Number = this._gap;
 				if(hasFirstGap && i == 0)
 				{
@@ -1554,8 +1663,35 @@ package feathers.layout
 
 				if(positionY >= maxPositionY)
 				{
+					if(!foundSticky)
+					{
+						headerIndicesIndex--;
+						if(headerIndicesIndex >= 0)
+						{
+							//this is the index of the "sticky" header
+							nextHeaderIndex = this._headerIndices[headerIndicesIndex];
+						}
+					}
 					break;
 				}
+			}
+			if(nextHeaderIndex >= 0 && result.indexOf(nextHeaderIndex) < 0)
+			{
+				var addedStickyHeader:Boolean = false;
+				for(i = 0; i < resultLastIndex; i++)
+				{
+					if(nextHeaderIndex <= result[i])
+					{
+						result.splice(i, 0, nextHeaderIndex);
+						addedStickyHeader = true;
+						break;
+					}
+				}
+				if(!addedStickyHeader)
+				{
+					result[resultLastIndex] = nextHeaderIndex;
+				}
+				resultLastIndex++;
 			}
 
 			//similar to above, in order to avoid costly destruction and
@@ -1574,6 +1710,10 @@ package feathers.layout
 				}
 				for(i = firstExistingIndex - 1; i >= lastIndexToAdd; i--)
 				{
+					if(i === nextHeaderIndex)
+					{
+						continue;
+					}
 					result.unshift(i);
 				}
 			}
@@ -1591,6 +1731,10 @@ package feathers.layout
 				}
 				for(i = startIndex; i < endIndex; i++)
 				{
+					if(i === nextHeaderIndex)
+					{
+						continue;
+					}
 					result[resultLastIndex] = i;
 					resultLastIndex++;
 				}
@@ -1610,8 +1754,11 @@ package feathers.layout
 			{
 				if(this._hasVariableItemDimensions)
 				{
-					//we know it will be cached in the call to calculateMaxScrollYOfIndex()
 					var itemHeight:Number = this._heightCache[index];
+					if(itemHeight !== itemHeight) //isNaN
+					{
+						itemHeight = this._typicalItem.height;
+					}
 				}
 				else
 				{
@@ -1664,8 +1811,11 @@ package feathers.layout
 			{
 				if(this._hasVariableItemDimensions)
 				{
-					//we know it will be cached in the call to calculateMaxScrollYOfIndex()
 					var itemHeight:Number = this._heightCache[index];
+					if(itemHeight !== itemHeight) //isNaN
+					{
+						itemHeight = this._typicalItem.height;
+					}
 				}
 				else
 				{
@@ -1749,12 +1899,24 @@ package feathers.layout
 			{
 				return;
 			}
+			var hasSetWidth:Boolean = false;
 			if(this._horizontalAlign == HORIZONTAL_ALIGN_JUSTIFY &&
 				justifyWidth === justifyWidth) //!isNaN
 			{
+				hasSetWidth = true;
 				this._typicalItem.width = justifyWidth;
 			}
-			else if(this._resetTypicalItemDimensionsOnMeasure)
+			else if(this._typicalItem is ILayoutDisplayObject)
+			{
+				var layoutItem:ILayoutDisplayObject = ILayoutDisplayObject(this._typicalItem);
+				var layoutData:VerticalLayoutData = layoutItem.layoutData as VerticalLayoutData;
+				if(layoutData && layoutData.percentWidth === layoutData.percentWidth)
+				{
+					hasSetWidth = true;
+					this._typicalItem.width = justifyWidth * layoutData.percentWidth / 100;
+				}
+			}
+			if(!hasSetWidth && this._resetTypicalItemDimensionsOnMeasure)
 			{
 				this._typicalItem.width = this._typicalItemWidth;
 			}
@@ -1928,6 +2090,13 @@ package feathers.layout
 						}
 					}
 					layoutItem.height = itemHeight;
+					if(layoutItem is IValidating)
+					{
+						//changing the height of the item may cause its width
+						//to change, so we need to validate. the width is needed
+						//for measurement.
+						IValidating(layoutItem).validate();
+					}
 				}
 			}
 			while(needsAnotherPass)
@@ -2035,6 +2204,33 @@ package feathers.layout
 			}
 			positionY -= (lastHeight + gap);
 			return positionY;
+		}
+
+		/**
+		 * @private
+		 */
+		protected function positionStickyHeader(header:DisplayObject, scrollY:Number, maxY:Number):void
+		{
+			if(!header || header.y >= scrollY)
+			{
+				return;
+			}
+			if(header is IValidating)
+			{
+				IValidating(header).validate();
+			}
+			maxY -= header.height;
+			if(maxY > scrollY)
+			{
+				maxY = scrollY;
+			}
+			header.y = maxY;
+			//ensure that the sticky header is always on top!
+			var headerParent:DisplayObjectContainer = header.parent;
+			if(headerParent)
+			{
+				headerParent.setChildIndex(header, headerParent.numChildren - 1);
+			}
 		}
 	}
 }

@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -171,6 +171,9 @@ package feathers.controls.renderers
 			}
 			this._data = value;
 			this.invalidate(INVALIDATION_FLAG_DATA);
+			//LayoutGroup doesn't know about INVALIDATION_FLAG_DATA, so we need
+			//set set another flag that it understands.
+			this.invalidate(INVALIDATION_FLAG_SIZE);
 		}
 
 		/**
@@ -198,6 +201,27 @@ package feathers.controls.renderers
 			this._isSelected = value;
 			this.invalidate(INVALIDATION_FLAG_SELECTED);
 			this.dispatchEventWith(Event.CHANGE);
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _factoryID:String;
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get factoryID():String
+		{
+			return this._factoryID;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set factoryID(value:String):void
+		{
+			this._factoryID = value;
 		}
 
 		/**

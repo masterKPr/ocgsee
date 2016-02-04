@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -22,7 +22,7 @@ package feathers.text
 		/**
 		 * Constructor.
 		 */
-		public function BitmapFontTextFormat(font:Object, size:Number = NaN, color:uint = 0xffffff, align:String = TextFormatAlign.LEFT)
+		public function BitmapFontTextFormat(font:Object, size:Number = NaN, color:uint = 0xffffff, align:String = TextFormatAlign.LEFT, leading : Number = 0)
 		{
 			if(font is String)
 			{
@@ -36,6 +36,7 @@ package feathers.text
 			this.size = size;
 			this.color = color;
 			this.align = align;
+			this.leading = leading;
 		}
 
 		/**
@@ -89,7 +90,16 @@ package feathers.text
 		 * @default flash.text.TextFormatAlign.LEFT
 		 */
 		public var align:String = TextFormatAlign.LEFT;
-		
+
+		/**
+		 * A number representing the amount of vertical space (called leading)
+		 * between lines. The total vertical distance between lines is this
+		 * value added to the BitmapFont instance's lineHeight property.
+		 *
+		 * @default 0
+		 */
+		public var leading:Number;
+
 		/**
 		 * Determines if the kerning values defined in the BitmapFont instance
 		 * will be used for layout.

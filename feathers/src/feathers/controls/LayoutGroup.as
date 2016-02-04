@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -18,7 +18,6 @@ package feathers.controls
 	import feathers.layout.ViewPortBounds;
 	import feathers.skins.IStyleProvider;
 
-	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
@@ -57,17 +56,7 @@ package feathers.controls
 		/**
 		 * @private
 		 */
-		private static const HELPER_POINT:Point = new Point();
-
-		/**
-		 * @private
-		 */
-		private static const HELPER_MATRIX:Matrix = new Matrix();
-
-		/**
-		 * @private
-		 */
-		protected static const INVALIDATION_FLAG_MXML_CONTENT:String = "mxmlContent";
+		private static const HELPER_RECTANGLE:Rectangle = new Rectangle();
 
 		/**
 		 * Flag to indicate that the clipping has changed.
@@ -206,48 +195,6 @@ package feathers.controls
 		/**
 		 * @private
 		 */
-		protected var _mxmlContentIsReady:Boolean = false;
-
-		/**
-		 * @private
-		 */
-		protected var _mxmlContent:Array;
-
-		[ArrayElementType("feathers.core.IFeathersControl")]
-		/**
-		 * @private
-		 */
-		public function get mxmlContent():Array
-		{
-			return this._mxmlContent;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set mxmlContent(value:Array):void
-		{
-			if(this._mxmlContent == value)
-			{
-				return;
-			}
-			if(this._mxmlContent && this._mxmlContentIsReady)
-			{
-				var childCount:int = this._mxmlContent.length;
-				for(var i:int = 0; i < childCount; i++)
-				{
-					var child:DisplayObject = DisplayObject(this._mxmlContent[i]);
-					this.removeChild(child, true);
-				}
-			}
-			this._mxmlContent = value;
-			this._mxmlContentIsReady = false;
-			this.invalidate(INVALIDATION_FLAG_MXML_CONTENT);
-		}
-
-		/**
-		 * @private
-		 */
 		protected var _clipContent:Boolean = false;
 
 		/**
@@ -280,6 +227,10 @@ package feathers.controls
 				return;
 			}
 			this._clipContent = value;
+			if(!value)
+			{
+				this.clipRect = null;
+			}
 			this.invalidate(INVALIDATION_FLAG_CLIPPING);
 		}
 
@@ -472,6 +423,10 @@ package feathers.controls
 		 */
 		override public function removeChildAt(index:int, dispose:Boolean = false):DisplayObject
 		{
+			if(index >= 0 && index < this.items.length)
+			{
+				this.items.splice(index, 1);
+			}
 			var child:DisplayObject = super.removeChildAt(index, dispose);
 			if(child is IFeathersControl)
 			{
@@ -481,7 +436,6 @@ package feathers.controls
 			{
 				child.removeEventListener(FeathersEventType.LAYOUT_DATA_CHANGE, child_layoutDataChangeHandler);
 			}
-			this.items.splice(index, 1);
 			this.invalidate(INVALIDATION_FLAG_LAYOUT);
 			return child;
 		}
@@ -563,6 +517,17 @@ package feathers.controls
 		{
 			if(this.currentBackgroundSkin && this.currentBackgroundSkin.hasVisibleArea)
 			{
+				var clipRect:Rectangle = this.clipRect;
+				if(clipRect)
+				{
+					clipRect = support.pushClipRect(this.getClipRect(stage, HELPER_RECTANGLE));
+					if(clipRect.isEmpty())
+					{
+						// empty clipping bounds - no need to render children.
+						support.popClipRect();
+						return;
+					}
+				}
 				var blendMode:String = this.blendMode;
 				support.pushMatrix();
 				support.transformMatrix(this.currentBackgroundSkin);
@@ -570,6 +535,10 @@ package feathers.controls
 				this.currentBackgroundSkin.render(support, parentAlpha * this.alpha);
 				support.blendMode = blendMode;
 				support.popMatrix();
+				if(clipRect)
+				{
+					support.popClipRect();
+				}
 			}
 			super.render(support, parentAlpha);
 		}
@@ -579,6 +548,14 @@ package feathers.controls
 		 */
 		override public function dispose():void
 		{
+			if(this._backgroundSkin && this._backgroundSkin.parent !== this)
+			{
+				this._backgroundSkin.dispose();
+			}
+			if(this._backgroundDisabledSkin && this._backgroundDisabledSkin.parent !== this)
+			{
+				this._backgroundDisabledSkin.dispose();
+			}
 			this.layout = null;
 			super.dispose();
 		}
@@ -594,14 +571,6 @@ package feathers.controls
 		public function readjustLayout():void
 		{
 			this.invalidate(INVALIDATION_FLAG_LAYOUT);
-		}
-
-		/**
-		 * @private
-		 */
-		override protected function initialize():void
-		{
-			this.refreshMXMLContent();
 		}
 
 		/**
@@ -642,24 +611,8 @@ package feathers.controls
 				{
 					this.handleManualLayout();
 				}
-				var width:Number = this._layoutResult.contentWidth;
-				if(this.originalBackgroundWidth === this.originalBackgroundWidth && //!isNaN
-					this.originalBackgroundWidth > width)
-				{
-					width = this.originalBackgroundWidth;
-				}
-				var height:Number = this._layoutResult.contentHeight;
-				if(this.originalBackgroundHeight === this.originalBackgroundHeight && //!isNaN
-					this.originalBackgroundHeight > height)
-				{
-					height = this.originalBackgroundHeight;
-				}
-				if(this._autoSizeMode == AUTO_SIZE_MODE_STAGE)
-				{
-					width = this.stage.stageWidth;
-					height = this.stage.stageHeight;
-				}
-				sizeInvalid = this.setSizeInternal(width, height, false) || sizeInvalid;
+				this.handleLayoutResult();
+				
 				if(this.currentBackgroundSkin)
 				{
 					this.currentBackgroundSkin.width = this.actualWidth;
@@ -715,7 +668,7 @@ package feathers.controls
 			this.viewPortBounds.y = 0;
 			this.viewPortBounds.scrollX = 0;
 			this.viewPortBounds.scrollY = 0;
-			if(this._autoSizeMode == AUTO_SIZE_MODE_STAGE &&
+			if(this._autoSizeMode === AUTO_SIZE_MODE_STAGE &&
 				this.explicitWidth !== this.explicitWidth)
 			{
 				this.viewPortBounds.explicitWidth = this.stage.stageWidth;
@@ -724,7 +677,7 @@ package feathers.controls
 			{
 				this.viewPortBounds.explicitWidth = this.explicitWidth;
 			}
-			if(this._autoSizeMode == AUTO_SIZE_MODE_STAGE &&
+			if(this._autoSizeMode === AUTO_SIZE_MODE_STAGE &&
 					this.explicitHeight !== this.explicitHeight)
 			{
 				this.viewPortBounds.explicitHeight = this.stage.stageHeight;
@@ -733,10 +686,31 @@ package feathers.controls
 			{
 				this.viewPortBounds.explicitHeight = this.explicitHeight;
 			}
-			this.viewPortBounds.minWidth = this._minWidth;
-			this.viewPortBounds.minHeight = this._minHeight;
+			var minWidth:Number = this._minWidth;
+			var minHeight:Number = this._minHeight;
+			if(this.originalBackgroundWidth === this.originalBackgroundWidth && //!isNaN
+				this.originalBackgroundWidth > minWidth)
+			{
+				minWidth = this.originalBackgroundWidth;
+			}
+			if(this.originalBackgroundHeight === this.originalBackgroundHeight && //!isNaN
+				this.originalBackgroundHeight > minHeight)
+			{
+				minHeight = this.originalBackgroundHeight;
+			}
+			this.viewPortBounds.minWidth = minWidth;
+			this.viewPortBounds.minHeight = minHeight;
 			this.viewPortBounds.maxWidth = this._maxWidth;
 			this.viewPortBounds.maxHeight = this._maxHeight;
+		}
+
+		/**
+		 * @private
+		 */
+		protected function handleLayoutResult():void
+		{
+			this.setSizeInternal(this._layoutResult.viewPortWidth,
+					this._layoutResult.viewPortHeight, false);
 		}
 
 		/**
@@ -786,6 +760,26 @@ package feathers.controls
 			this._layoutResult.contentY = 0;
 			this._layoutResult.contentWidth = maxX;
 			this._layoutResult.contentHeight = maxY;
+			var minWidth:Number = this.viewPortBounds.minWidth;
+			var minHeight:Number = this.viewPortBounds.minHeight;
+			if(maxX < minWidth)
+			{
+				maxX = minWidth;
+			}
+			if(maxY < minHeight)
+			{
+				maxY = minHeight;
+			}
+			var maxWidth:Number = this.viewPortBounds.maxWidth;
+			var maxHeight:Number = this.viewPortBounds.maxHeight;
+			if(maxX > maxWidth)
+			{
+				maxX = maxWidth;
+			}
+			if(maxY > maxHeight)
+			{
+				maxY = maxHeight;
+			}
 			this._layoutResult.viewPortWidth = maxX;
 			this._layoutResult.viewPortHeight = maxY;
 		}
@@ -813,44 +807,23 @@ package feathers.controls
 		/**
 		 * @private
 		 */
-		protected function refreshMXMLContent():void
+		protected function refreshClipRect():void
 		{
-			if(!this._mxmlContent || this._mxmlContentIsReady)
+			if(!this._clipContent)
 			{
 				return;
 			}
-			var childCount:int = this._mxmlContent.length;
-			for(var i:int = 0; i < childCount; i++)
-			{
-				var child:DisplayObject = DisplayObject(this._mxmlContent[i]);
-				this.addChild(child);
-			}
-			this._mxmlContentIsReady = true;
-		}
 
-		/**
-		 * @private
-		 */
-		protected function refreshClipRect():void
-		{
-			if(this._clipContent)
+			var clipRect:Rectangle = this.clipRect;
+			if(!clipRect)
 			{
-				if(!this.clipRect)
-				{
-					this.clipRect = new Rectangle();
-				}
-
-				var clipRect:Rectangle = this.clipRect;
-				clipRect.x = 0;
-				clipRect.y = 0;
-				clipRect.width = this.actualWidth;
-				clipRect.height = this.actualHeight;
-				this.clipRect = clipRect;
+				clipRect = new Rectangle();
 			}
-			else
-			{
-				this.clipRect = null;
-			}
+			clipRect.x = 0;
+			clipRect.y = 0;
+			clipRect.width = this.actualWidth;
+			clipRect.height = this.actualHeight;
+			this.clipRect = clipRect;
 		}
 
 		/**

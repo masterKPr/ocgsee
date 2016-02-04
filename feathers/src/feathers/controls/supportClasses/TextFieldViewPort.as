@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -335,6 +335,32 @@ package feathers.controls.supportClasses
 				return;
 			}
 			this._borderColor = value;
+			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
+
+		/**
+		 * @private
+		 */
+		private var _cacheAsBitmap:Boolean = true;
+
+		/**
+		 * @see feathers.controls.ScrollText#cacheAsBitmap
+		 */
+		public function get cacheAsBitmap():Boolean
+		{
+			return this._cacheAsBitmap;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set cacheAsBitmap(value:Boolean):void
+		{
+			if(this._cacheAsBitmap == value)
+			{
+				return;
+			}
+			this._cacheAsBitmap = value;
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 
@@ -780,6 +806,7 @@ package feathers.controls.supportClasses
 				this._textField.gridFitType = this._gridFitType;
 				this._textField.sharpness = this._sharpness;
 				this._textField.thickness = this._thickness;
+				this._textField.cacheAsBitmap = this._cacheAsBitmap;
 				this._textField.x = this._paddingLeft;
 				this._textField.y = this._paddingTop;
 			}

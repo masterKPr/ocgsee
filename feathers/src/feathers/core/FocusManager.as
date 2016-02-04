@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -16,10 +16,7 @@ package feathers.core
 	/**
 	 * Manages touch and keyboard focus.
 	 *
-	 * <p>Note: When enabling focus management, you should always use
-	 * <code>TextFieldTextEditor</code> as the text editor for <code>TextInput</code>
-	 * components. <code>StageTextTextEditor</code> is not compatible with the
-	 * focus manager.</p>
+	 * @see ../../../help/focus.html Keyboard focus management in Feathers
 	 */
 	public class FocusManager
 	{

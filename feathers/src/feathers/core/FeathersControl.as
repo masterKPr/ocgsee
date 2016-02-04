@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -324,22 +324,6 @@ package feathers.core
 		}
 
 		/**
-		 * DEPRECATED: Replaced by the <code>styleNameList</code>
-		 * property.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.0. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #styleNameList
-		 */
-		public function get nameList():TokenList
-		{
-			return this._styleNameList;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _styleProvider:IStyleProvider;
@@ -434,6 +418,11 @@ package feathers.core
 		 * @private
 		 */
 		protected var _hitArea:Rectangle = new Rectangle();
+
+		/**
+		 * @private
+		 */
+		protected var _isInitializing:Boolean = false;
 
 		/**
 		 * @private
@@ -1008,13 +997,15 @@ package feathers.core
 		protected var _focusManager:IFocusManager;
 
 		/**
-		 * @copy feathers.core.IFocusDisplayObject#focusManager
-		 *
 		 * <p>The implementation of this property is provided for convenience,
 		 * but it cannot be used unless a subclass implements the
 		 * <code>IFocusDisplayObject</code> interface.</p>
+		 * 
+		 * @copy feathers.core.IFocusDisplayObject#focusManager
 		 *
 		 * @default null
+		 *
+		 * @see feathers.core.IFocusDisplayObject
 		 */
 		public function get focusManager():IFocusManager
 		{
@@ -1053,13 +1044,15 @@ package feathers.core
 		protected var _focusOwner:IFocusDisplayObject;
 
 		/**
-		 * @copy feathers.core.IFocusDisplayObject#focusOwner
-		 *
 		 * <p>The implementation of this property is provided for convenience,
 		 * but it cannot be used unless a subclass implements the
 		 * <code>IFocusDisplayObject</code> interface.</p>
+		 * 
+		 * @copy feathers.core.IFocusDisplayObject#focusOwner
 		 *
 		 * @default null
+		 *
+		 * @see feathers.core.IFocusDisplayObject
 		 */
 		public function get focusOwner():IFocusDisplayObject
 		{
@@ -1080,13 +1073,15 @@ package feathers.core
 		protected var _isFocusEnabled:Boolean = true;
 
 		/**
-		 * @copy feathers.core.IFocusDisplayObject#isFocusEnabled
-		 *
 		 * <p>The implementation of this property is provided for convenience,
 		 * but it cannot be used unless a subclass implements the
 		 * <code>IFocusDisplayObject</code> interface.</p>
+		 * 
+		 * @copy feathers.core.IFocusDisplayObject
 		 *
 		 * @default true
+		 *
+		 * @see feathers.core.IFocusDisplayObject#isFocusEnabled
 		 */
 		public function get isFocusEnabled():Boolean
 		{
@@ -1115,13 +1110,16 @@ package feathers.core
 		protected var _nextTabFocus:IFocusDisplayObject;
 
 		/**
-		 * @copy feathers.core.IFocusDisplayObject#nextTabFocus
 		 *
 		 * <p>The implementation of this property is provided for convenience,
 		 * but it cannot be used unless a subclass implements the
 		 * <code>IFocusDisplayObject</code> interface.</p>
+		 * 
+		 * @copy feathers.core.IFocusDisplayObject#nextTabFocus
 		 *
 		 * @default null
+		 *
+		 * @see feathers.core.IFocusDisplayObject
 		 */
 		public function get nextTabFocus():IFocusDisplayObject
 		{
@@ -1146,13 +1144,15 @@ package feathers.core
 		protected var _previousTabFocus:IFocusDisplayObject;
 
 		/**
-		 * @copy feathers.core.IFocusDisplayObject#previousTabFocus
-		 *
 		 * <p>The implementation of this property is provided for convenience,
 		 * but it cannot be used unless a subclass implements the
 		 * <code>IFocusDisplayObject</code> interface.</p>
+		 * 
+		 * @copy feathers.core.IFocusDisplayObject#previousTabFocus
 		 *
 		 * @default null
+		 *
+		 * @see feathers.core.IFocusDisplayObject
 		 */
 		public function get previousTabFocus():IFocusDisplayObject
 		{
@@ -1674,6 +1674,12 @@ package feathers.core
 			}
 			if(!this._isInitialized)
 			{
+				if(this._isInitializing)
+				{
+					//initializing components cannot validate until they've
+					//finished initializing. we'll have to wait.
+					return;
+				}
 				this.initializeInternal();
 			}
 			if(!this.isInvalid())
@@ -1789,11 +1795,13 @@ package feathers.core
 		}
 
 		/**
-		 * @copy feathers.core.IFocusDisplayObject#showFocus()
-		 *
 		 * <p>The implementation of this method is provided for convenience, but
 		 * it cannot be used unless a subclass implements the
 		 * <code>IFocusDisplayObject</code> interface.</p>
+		 * 
+		 * @copy feathers.core.IFocusDisplayObject#showFocus()
+		 *
+		 * @see feathers.core.IFocusDisplayObject
 		 */
 		public function showFocus():void
 		{
@@ -1807,11 +1815,13 @@ package feathers.core
 		}
 
 		/**
-		 * @copy feathers.core.IFocusDisplayObject#hideFocus()
-		 *
 		 * <p>The implementation of this method is provided for convenience, but
 		 * it cannot be used unless a subclass implements the
 		 * <code>IFocusDisplayObject</code> interface.</p>
+		 * 
+		 * @copy feathers.core.IFocusDisplayObject#hideFocus()
+		 *
+		 * @see feathers.core.IFocusDisplayObject
 		 */
 		public function hideFocus():void
 		{
@@ -2039,12 +2049,14 @@ package feathers.core
 		 */
 		protected function initializeInternal():void
 		{
-			if(this._isInitialized)
+			if(this._isInitialized || this._isInitializing)
 			{
 				return;
 			}
+			this._isInitializing = true;
 			this.initialize();
 			this.invalidate(); //invalidate everything
+			this._isInitializing = false;
 			this._isInitialized = true;
 			this.dispatchEventWith(FeathersEventType.INITIALIZE);
 

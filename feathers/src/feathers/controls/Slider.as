@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -99,8 +99,8 @@ package feathers.controls
 	 * the bounds of a track. The slider's track is divided into two parts split
 	 * by the thumb.
 	 *
-	 * <p>The following example sets the slider's values and listens for when
-	 * when the value changes:</p>
+	 * <p>The following example sets the slider's range and listens for when the
+	 * value changes:</p>
 	 *
 	 * <listing version="3.0">
 	 * var slider:Slider = new Slider();
@@ -224,18 +224,6 @@ package feathers.controls
 		public static const DEFAULT_CHILD_STYLE_NAME_MINIMUM_TRACK:String = "feathers-slider-minimum-track";
 
 		/**
-		 * DEPRECATED: Replaced by <code>Slider.DEFAULT_CHILD_STYLE_NAME_MINIMUM_TRACK</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see Slider#DEFAULT_CHILD_STYLE_NAME_MINIMUM_TRACK
-		 */
-		public static const DEFAULT_CHILD_NAME_MINIMUM_TRACK:String = DEFAULT_CHILD_STYLE_NAME_MINIMUM_TRACK;
-
-		/**
 		 * The default value added to the <code>styleNameList</code> of the
 		 * maximum track.
 		 *
@@ -244,35 +232,11 @@ package feathers.controls
 		public static const DEFAULT_CHILD_STYLE_NAME_MAXIMUM_TRACK:String = "feathers-slider-maximum-track";
 
 		/**
-		 * DEPRECATED: Replaced by <code>Slider.DEFAULT_CHILD_STYLE_NAME_MAXIMUM_TRACK</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see Slider#DEFAULT_CHILD_STYLE_NAME_MAXIMUM_TRACK
-		 */
-		public static const DEFAULT_CHILD_NAME_MAXIMUM_TRACK:String = DEFAULT_CHILD_STYLE_NAME_MAXIMUM_TRACK;
-
-		/**
 		 * The default value added to the <code>styleNameList</code> of the thumb.
 		 *
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const DEFAULT_CHILD_STYLE_NAME_THUMB:String = "feathers-slider-thumb";
-
-		/**
-		 * DEPRECATED: Replaced by <code>Slider.DEFAULT_CHILD_STYLE_NAME_THUMB</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see Slider#DEFAULT_CHILD_STYLE_NAME_THUMB
-		 */
-		public static const DEFAULT_CHILD_NAME_THUMB:String = DEFAULT_CHILD_STYLE_NAME_THUMB;
 
 		/**
 		 * The default <code>IStyleProvider</code> for all <code>Slider</code>
@@ -332,29 +296,6 @@ package feathers.controls
 		protected var minimumTrackStyleName:String = DEFAULT_CHILD_STYLE_NAME_MINIMUM_TRACK;
 
 		/**
-		 * DEPRECATED: Replaced by <code>minimumTrackStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #minimumTrackStyleName
-		 */
-		protected function get minimumTrackName():String
-		{
-			return this.minimumTrackStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set minimumTrackName(value:String):void
-		{
-			this.minimumTrackStyleName = value;
-		}
-
-		/**
 		 * The value added to the <code>styleNameList</code> of the maximum
 		 * track. This variable is <code>protected</code> so that sub-classes
 		 * can customize the maximum track style name in their constructors
@@ -370,29 +311,6 @@ package feathers.controls
 		protected var maximumTrackStyleName:String = DEFAULT_CHILD_STYLE_NAME_MAXIMUM_TRACK;
 
 		/**
-		 * DEPRECATED: Replaced by <code>maximumTrackStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #maximumTrackStyleName
-		 */
-		protected function get maximumTrackName():String
-		{
-			return this.maximumTrackStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set maximumTrackName(value:String):void
-		{
-			this.maximumTrackStyleName = value;
-		}
-
-		/**
 		 * The value added to the <code>styleNameList</code> of the thumb. This
 		 * variable is <code>protected</code> so that sub-classes can customize
 		 * the thumb style name in their constructors instead of using the
@@ -405,29 +323,6 @@ package feathers.controls
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		protected var thumbStyleName:String = DEFAULT_CHILD_STYLE_NAME_THUMB;
-
-		/**
-		 * DEPRECATED: Replaced by <code>thumbStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #thumbStyleName
-		 */
-		protected function get thumbName():String
-		{
-			return this.thumbStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set thumbName(value:String):void
-		{
-			this.thumbStyleName = value;
-		}
 
 		/**
 		 * The thumb sub-component.
@@ -805,6 +700,43 @@ package feathers.controls
 		/**
 		 * @private
 		 */
+		protected var _thumbOffset:Number = 0;
+
+		/**
+		 *
+		 * Offsets the position of the thumb by a certain number of pixels in a
+		 * direction perpendicular to the track. This does not affect the
+		 * measurement of the slider. The slider will measure itself as if the
+		 * thumb were not offset from its original position.
+		 *
+		 * <p>In the following example, the thumb is offset by 20 pixels:</p>
+		 *
+		 * <listing version="3.0">
+		 * slider.thumbOffset = 20;</listing>
+		 *
+		 * @default 0
+		 */
+		public function get thumbOffset():Number
+		{
+			return this._thumbOffset;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set thumbOffset(value:Number):void
+		{
+			if(this._thumbOffset == value)
+			{
+				return;
+			}
+			this._thumbOffset = value;
+			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
+
+		/**
+		 * @private
+		 */
 		protected var _minimumPadding:Number = 0;
 
 		/**
@@ -1133,38 +1065,15 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customMinimumTrackStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customMinimumTrackStyleName
-		 */
-		public function get customMinimumTrackName():String
-		{
-			return this.customMinimumTrackStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customMinimumTrackName(value:String):void
-		{
-			this.customMinimumTrackStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _minimumTrackProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to the slider's minimum
-		 * track sub-component. The minimum track is a
-		 * <code>feathers.controls.Button</code> instance that is created by
-		 * <code>minimumTrackFactory</code>.
+		 * An object that stores properties for the slider's "minimum" track,
+		 * and the properties will be passed down to the "minimum" track when
+		 * the slider validates. For a list of available properties, refer to
+		 * <a href="Button.html"><code>feathers.controls.Button</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1328,29 +1237,6 @@ package feathers.controls
 			this._customMaximumTrackStyleName = value;
 			this.invalidate(INVALIDATION_FLAG_MAXIMUM_TRACK_FACTORY);
 		}
-
-		/**
-		 * DEPRECATED: Replaced by <code>customMaximumTrackStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customMaximumTrackStyleName
-		 */
-		public function get customMaximumTrackName():String
-		{
-			return this.customMaximumTrackStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customMaximumTrackName(value:String):void
-		{
-			this.customMaximumTrackStyleName = value;
-		}
 		
 		/**
 		 * @private
@@ -1358,10 +1244,10 @@ package feathers.controls
 		protected var _maximumTrackProperties:PropertyProxy;
 		
 		/**
-		 * A set of key/value pairs to be passed down to the slider's maximum
-		 * track sub-component. The maximum track is a
-		 * <code>feathers.controls.Button</code> instance that is created by
-		 * <code>maximumTrackFactory</code>.
+		 * An object that stores properties for the slider's "maximum" track,
+		 * and the properties will be passed down to the "maximum" track when
+		 * the slider validates. For a list of available properties, refer to
+		 * <a href="Button.html"><code>feathers.controls.Button</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1524,29 +1410,6 @@ package feathers.controls
 			this._customThumbStyleName = value;
 			this.invalidate(INVALIDATION_FLAG_THUMB_FACTORY);
 		}
-
-		/**
-		 * DEPRECATED: Replaced by <code>customThumbStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customThumbStyleName
-		 */
-		public function get customThumbName():String
-		{
-			return this.customThumbStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customThumbName(value:String):void
-		{
-			this.customThumbStyleName = value;
-		}
 		
 		/**
 		 * @private
@@ -1554,9 +1417,10 @@ package feathers.controls
 		protected var _thumbProperties:PropertyProxy;
 		
 		/**
-		 * A set of key/value pairs to be passed down to the slider's thumb
-		 * sub-component. The thumb is a <code>feathers.controls.Button</code>
-		 * instance that is created by <code>thumbFactory</code>.
+		 * An object that stores properties for the slider's thumb, and the
+		 * properties will be passed down to the thumb when the slider
+		 * validates. For a list of available properties, refer to
+		 * <a href="Button.html"><code>feathers.controls.Button</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1652,6 +1516,21 @@ package feathers.controls
 		 * @private
 		 */
 		protected var _touchValue:Number;
+
+		/**
+		 * @private
+		 */
+		override protected function initialize():void
+		{
+			if(this._value < this._minimum)
+			{
+				this.value = this._minimum;
+			}
+			else if(this._value > this._maximum)
+			{
+				this.value = this._maximum;
+			}
+		}
 		
 		/**
 		 * @private
@@ -1975,18 +1854,38 @@ package feathers.controls
 		{
 			//this will auto-size the thumb, if needed
 			this.thumb.validate();
-
-			if(this._direction == DIRECTION_VERTICAL)
+			
+			if(this._minimum === this._maximum)
 			{
-				var trackScrollableHeight:Number = this.actualHeight - this.thumb.height - this._minimumPadding - this._maximumPadding;
-				this.thumb.x = (this.actualWidth - this.thumb.width) / 2;
-				this.thumb.y = this._minimumPadding + trackScrollableHeight * (1 - (this._value - this._minimum) / (this._maximum - this._minimum));
+				var percentage:Number = 1;
 			}
 			else
 			{
+				percentage = (this._value - this._minimum) / (this._maximum - this._minimum);
+				if(percentage < 0)
+				{
+					percentage = 0;
+				}
+				else if(percentage > 1)
+				{
+					percentage = 1;
+				}
+			}
+			if(this._direction == DIRECTION_VERTICAL)
+			{
+				var trackScrollableHeight:Number = this.actualHeight - this.thumb.height - this._minimumPadding - this._maximumPadding;
+				this.thumb.x = Math.round((this.actualWidth - this.thumb.width) / 2) + this._thumbOffset;
+				//maximum is at the top, so we need to start the y position of
+				//the thumb from the maximum padding
+				this.thumb.y = Math.round(this._maximumPadding + trackScrollableHeight * (1 - percentage));
+			}
+			else //horizontal
+			{
 				var trackScrollableWidth:Number = this.actualWidth - this.thumb.width - this._minimumPadding - this._maximumPadding;
-				this.thumb.x = this._minimumPadding + (trackScrollableWidth * (this._value - this._minimum) / (this._maximum - this._minimum));
-				this.thumb.y = (this.actualHeight - this.thumb.height) / 2;
+				//minimum is at the left, so we need to start the x position of
+				//the thumb from the minimum padding
+				this.thumb.x = Math.round(this._minimumPadding + (trackScrollableWidth * percentage));
+				this.thumb.y = Math.round((this.actualHeight - this.thumb.height) / 2) + this._thumbOffset;
 			}
 		}
 

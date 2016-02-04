@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -74,17 +74,12 @@ package feathers.controls
 		/**
 		 * @private
 		 */
-		protected static const IOS_RETINA_STATUS_BAR_HEIGHT:Number = 40;
+		protected static const IOS_STATUS_BAR_HEIGHT:Number = 20;
 
 		/**
 		 * @private
 		 */
-		protected static const IOS_NON_RETINA_STATUS_BAR_HEIGHT:Number = 20;
-
-		/**
-		 * @private
-		 */
-		protected static const IOS_RETINA_MINIMUM_DPI:Number = 264;
+		protected static const IOS_DPI:Number = 132;
 
 		/**
 		 * @private
@@ -160,36 +155,12 @@ package feathers.controls
 		public static const DEFAULT_CHILD_STYLE_NAME_ITEM:String = "feathers-header-item";
 
 		/**
-		 * DEPRECATED: Replaced by <code>Header.DEFAULT_CHILD_STYLE_NAME_ITEM</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see Header#DEFAULT_CHILD_STYLE_NAME_ITEM
-		 */
-		public static const DEFAULT_CHILD_NAME_ITEM:String = DEFAULT_CHILD_STYLE_NAME_ITEM;
-
-		/**
 		 * The default value added to the <code>styleNameList</code> of the header's
 		 * title.
 		 *
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const DEFAULT_CHILD_STYLE_NAME_TITLE:String = "feathers-header-title";
-
-		/**
-		 * DEPRECATED: Replaced by <code>Header.DEFAULT_CHILD_STYLE_NAME_TITLE</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see Header#DEFAULT_CHILD_STYLE_NAME_TITLE
-		 */
-		public static const DEFAULT_CHILD_NAME_TITLE:String = DEFAULT_CHILD_STYLE_NAME_TITLE;
 
 		/**
 		 * @private
@@ -217,6 +188,17 @@ package feathers.controls
 		}
 
 		/**
+		 * The text renderer for the header's title.
+		 *
+		 * <p>For internal use in subclasses.</p>
+		 *
+		 * @see #title
+		 * @see #titleFactory
+		 * @see #createTitle()
+		 */
+		protected var titleTextRenderer:ITextRenderer;
+
+		/**
 		 * The value added to the <code>styleNameList</code> of the header's
 		 * title text renderer. This variable is <code>protected</code> so that
 		 * sub-classes can customize the title text renderer style name in their
@@ -228,29 +210,6 @@ package feathers.controls
 		protected var titleStyleName:String = DEFAULT_CHILD_STYLE_NAME_TITLE;
 
 		/**
-		 * DEPRECATED: Replaced by <code>titleStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #titleStyleName
-		 */
-		protected function get titleName():String
-		{
-			return this.titleStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set titleName(value:String):void
-		{
-			this.titleStyleName = value;
-		}
-
-		/**
 		 * The value added to the <code>styleNameList</code> of each of the
 		 * header's items. This variable is <code>protected</code> so that
 		 * sub-classes can customize the item style name in their constructors
@@ -260,29 +219,6 @@ package feathers.controls
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		protected var itemStyleName:String = DEFAULT_CHILD_STYLE_NAME_ITEM;
-
-		/**
-		 * DEPRECATED: Replaced by <code>itemStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #itemStyleName
-		 */
-		protected function get itemName():String
-		{
-			return this.itemStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set itemName(value:String):void
-		{
-			this.itemStyleName = value;
-		}
 
 		/**
 		 * @private
@@ -385,8 +321,6 @@ package feathers.controls
 		 * @see #title
 		 * @see feathers.core.ITextRenderer
 		 * @see feathers.core.FeathersControl#defaultTextRendererFactory
-		 * @see feathers.controls.text.BitmapFontTextRenderer
-		 * @see feathers.controls.text.TextFieldTextRenderer
 		 */
 		public function get titleFactory():Function
 		{
@@ -405,17 +339,6 @@ package feathers.controls
 			this._titleFactory = value;
 			this.invalidate(INVALIDATION_FLAG_TEXT_RENDERER);
 		}
-
-		/**
-		 * The text renderer for the header's title.
-		 *
-		 * <p>For internal use in subclasses.</p>
-		 *
-		 * @see #title
-		 * @see #titleFactory
-		 * @see #createTitle()
-		 */
-		protected var titleTextRenderer:ITextRenderer;
 
 		/**
 		 * @private
@@ -1070,15 +993,62 @@ package feathers.controls
 		/**
 		 * @private
 		 */
+		protected var _customTitleStyleName:String;
+
+		/**
+		 * A style name to add to the header's title text renderer
+		 * sub-component. Typically used by a theme to provide different styles
+		 * to different headers.
+		 *
+		 * <p>In the following example, a custom title style name is passed to
+		 * the header:</p>
+		 *
+		 * <listing version="3.0">
+		 * header.customTitleStyleName = "my-custom-header-title";</listing>
+		 *
+		 * <p>In your theme, you can target this sub-component style name to
+		 * provide different styles than the default:</p>
+		 *
+		 * <listing version="3.0">
+		 * getStyleProviderForClass( BitmapFontTextRenderer ).setFunctionForStyleName( "my-custom-header-title", setCustomHeaderTitleStyles );</listing>
+		 *
+		 * @default null
+		 *
+		 * @see #DEFAULT_CHILD_STYLE_NAME_TITLE
+		 * @see feathers.core.FeathersControl#styleNameList
+		 * @see #titleFactory
+		 */
+		public function get customTitleStyleName():String
+		{
+			return this._customTitleStyleName;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set customTitleStyleName(value:String):void
+		{
+			if(this._customTitleStyleName == value)
+			{
+				return;
+			}
+			this._customTitleStyleName = value;
+			this.invalidate(INVALIDATION_FLAG_TEXT_RENDERER);
+		}
+
+		/**
+		 * @private
+		 */
 		protected var _titleProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to the header's title. The
-		 * title is an <code>ITextRenderer</code> instance. The available
-		 * properties depend on which <code>ITextRenderer</code> implementation
-		 * is returned by <code>titleFactory</code>. The most common
-		 * implementations are <code>BitmapFontTextRenderer</code> and
-		 * <code>TextFieldTextRenderer</code>.
+		 * An object that stores properties for the header's title text renderer
+		 * sub-component, and the properties will be passed down to the text
+		 * renderer when the header validates. The available properties
+		 * depend on which <code>ITextRenderer</code> implementation is returned
+		 * by <code>textRendererFactory</code>. Refer to
+		 * <a href="../core/ITextRenderer.html"><code>feathers.core.ITextRenderer</code></a>
+		 * for a list of available text renderer implementations.
 		 *
 		 * <p>In the following example, some properties are set for the header's
 		 * title text renderer (this example assumes that the title text renderer
@@ -1102,8 +1072,6 @@ package feathers.controls
 		 *
 		 * @see #titleFactory
 		 * @see feathers.core.ITextRenderer
-		 * @see feathers.controls.text.BitmapFontTextRenderer
-		 * @see feathers.controls.text.TextFieldTextRenderer
 		 */
 		public function get titleProperties():Object
 		{
@@ -1546,7 +1514,8 @@ package feathers.controls
 			var factory:Function = this._titleFactory != null ? this._titleFactory : FeathersControl.defaultTextRendererFactory;
 			this.titleTextRenderer = ITextRenderer(factory());
 			var uiTitleRenderer:IFeathersControl = IFeathersControl(this.titleTextRenderer);
-			uiTitleRenderer.styleNameList.add(this.titleStyleName);
+			var titleStyleName:String = this._customTitleStyleName != null ? this._customTitleStyleName : this.titleStyleName;
+			uiTitleRenderer.styleNameList.add(titleStyleName);
 			this.addChild(DisplayObject(uiTitleRenderer));
 		}
 
@@ -1623,21 +1592,22 @@ package feathers.controls
 			{
 				return 0;
 			}
+			//first, we check if it's iOS or not. at this time, we only need to
+			//use extra padding on iOS. android and others are fine.
 			var os:String = Capabilities.os;
 			if(os.indexOf(IOS_NAME_PREFIX) != 0 || parseInt(os.substr(IOS_NAME_PREFIX.length, 1), 10) < STATUS_BAR_MIN_IOS_VERSION)
 			{
 				return 0;
 			}
+			//next, we check if the app is full screen or not. if it is full
+			//screen, then the status bar isn't visible, and we don't need the
+			//extra padding.
 			var nativeStage:Stage = Starling.current.nativeStage;
 			if(nativeStage.displayState != StageDisplayState.NORMAL)
 			{
 				return 0;
 			}
-			if(DeviceCapabilities.dpi >= IOS_RETINA_MINIMUM_DPI)
-			{
-				return IOS_RETINA_STATUS_BAR_HEIGHT;
-			}
-			return IOS_NON_RETINA_STATUS_BAR_HEIGHT;
+			return IOS_STATUS_BAR_HEIGHT * Math.floor(DeviceCapabilities.dpi / IOS_DPI) / Starling.current.contentScaleFactor;
 		}
 
 		/**

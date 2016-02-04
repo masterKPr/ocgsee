@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -8,7 +8,10 @@ accordance with the terms of the accompanying license agreement.
 package feathers.controls
 {
 	import feathers.controls.popups.CalloutPopUpContentManager;
+	import feathers.controls.popups.DropDownPopUpContentManager;
+	import feathers.controls.popups.IPersistentPopUpContentManager;
 	import feathers.controls.popups.IPopUpContentManager;
+	import feathers.controls.popups.IPopUpContentManagerWithPrompt;
 	import feathers.controls.popups.VerticalCenteredPopUpContentManager;
 	import feathers.core.FeathersControl;
 	import feathers.core.IFocusDisplayObject;
@@ -29,6 +32,7 @@ package feathers.controls
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
+	import starling.utils.SystemUtil;
 
 	/**
 	 * Dispatched when the pop-up list is opened.
@@ -150,36 +154,12 @@ package feathers.controls
 		public static const DEFAULT_CHILD_STYLE_NAME_BUTTON:String = "feathers-picker-list-button";
 
 		/**
-		 * DEPRECATED: Replaced by <code>PickerList.DEFAULT_CHILD_STYLE_NAME_BUTTON</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see PickerList#DEFAULT_CHILD_STYLE_NAME_BUTTON
-		 */
-		public static const DEFAULT_CHILD_NAME_BUTTON:String = DEFAULT_CHILD_STYLE_NAME_BUTTON;
-
-		/**
 		 * The default value added to the <code>styleNameList</code> of the pop-up
 		 * list.
 		 *
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const DEFAULT_CHILD_STYLE_NAME_LIST:String = "feathers-picker-list-list";
-
-		/**
-		 * DEPRECATED: Replaced by <code>PickerList.DEFAULT_CHILD_STYLE_NAME_LIST</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see PickerList#DEFAULT_CHILD_STYLE_NAME_LIST
-		 */
-		public static const DEFAULT_CHILD_NAME_LIST:String = DEFAULT_CHILD_STYLE_NAME_LIST;
 
 		/**
 		 * The default <code>IStyleProvider</code> for all <code>PickerList</code>
@@ -230,29 +210,6 @@ package feathers.controls
 		protected var buttonStyleName:String = DEFAULT_CHILD_STYLE_NAME_BUTTON;
 
 		/**
-		 * DEPRECATED: Replaced by <code>buttonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #buttonStyleName
-		 */
-		protected function get buttonName():String
-		{
-			return this.buttonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set buttonName(value:String):void
-		{
-			this.buttonStyleName = value;
-		}
-
-		/**
 		 * The default value added to the <code>styleNameList</code> of the
 		 * pop-up list. This variable is <code>protected</code> so that
 		 * sub-classes can customize the list style name in their constructors
@@ -266,29 +223,6 @@ package feathers.controls
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		protected var listStyleName:String = DEFAULT_CHILD_STYLE_NAME_LIST;
-
-		/**
-		 * DEPRECATED: Replaced by <code>listStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #listStyleName
-		 */
-		protected function get listName():String
-		{
-			return this.listStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set listName(value:String):void
-		{
-			this.listStyleName = value;
-		}
 
 		/**
 		 * The button sub-component.
@@ -829,29 +763,6 @@ package feathers.controls
 			this._customButtonStyleName = value;
 			this.invalidate(INVALIDATION_FLAG_BUTTON_FACTORY);
 		}
-
-		/**
-		 * DEPRECATED: Replaced by <code>customButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customButtonStyleName
-		 */
-		public function get customButtonName():String
-		{
-			return this.customButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customButtonName(value:String):void
-		{
-			this.customButtonStyleName = value;
-		}
 		
 		/**
 		 * @private
@@ -859,9 +770,11 @@ package feathers.controls
 		protected var _buttonProperties:PropertyProxy;
 		
 		/**
-		 * A set of key/value pairs to be passed down to the picker's button
-		 * sub-component. It is a <code>feathers.controls.Button</code>
-		 * instance that is created by <code>buttonFactory</code>.
+		 * An object that stores properties for the picker's button
+		 * sub-component, and the properties will be passed down to the button
+		 * when the picker validates. For a list of available
+		 * properties, refer to
+		 * <a href="Button.html"><code>feathers.controls.Button</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1024,29 +937,6 @@ package feathers.controls
 			this._customListStyleName = value;
 			this.invalidate(INVALIDATION_FLAG_LIST_FACTORY);
 		}
-
-		/**
-		 * DEPRECATED: Replaced by <code>customListStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customListStyleName
-		 */
-		public function get customListName():String
-		{
-			return this.customListStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customListName(value:String):void
-		{
-			this.customListStyleName = value;
-		}
 		
 		/**
 		 * @private
@@ -1054,10 +944,11 @@ package feathers.controls
 		protected var _listProperties:PropertyProxy;
 		
 		/**
-		 * A set of key/value pairs to be passed down to the picker's pop-up
-		 * list sub-component. The pop-up list is a
-		 * <code>feathers.controls.List</code> instance that is created by
-		 * <code>listFactory</code>.
+		 * An object that stores properties for the picker's pop-up list
+		 * sub-component, and the properties will be passed down to the pop-up
+		 * list when the picker validates. For a list of available
+		 * properties, refer to
+		 * <a href="List.html"><code>feathers.controls.List</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1175,6 +1066,18 @@ package feathers.controls
 		}
 
 		/**
+		 * @inheritDoc
+		 */
+		public function get baseline():Number
+		{
+			if(!this.button)
+			{
+				return this.scaledActualHeight;
+			}
+			return this.scaleY * (this.button.y + this.button.baseline);
+		}
+
+		/**
 		 * @private
 		 */
 		protected var _isOpenListPending:Boolean = false;
@@ -1255,6 +1158,10 @@ package feathers.controls
 				return;
 			}
 			this._isOpenListPending = false;
+			if(this._popUpContentManager is IPopUpContentManagerWithPrompt)
+			{
+				IPopUpContentManagerWithPrompt(this._popUpContentManager).prompt = this._prompt;
+			}
 			this._popUpContentManager.open(this.list, this);
 			this.list.scrollToDisplayIndex(this._selectedIndex);
 			this.list.validate();
@@ -1344,7 +1251,11 @@ package feathers.controls
 		{
 			if(!this._popUpContentManager)
 			{
-				if(DeviceCapabilities.isTablet(Starling.current.nativeStage))
+				if(SystemUtil.isDesktop)
+				{
+					this.popUpContentManager = new DropDownPopUpContentManager();
+				}
+				else if(DeviceCapabilities.isTablet(Starling.current.nativeStage))
 				{
 					this.popUpContentManager = new CalloutPopUpContentManager();
 				}
@@ -1440,10 +1351,16 @@ package feathers.controls
 				this.layout();
 			}
 
-			//final validation to avoid juggler next frame issues
-			//also, to ensure that property changes on the pop-up list are fully
-			//committed
-			this.list.validate();
+			if(this.list.stage)
+			{
+				//final validation to avoid juggler next frame issues
+				//only validate if it's on the display list, though, because the
+				//popUpContentManager may need to place restrictions on
+				//dimensions or make other important changes.
+				//otherwise, the List may create an item renderer for every item
+				//in the data provider, which is not good for performance!
+				this.list.validate();
+			}
 
 			this.handlePendingActions();
 		}
@@ -1747,7 +1664,8 @@ package feathers.controls
 		 */
 		protected function list_changeHandler(event:Event):void
 		{
-			if(this._ignoreSelectionChanges)
+			if(this._ignoreSelectionChanges ||
+				this._popUpContentManager is IPersistentPopUpContentManager)
 			{
 				return;
 			}
@@ -1771,6 +1689,10 @@ package feathers.controls
 		 */
 		protected function popUpContentManager_closeHandler(event:Event):void
 		{
+			if(this._popUpContentManager is IPersistentPopUpContentManager)
+			{
+				this.selectedIndex = this.list.selectedIndex;
+			}
 			if(this._toggleButtonOnOpenAndClose && this.button is IToggle)
 			{
 				IToggle(this.button).isSelected = false;
@@ -1807,7 +1729,8 @@ package feathers.controls
 		 */
 		protected function list_triggeredHandler(event:Event):void
 		{
-			if(!this._isEnabled)
+			if(!this._isEnabled ||
+				this._popUpContentManager is IPersistentPopUpContentManager)
 			{
 				return;
 			}

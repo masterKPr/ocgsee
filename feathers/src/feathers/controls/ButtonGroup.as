@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -10,7 +10,12 @@ package feathers.controls
 	import feathers.core.FeathersControl;
 	import feathers.core.PropertyProxy;
 	import feathers.data.ListCollection;
+	import feathers.events.CollectionEventType;
+	import feathers.events.FeathersEventType;
+	import feathers.layout.FlowLayout;
 	import feathers.layout.HorizontalLayout;
+	import feathers.layout.ILayout;
+	import feathers.layout.IVirtualLayout;
 	import feathers.layout.LayoutBoundsResult;
 	import feathers.layout.VerticalLayout;
 	import feathers.layout.ViewPortBounds;
@@ -59,7 +64,6 @@ package feathers.controls
 	 */
 	[Event(name="triggered", type="starling.events.Event")]
 
-	[DefaultProperty("dataProvider")]
 	/**
 	 * A set of related buttons with layout, customized using a data provider.
 	 *
@@ -121,6 +125,7 @@ package feathers.controls
 			"selectedDisabledIcon",
 			"isSelected",
 			"isToggle",
+			"isLongPressEnabled",
 		];
 
 		/**
@@ -130,6 +135,7 @@ package feathers.controls
 		[
 			Event.TRIGGERED,
 			Event.CHANGE,
+			FeathersEventType.LONG_PRESS,
 		];
 
 		/**
@@ -220,18 +226,6 @@ package feathers.controls
 		public static const DEFAULT_CHILD_STYLE_NAME_BUTTON:String = "feathers-button-group-button";
 
 		/**
-		 * DEPRECATED: Replaced by <code>ButtonGroup.DEFAULT_CHILD_STYLE_NAME_BUTTON</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see ButtonGroup#DEFAULT_CHILD_STYLE_NAME_BUTTON
-		 */
-		public static const DEFAULT_CHILD_NAME_BUTTON:String = DEFAULT_CHILD_STYLE_NAME_BUTTON;
-
-		/**
 		 * @private
 		 */
 		protected static function defaultButtonFactory():Button
@@ -263,29 +257,6 @@ package feathers.controls
 		protected var buttonStyleName:String = DEFAULT_CHILD_STYLE_NAME_BUTTON;
 
 		/**
-		 * DEPRECATED: Replaced by <code>buttonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #buttonStyleName
-		 */
-		protected function get buttonName():String
-		{
-			return this.buttonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set buttonName(value:String):void
-		{
-			this.buttonStyleName = value;
-		}
-
-		/**
 		 * The value added to the <code>styleNameList</code> of the first button.
 		 *
 		 * <p>To customize the first button name without subclassing, see
@@ -297,29 +268,6 @@ package feathers.controls
 		protected var firstButtonStyleName:String = DEFAULT_CHILD_STYLE_NAME_BUTTON;
 
 		/**
-		 * DEPRECATED: Replaced by <code>firstButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #firstButtonStyleName
-		 */
-		protected function get firstButtonName():String
-		{
-			return this.firstButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set firstButtonName(value:String):void
-		{
-			this.firstButtonStyleName = value;
-		}
-
-		/**
 		 * The value added to the <code>styleNameList</code> of the last button.
 		 *
 		 * <p>To customize the last button style name without subclassing, see
@@ -329,29 +277,6 @@ package feathers.controls
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		protected var lastButtonStyleName:String = DEFAULT_CHILD_STYLE_NAME_BUTTON;
-
-		/**
-		 * DEPRECATED: Replaced by <code>lastButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #lastButtonStyleName
-		 */
-		protected function get lastButtonName():String
-		{
-			return this.lastButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set lastButtonName(value:String):void
-		{
-			this.lastButtonStyleName = value;
-		}
 
 		/**
 		 * @private
@@ -440,6 +365,11 @@ package feathers.controls
 		 *     <li>Event.TRIGGERED</li>
 		 *     <li>Event.CHANGE (only supported by <code>ToggleButton</code>)</li>
 		 * </ul>
+		 * 
+		 * <p>Event listeners may have one of the following signatures:</p>
+		 * <pre>function(event:Event):void</pre>
+		 * <pre>function(event:Event, eventData:Object):void</pre>
+		 * <pre>function(event:Event, eventData:Object, dataProviderItem:Object):void</pre>
 		 *
 		 * <p>To use properties and events that are only supported by
 		 * <code>ToggleButton</code>, you must provide a <code>buttonFactory</code>
@@ -447,7 +377,8 @@ package feathers.controls
 		 *
 		 * <p>You can pass a function to the <code>buttonInitializer</code>
 		 * property that can provide custom logic to interpret each item in the
-		 * data provider differently.</p>
+		 * data provider differently. For example, you could use it to support
+		 * additional properties or events.</p>
 		 *
 		 * @default null
 		 *
@@ -470,11 +401,15 @@ package feathers.controls
 			}
 			if(this._dataProvider)
 			{
+				this._dataProvider.removeEventListener(CollectionEventType.UPDATE_ALL, dataProvider_updateAllHandler);
+				this._dataProvider.removeEventListener(CollectionEventType.UPDATE_ITEM, dataProvider_updateItemHandler);
 				this._dataProvider.removeEventListener(Event.CHANGE, dataProvider_changeHandler);
 			}
 			this._dataProvider = value;
 			if(this._dataProvider)
 			{
+				this._dataProvider.addEventListener(CollectionEventType.UPDATE_ALL, dataProvider_updateAllHandler);
+				this._dataProvider.addEventListener(CollectionEventType.UPDATE_ITEM, dataProvider_updateItemHandler);
 				this._dataProvider.addEventListener(Event.CHANGE, dataProvider_changeHandler);
 			}
 			this.invalidate(INVALIDATION_FLAG_DATA);
@@ -483,12 +418,7 @@ package feathers.controls
 		/**
 		 * @private
 		 */
-		protected var verticalLayout:VerticalLayout;
-
-		/**
-		 * @private
-		 */
-		protected var horizontalLayout:HorizontalLayout;
+		protected var layout:ILayout;
 
 		/**
 		 * @private
@@ -508,6 +438,12 @@ package feathers.controls
 		[Inspectable(type="String",enumeration="horizontal,vertical")]
 		/**
 		 * The button group layout is either vertical or horizontal.
+		 * 
+		 * <p>If the <code>direction</code> is
+		 * <code>ButtonGroup.DIRECTION_HORIZONTAL</code> and
+		 * <code>distributeButtonSizes</code> is <code>false</code>, the buttons
+		 * may be displayed in multiple rows, if they won't fit in one row
+		 * horizontally.</p>
 		 *
 		 * <p>The following example sets the layout direction of the buttons
 		 * to line them up horizontally:</p>
@@ -1190,29 +1126,6 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customButtonStyleName
-		 */
-		public function get customButtonName():String
-		{
-			return this.customButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customButtonName(value:String):void
-		{
-			this.customButtonStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _customFirstButtonStyleName:String;
@@ -1253,29 +1166,6 @@ package feathers.controls
 			}
 			this._customFirstButtonStyleName = value;
 			this.invalidate(INVALIDATION_FLAG_BUTTON_FACTORY);
-		}
-
-		/**
-		 * DEPRECATED: Replaced by <code>customFirstButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customFirstButtonStyleName
-		 */
-		public function get customFirstButtonName():String
-		{
-			return this.customFirstButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customFirstButtonName(value:String):void
-		{
-			this.customFirstButtonStyleName = value;
 		}
 
 		/**
@@ -1322,40 +1212,20 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customLastButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customLastButtonStyleName
-		 */
-		public function get customLastButtonName():String
-		{
-			return this.customLastButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customLastButtonName(value:String):void
-		{
-			this.customLastButtonStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _buttonProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to all of the button
-		 * group's buttons. These values are shared by each button, so values
-		 * that cannot be shared (such as display objects that need to be added
-		 * to the display list) should be passed to buttons using the
-		 * <code>buttonFactory</code> or in a theme. The buttons in a button
-		 * group are instances of <code>feathers.controls.Button</code>.
+		 * An object that stores properties for all of the button group's
+		 * buttons, and the properties will be passed down to every button when
+		 * the button group validates. For a list of available properties,
+		 * refer to <a href="Button.html"><code>feathers.controls.Button</code></a>.
+		 * 
+		 * <p>These properties are shared by every button, so anything that cannot
+		 * be shared (such as display objects, which cannot be added to multiple
+		 * parents) should be passed to buttons using the
+		 * <code>buttonFactory</code> or in the theme.</p>
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1421,6 +1291,19 @@ package feathers.controls
 				this._buttonProperties.addOnChangeCallback(childProperties_onChange);
 			}
 			this.invalidate(INVALIDATION_FLAG_STYLES);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get baseline():Number
+		{
+			if(!this.activeButtons || this.activeButtons.length === 0)
+			{
+				return this.scaledActualHeight;
+			}
+			var firstButton:Button = this.activeButtons[0];
+			return this.scaleY * (firstButton.y + firstButton.baseline);
 		}
 
 		/**
@@ -1501,47 +1384,63 @@ package feathers.controls
 		{
 			if(this._direction == DIRECTION_VERTICAL)
 			{
-				if(this.horizontalLayout)
+				var verticalLayout:VerticalLayout = this.layout as VerticalLayout;
+				if(!verticalLayout)
 				{
-					this.horizontalLayout = null;
+					this.layout = verticalLayout = new VerticalLayout();
 				}
-				if(!this.verticalLayout)
-				{
-					this.verticalLayout = new VerticalLayout();
-					this.verticalLayout.useVirtualLayout = false;
-				}
-				this.verticalLayout.distributeHeights = this._distributeButtonSizes;
-				this.verticalLayout.horizontalAlign = this._horizontalAlign;
-				this.verticalLayout.verticalAlign = (this._verticalAlign == VERTICAL_ALIGN_JUSTIFY) ? VERTICAL_ALIGN_TOP : this._verticalAlign;
-				this.verticalLayout.gap = this._gap;
-				this.verticalLayout.firstGap = this._firstGap;
-				this.verticalLayout.lastGap = this._lastGap;
-				this.verticalLayout.paddingTop = this._paddingTop;
-				this.verticalLayout.paddingRight = this._paddingRight;
-				this.verticalLayout.paddingBottom = this._paddingBottom;
-				this.verticalLayout.paddingLeft = this._paddingLeft;
+				verticalLayout.distributeHeights = this._distributeButtonSizes;
+				verticalLayout.horizontalAlign = this._horizontalAlign;
+				verticalLayout.verticalAlign = (this._verticalAlign == VERTICAL_ALIGN_JUSTIFY) ? VERTICAL_ALIGN_TOP : this._verticalAlign;
+				verticalLayout.gap = this._gap;
+				verticalLayout.firstGap = this._firstGap;
+				verticalLayout.lastGap = this._lastGap;
+				verticalLayout.paddingTop = this._paddingTop;
+				verticalLayout.paddingRight = this._paddingRight;
+				verticalLayout.paddingBottom = this._paddingBottom;
+				verticalLayout.paddingLeft = this._paddingLeft;
 			}
 			else //horizontal
 			{
-				if(this.verticalLayout)
+				if(this._distributeButtonSizes)
 				{
-					this.verticalLayout = null;
+					var horizontalLayout:HorizontalLayout = this.layout as HorizontalLayout;
+					if(!horizontalLayout)
+					{
+						this.layout = horizontalLayout = new HorizontalLayout();
+					}
+					horizontalLayout.distributeWidths = true;
+					horizontalLayout.horizontalAlign = (this._horizontalAlign == HORIZONTAL_ALIGN_JUSTIFY) ? HORIZONTAL_ALIGN_LEFT : this._horizontalAlign;
+					horizontalLayout.verticalAlign = this._verticalAlign;
+					horizontalLayout.gap = this._gap;
+					horizontalLayout.firstGap = this._firstGap;
+					horizontalLayout.lastGap = this._lastGap;
+					horizontalLayout.paddingTop = this._paddingTop;
+					horizontalLayout.paddingRight = this._paddingRight;
+					horizontalLayout.paddingBottom = this._paddingBottom;
+					horizontalLayout.paddingLeft = this._paddingLeft;
 				}
-				if(!this.horizontalLayout)
+				else
 				{
-					this.horizontalLayout = new HorizontalLayout();
-					this.horizontalLayout.useVirtualLayout = false;
+					var flowLayout:FlowLayout = this.layout as FlowLayout;
+					if(!flowLayout)
+					{
+						this.layout = flowLayout = new FlowLayout();
+					}
+					flowLayout.horizontalAlign = (this._horizontalAlign == HORIZONTAL_ALIGN_JUSTIFY) ? HORIZONTAL_ALIGN_LEFT : this._horizontalAlign;
+					flowLayout.verticalAlign = this._verticalAlign;
+					flowLayout.gap = this._gap;
+					flowLayout.firstHorizontalGap = this._firstGap;
+					flowLayout.lastHorizontalGap = this._lastGap;
+					flowLayout.paddingTop = this._paddingTop;
+					flowLayout.paddingRight = this._paddingRight;
+					flowLayout.paddingBottom = this._paddingBottom;
+					flowLayout.paddingLeft = this._paddingLeft;
 				}
-				this.horizontalLayout.distributeWidths = this._distributeButtonSizes;
-				this.horizontalLayout.horizontalAlign = (this._horizontalAlign == HORIZONTAL_ALIGN_JUSTIFY) ? HORIZONTAL_ALIGN_LEFT : this._horizontalAlign;
-				this.horizontalLayout.verticalAlign = this._verticalAlign;
-				this.horizontalLayout.gap = this._gap;
-				this.horizontalLayout.firstGap = this._firstGap;
-				this.horizontalLayout.lastGap = this._lastGap;
-				this.horizontalLayout.paddingTop = this._paddingTop;
-				this.horizontalLayout.paddingRight = this._paddingRight;
-				this.horizontalLayout.paddingBottom = this._paddingBottom;
-				this.horizontalLayout.paddingLeft = this._paddingLeft;
+			}
+			if(layout is IVirtualLayout)
+			{
+				IVirtualLayout(layout).useVirtualLayout = false;
 			}
 		}
 
@@ -1828,15 +1727,13 @@ package feathers.controls
 			this._viewPortBounds.minHeight = this._minHeight;
 			this._viewPortBounds.maxWidth = this._maxWidth;
 			this._viewPortBounds.maxHeight = this._maxHeight;
-			if(this.verticalLayout)
-			{
-				this.verticalLayout.layout(this._layoutItems, this._viewPortBounds, this._layoutResult);
-			}
-			else if(this.horizontalLayout)
-			{
-				this.horizontalLayout.layout(this._layoutItems, this._viewPortBounds, this._layoutResult);
-			}
+			this.layout.layout(this._layoutItems, this._viewPortBounds, this._layoutResult);
 			this.setSizeInternal(this._layoutResult.contentWidth, this._layoutResult.contentHeight, false);
+			//final validation to avoid juggler next frame issues
+			for each(var button:Button in this.activeButtons)
+			{
+				button.validate();
+			}
 		}
 
 		/**
@@ -1851,6 +1748,22 @@ package feathers.controls
 		 * @private
 		 */
 		protected function dataProvider_changeHandler(event:Event):void
+		{
+			this.invalidate(INVALIDATION_FLAG_DATA);
+		}
+
+		/**
+		 * @private
+		 */
+		protected function dataProvider_updateAllHandler(event:Event):void
+		{
+			this.invalidate(INVALIDATION_FLAG_DATA);
+		}
+
+		/**
+		 * @private
+		 */
+		protected function dataProvider_updateItemHandler(event:Event, index:int):void
 		{
 			this.invalidate(INVALIDATION_FLAG_DATA);
 		}
@@ -1888,17 +1801,27 @@ package feathers.controls
 					return;
 				}
 				var argCount:int = listener.length;
-				if(argCount == 1)
+				switch(argCount)
 				{
-					listener(event);
-				}
-				else if(argCount == 2)
-				{
-					listener(event, event.data);
-				}
-				else
-				{
-					listener();
+					case 3:
+					{
+						listener(event, event.data, item);
+						break;
+					}
+					case 2:
+					{
+						listener(event, event.data);
+						break;
+					}
+					case 1:
+					{
+						listener(event);
+						break;
+					}
+					default:
+					{
+						listener();
+					}
 				}
 			}
 		}

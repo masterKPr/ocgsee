@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -199,18 +199,6 @@ package feathers.controls
 		public static const DEFAULT_CHILD_STYLE_NAME_MINIMUM_TRACK:String = "feathers-scroll-bar-minimum-track";
 
 		/**
-		 * DEPRECATED: Replaced by <code>ScrollBar.DEFAULT_CHILD_STYLE_NAME_MINIMUM_TRACK</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see ScrollBar#DEFAULT_CHILD_STYLE_NAME_MINIMUM_TRACK
-		 */
-		public static const DEFAULT_CHILD_NAME_MINIMUM_TRACK:String = DEFAULT_CHILD_STYLE_NAME_MINIMUM_TRACK;
-
-		/**
 		 * The default value added to the <code>styleNameList</code> of the maximum
 		 * track.
 		 *
@@ -219,35 +207,11 @@ package feathers.controls
 		public static const DEFAULT_CHILD_STYLE_NAME_MAXIMUM_TRACK:String = "feathers-scroll-bar-maximum-track";
 
 		/**
-		 * DEPRECATED: Replaced by <code>ScrollBar.DEFAULT_CHILD_STYLE_NAME_MAXIMUM_TRACK</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see ScrollBar#DEFAULT_CHILD_STYLE_NAME_MAXIMUM_TRACK
-		 */
-		public static const DEFAULT_CHILD_NAME_MAXIMUM_TRACK:String = DEFAULT_CHILD_STYLE_NAME_MAXIMUM_TRACK;
-
-		/**
 		 * The default value added to the <code>styleNameList</code> of the thumb.
 		 *
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const DEFAULT_CHILD_STYLE_NAME_THUMB:String = "feathers-scroll-bar-thumb";
-
-		/**
-		 * DEPRECATED: Replaced by <code>ScrollBar.DEFAULT_CHILD_STYLE_NAME_THUMB</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see ScrollBar#DEFAULT_CHILD_STYLE_NAME_THUMB
-		 */
-		public static const DEFAULT_CHILD_NAME_THUMB:String = DEFAULT_CHILD_STYLE_NAME_THUMB;
 
 		/**
 		 * The default value added to the <code>styleNameList</code> of the decrement
@@ -258,36 +222,12 @@ package feathers.controls
 		public static const DEFAULT_CHILD_STYLE_NAME_DECREMENT_BUTTON:String = "feathers-scroll-bar-decrement-button";
 
 		/**
-		 * DEPRECATED: Replaced by <code>ScrollBar.DEFAULT_CHILD_STYLE_NAME_DECREMENT_BUTTON</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see ScrollBar#DEFAULT_CHILD_STYLE_NAME_DECREMENT_BUTTON
-		 */
-		public static const DEFAULT_CHILD_NAME_DECREMENT_BUTTON:String = DEFAULT_CHILD_STYLE_NAME_DECREMENT_BUTTON;
-
-		/**
 		 * The default value added to the <code>styleNameList</code> of the increment
 		 * button.
 		 *
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		public static const DEFAULT_CHILD_STYLE_NAME_INCREMENT_BUTTON:String = "feathers-scroll-bar-increment-button";
-
-		/**
-		 * DEPRECATED: Replaced by <code>ScrollBar.DEFAULT_CHILD_STYLE_NAME_INCREMENT_BUTTON</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see ScrollBar#DEFAULT_CHILD_STYLE_NAME_INCREMENT_BUTTON
-		 */
-		public static const DEFAULT_CHILD_NAME_INCREMENT_BUTTON:String = DEFAULT_CHILD_STYLE_NAME_INCREMENT_BUTTON;
 
 		/**
 		 * The default <code>IStyleProvider</code> for all <code>ScrollBar</code>
@@ -363,29 +303,6 @@ package feathers.controls
 		protected var minimumTrackStyleName:String = DEFAULT_CHILD_STYLE_NAME_MINIMUM_TRACK;
 
 		/**
-		 * DEPRECATED: Replaced by <code>minimumTrackStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #minimumTrackStyleName
-		 */
-		protected function get minimumTrackName():String
-		{
-			return this.minimumTrackStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set minimumTrackName(value:String):void
-		{
-			this.minimumTrackStyleName = value;
-		}
-
-		/**
 		 * The value added to the <code>styleNameList</code> of the maximum
 		 * track. This variable is <code>protected</code> so that sub-classes
 		 * can customize the maximum track style name in their constructors
@@ -401,29 +318,6 @@ package feathers.controls
 		protected var maximumTrackStyleName:String = DEFAULT_CHILD_STYLE_NAME_MAXIMUM_TRACK;
 
 		/**
-		 * DEPRECATED: Replaced by <code>maximumTrackStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #maximumTrackStyleName
-		 */
-		protected function get maximumTrackName():String
-		{
-			return this.maximumTrackStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set maximumTrackName(value:String):void
-		{
-			this.maximumTrackStyleName = value;
-		}
-
-		/**
 		 * The value added to the <code>styleNameList</code> of the thumb. This
 		 * variable is <code>protected</code> so that sub-classes can customize
 		 * the thumb style name in their constructors instead of using the
@@ -436,29 +330,6 @@ package feathers.controls
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		protected var thumbStyleName:String = DEFAULT_CHILD_STYLE_NAME_THUMB;
-
-		/**
-		 * DEPRECATED: Replaced by <code>thumbStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #thumbStyleName
-		 */
-		protected function get thumbName():String
-		{
-			return this.thumbStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set thumbName(value:String):void
-		{
-			this.thumbStyleName = value;
-		}
 
 		/**
 		 * The value added to the <code>styleNameList</code> of the decrement
@@ -476,29 +347,6 @@ package feathers.controls
 		protected var decrementButtonStyleName:String = DEFAULT_CHILD_STYLE_NAME_DECREMENT_BUTTON;
 
 		/**
-		 * DEPRECATED: Replaced by <code>decrementButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #decrementButtonStyleName
-		 */
-		protected function get decrementButtonName():String
-		{
-			return this.decrementButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set decrementButtonName(value:String):void
-		{
-			this.decrementButtonStyleName = value;
-		}
-
-		/**
 		 * The value added to the <code>styleNameList</code> of the increment
 		 * button. This variable is <code>protected</code> so that sub-classes
 		 * can customize the increment button style name in their constructors
@@ -512,29 +360,6 @@ package feathers.controls
 		 * @see feathers.core.FeathersControl#styleNameList
 		 */
 		protected var incrementButtonStyleName:String = DEFAULT_CHILD_STYLE_NAME_INCREMENT_BUTTON;
-
-		/**
-		 * DEPRECATED: Replaced by <code>incrementButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #incrementButtonStyleName
-		 */
-		protected function get incrementButtonName():String
-		{
-			return this.incrementButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set incrementButtonName(value:String):void
-		{
-			this.incrementButtonStyleName = value;
-		}
 
 		/**
 		 * @private
@@ -1196,38 +1021,15 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customMinimumTrackStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customMinimumTrackStyleName
-		 */
-		public function get customMinimumTrackName():String
-		{
-			return this.customMinimumTrackStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customMinimumTrackName(value:String):void
-		{
-			this.customMinimumTrackStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _minimumTrackProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to the scroll bar's
-		 * minimum track sub-component. The minimum track is a
-		 * <code>feathers.controls.Button</code> instance. that is created by
-		 * <code>minimumTrackFactory</code>.
+		 * An object that stores properties for the scroll bar's "minimum"
+		 * track, and the properties will be passed down to the "minimum" track when
+		 * the scroll bar validates. For a list of available properties, refer to
+		 * <a href="Button.html"><code>feathers.controls.Button</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1393,38 +1195,15 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customMaximumTrackStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customMaximumTrackStyleName
-		 */
-		public function get customMaximumTrackName():String
-		{
-			return this.customMaximumTrackStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customMaximumTrackName(value:String):void
-		{
-			this.customMaximumTrackStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _maximumTrackProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to the scroll bar's
-		 * maximum track sub-component. The maximum track is a
-		 * <code>feathers.controls.Button</code> instance that is created by
-		 * <code>maximumTrackFactory</code>.
+		 * An object that stores properties for the scroll bar's "maximum"
+		 * track, and the properties will be passed down to the "maximum" track when
+		 * the scroll bar validates. For a list of available properties, refer to
+		 * <a href="Button.html"><code>feathers.controls.Button</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1590,37 +1369,15 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customThumbStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customThumbStyleName
-		 */
-		public function get customThumbName():String
-		{
-			return this.customThumbStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customThumbName(value:String):void
-		{
-			this.customThumbStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _thumbProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to the scroll bar's thumb
-		 * sub-component. The thumb is a <code>feathers.controls.Button</code>
-		 * instance that is created by <code>thumbFactory</code>.
+		 * An object that stores properties for the scroll bar's thumb, and the
+		 * properties will be passed down to the thumb when the scroll bar
+		 * validates. For a list of available properties, refer to
+		 * <a href="Button.html"><code>feathers.controls.Button</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1786,38 +1543,16 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customDecrementButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customDecrementButtonStyleName
-		 */
-		public function get customDecrementButtonName():String
-		{
-			return this.customDecrementButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customDecrementButtonName(value:String):void
-		{
-			this.customDecrementButtonStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _decrementButtonProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to the scroll bar's
-		 * decrement button sub-component. The decrement button is a
-		 * <code>feathers.controls.Button</code> instance that is created by
-		 * <code>decrementButtonFactory</code>.
+		 * An object that stores properties for the scroll bar's decrement
+		 * button, and the properties will be passed down to the decrement
+		 * button when the scroll bar validates. For a list of available
+		 * properties, refer to
+		 * <a href="Button.html"><code>feathers.controls.Button</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -1983,38 +1718,16 @@ package feathers.controls
 		}
 
 		/**
-		 * DEPRECATED: Replaced by <code>customIncrementButtonStyleName</code>.
-		 *
-		 * <p><strong>DEPRECATION WARNING:</strong> This property is deprecated
-		 * starting with Feathers 2.1. It will be removed in a future version of
-		 * Feathers according to the standard
-		 * <a target="_top" href="../../../help/deprecation-policy.html">Feathers deprecation policy</a>.</p>
-		 *
-		 * @see #customIncrementButtonStyleName
-		 */
-		public function get customIncrementButtonName():String
-		{
-			return this.customIncrementButtonStyleName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set customIncrementButtonName(value:String):void
-		{
-			this.customIncrementButtonStyleName = value;
-		}
-
-		/**
 		 * @private
 		 */
 		protected var _incrementButtonProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to the scroll bar's
-		 * increment button sub-component. The increment button is a
-		 * <code>feathers.controls.Button</code> instance that is created by
-		 * <code>incrementButtonFactory</code>.
+		 * An object that stores properties for the scroll bar's increment
+		 * button, and the properties will be passed down to the increment
+		 * button when the scroll bar validates. For a list of available
+		 * properties, refer to
+		 * <a href="Button.html"><code>feathers.controls.Button</code></a>.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -2110,6 +1823,21 @@ package feathers.controls
 		 * @private
 		 */
 		protected var _touchValue:Number;
+
+		/**
+		 * @private
+		 */
+		override protected function initialize():void
+		{
+			if(this._value < this._minimum)
+			{
+				this.value = this._minimum;
+			}
+			else if(this._value > this._maximum)
+			{
+				this.value = this._maximum;
+			}
+		}
 
 		/**
 		 * @private
@@ -2273,6 +2001,7 @@ package feathers.controls
 					{
 						newWidth = this.minimumTrackOriginalWidth;
 					}
+					newWidth += this.incrementButton.width + this.decrementButton.width;
 				}
 			}
 			if(needsHeight)
@@ -2287,6 +2016,7 @@ package feathers.controls
 					{
 						newHeight = this.minimumTrackOriginalHeight;
 					}
+					newHeight += this.incrementButton.height + this.decrementButton.height;
 				}
 				else //horizontal
 				{
@@ -2579,21 +2309,21 @@ package feathers.controls
 
 			var contentWidth:Number = this.actualWidth - this._paddingLeft - this._paddingRight;
 			var contentHeight:Number = this.actualHeight - this._paddingTop - this._paddingBottom;
-			var adjustedPageStep:Number = this._page;
+			var adjustedPage:Number = this._page;
 			if(this._page == 0)
 			{
-				adjustedPageStep = range;
+				adjustedPage = this._step;
 			}
-			else if(adjustedPageStep > range)
+			if(adjustedPage > range)
 			{
-				adjustedPageStep = range;
+				adjustedPage = range;
 			}
 			if(this._direction == DIRECTION_VERTICAL)
 			{
 				contentHeight -= (this.decrementButton.height + this.incrementButton.height);
 				var thumbMinHeight:Number = this.thumb.minHeight > 0 ? this.thumb.minHeight : this.thumbOriginalHeight;
 				this.thumb.width = this.thumbOriginalWidth;
-				this.thumb.height = Math.max(thumbMinHeight, contentHeight * adjustedPageStep / range);
+				this.thumb.height = Math.max(thumbMinHeight, contentHeight * adjustedPage / range);
 				var trackScrollableHeight:Number = contentHeight - this.thumb.height;
 				this.thumb.x = this._paddingLeft + (this.actualWidth - this._paddingLeft - this._paddingRight - this.thumb.width) / 2;
 				this.thumb.y = this.decrementButton.height + this._paddingTop + Math.max(0, Math.min(trackScrollableHeight, trackScrollableHeight * (this._value - this._minimum) / range));
@@ -2602,7 +2332,7 @@ package feathers.controls
 			{
 				contentWidth -= (this.decrementButton.width + this.decrementButton.width);
 				var thumbMinWidth:Number = this.thumb.minWidth > 0 ? this.thumb.minWidth : this.thumbOriginalWidth;
-				this.thumb.width = Math.max(thumbMinWidth, contentWidth * adjustedPageStep / range);
+				this.thumb.width = Math.max(thumbMinWidth, contentWidth * adjustedPage / range);
 				this.thumb.height = this.thumbOriginalHeight;
 				var trackScrollableWidth:Number = contentWidth - this.thumb.width;
 				this.thumb.x = this.decrementButton.width + this._paddingLeft + Math.max(0, Math.min(trackScrollableWidth, trackScrollableWidth * (this._value - this._minimum) / range));
@@ -2788,9 +2518,19 @@ package feathers.controls
 		 */
 		protected function adjustPage():void
 		{
+			var range:Number = this._maximum - this._minimum;
+			var adjustedPage:Number = this._page;
+			if(this._page == 0)
+			{
+				adjustedPage = this._step;
+			}
+			if(adjustedPage > range)
+			{
+				adjustedPage = range;
+			}
 			if(this._touchValue < this._value)
 			{
-				var newValue:Number = Math.max(this._touchValue, this._value - this._page);
+				var newValue:Number = Math.max(this._touchValue, this._value - adjustedPage);
 				if(this._step != 0 && newValue != this._maximum && newValue != this._minimum)
 				{
 					newValue = roundToNearest(newValue, this._step);
@@ -2799,7 +2539,7 @@ package feathers.controls
 			}
 			else if(this._touchValue > this._value)
 			{
-				newValue = Math.min(this._touchValue, this._value + this._page);
+				newValue = Math.min(this._touchValue, this._value + adjustedPage);
 				if(this._step != 0 && newValue != this._maximum && newValue != this._minimum)
 				{
 					newValue = roundToNearest(newValue, this._step);

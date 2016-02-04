@@ -1,6 +1,6 @@
 /*
 Feathers
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC. All Rights Reserved.
 
 This program is free software. You can redistribute and/or modify it in
 accordance with the terms of the accompanying license agreement.
@@ -9,10 +9,14 @@ package feathers.controls
 {
 	import feathers.controls.text.ITextEditorViewPort;
 	import feathers.controls.text.TextFieldTextEditorViewPort;
+	import feathers.core.INativeFocusOwner;
+	import feathers.core.IStateContext;
+	import feathers.core.IStateObserver;
 	import feathers.core.PropertyProxy;
 	import feathers.events.FeathersEventType;
 	import feathers.skins.IStyleProvider;
 
+	import flash.display.InteractiveObject;
 	import flash.geom.Point;
 	import flash.ui.Mouse;
 	import flash.ui.MouseCursor;
@@ -47,6 +51,30 @@ package feathers.controls
 	[Event(name="change",type="starling.events.Event")]
 
 	/**
+	 * Dispatched when the display object's state changes.
+	 *
+	 * <p>The properties of the event object have the following values:</p>
+	 * <table class="innertable">
+	 * <tr><th>Property</th><th>Value</th></tr>
+	 * <tr><td><code>bubbles</code></td><td>false</td></tr>
+	 * <tr><td><code>currentTarget</code></td><td>The Object that defines the
+	 *   event listener that handles the event. For example, if you use
+	 *   <code>myButton.addEventListener()</code> to register an event listener,
+	 *   myButton is the value of the <code>currentTarget</code>.</td></tr>
+	 * <tr><td><code>data</code></td><td>null</td></tr>
+	 * <tr><td><code>target</code></td><td>The Object that dispatched the event;
+	 *   it is not always the Object listening for the event. Use the
+	 *   <code>currentTarget</code> property to always access the Object
+	 *   listening for the event.</td></tr>
+	 * </table>
+	 *
+	 * @eventType feathers.events.FeathersEventType.STATE_CHANGE
+	 *
+	 * @see #currentState
+	 */
+	[Event(name="stateChange",type="starling.events.Event")]
+
+	/**
 	 * A text entry control that allows users to enter and edit multiple lines
 	 * of uniformly-formatted text with the ability to scroll.
 	 *
@@ -72,7 +100,7 @@ package feathers.controls
 	 * @see ../../../help/text-area.html How to use the Feathers TextArea component
 	 * @see feathers.controls.TextInput
 	 */
-	public class TextArea extends Scroller
+	public class TextArea extends Scroller implements INativeFocusOwner, IStateContext
 	{
 		/**
 		 * @private
@@ -116,6 +144,13 @@ package feathers.controls
 		 * @see feathers.controls.Scroller#scrollBarDisplayMode
 		 */
 		public static const SCROLL_BAR_DISPLAY_MODE_FIXED:String = "fixed";
+
+		/**
+		 * @copy feathers.controls.Scroller#SCROLL_BAR_DISPLAY_MODE_FIXED_FLOAT
+		 *
+		 * @see feathers.controls.Scroller#scrollBarDisplayMode
+		 */
+		public static const SCROLL_BAR_DISPLAY_MODE_FIXED_FLOAT:String = "fixedFloat";
 
 		/**
 		 * @copy feathers.controls.Scroller#SCROLL_BAR_DISPLAY_MODE_NONE
@@ -203,6 +238,14 @@ package feathers.controls
 		public static const STATE_FOCUSED:String = "focused";
 
 		/**
+		 * The default value added to the <code>styleNameList</code> of the text
+		 * editor.
+		 *
+		 * @see feathers.core.FeathersControl#styleNameList
+		 */
+		public static const DEFAULT_CHILD_STYLE_NAME_TEXT_EDITOR:String = "feathers-text-area-text-editor";
+
+		/**
 		 * The default <code>IStyleProvider</code> for all <code>TextArea</code>
 		 * components.
 		 *
@@ -228,9 +271,36 @@ package feathers.controls
 		protected var textEditorViewPort:ITextEditorViewPort;
 
 		/**
+		 * The value added to the <code>styleNameList</code> of the text editor.
+		 * This variable is <code>protected</code> so that sub-classes can
+		 * customize the text editor style name in their constructors instead of
+		 * using the default style name defined by
+		 * <code>DEFAULT_CHILD_STYLE_NAME_TEXT_EDITOR</code>.
+		 *
+		 * @see feathers.core.FeathersControl#styleNameList
+		 */
+		protected var textEditorStyleName:String = DEFAULT_CHILD_STYLE_NAME_TEXT_EDITOR;
+
+		/**
 		 * @private
 		 */
 		protected var _textEditorHasFocus:Boolean = false;
+
+		/**
+		 * A text editor may be an <code>INativeFocusOwner</code>, so we need to
+		 * return the value of its <code>nativeFocus</code> property. If not,
+		 * then we return <code>null</code>.
+		 *
+		 * @see feathers.core.INativeFocusOwner
+		 */
+		public function get nativeFocus():InteractiveObject
+		{
+			if(this.textEditorViewPort is INativeFocusOwner)
+			{
+				return INativeFocusOwner(this.textEditorViewPort).nativeFocus;
+			}
+			return null;
+		}
 
 		/**
 		 * @private
@@ -305,11 +375,11 @@ package feathers.controls
 			super.isEnabled = value;
 			if(this._isEnabled)
 			{
-				this.currentState = this._hasFocus ? STATE_FOCUSED : STATE_ENABLED;
+				this.changeState(this.hasFocus ? STATE_FOCUSED : STATE_ENABLED);
 			}
 			else
 			{
-				this.currentState = STATE_DISABLED;
+				this.changeState(STATE_DISABLED);
 			}
 		}
 
@@ -339,30 +409,13 @@ package feathers.controls
 		protected var _currentState:String = STATE_ENABLED;
 
 		/**
-		 * The current state of the input.
+		 * The current state of the text area.
 		 *
-		 * <p>For internal use in subclasses.</p>
+		 * @see #event:stateChange feathers.events.FeathersEventType.STATE_CHANGE
 		 */
-		protected function get currentState():String
+		public function get currentState():String
 		{
 			return this._currentState;
-		}
-
-		/**
-		 * @private
-		 */
-		protected function set currentState(value:String):void
-		{
-			if(this._currentState == value)
-			{
-				return;
-			}
-			if(this.stateNames.indexOf(value) < 0)
-			{
-				throw new ArgumentError("Invalid state: " + value + ".");
-			}
-			this._currentState = value;
-			this.invalidate(INVALIDATION_FLAG_STATE);
 		}
 
 		/**
@@ -641,12 +694,62 @@ package feathers.controls
 		/**
 		 * @private
 		 */
+		protected var _customTextEditorStyleName:String;
+
+		/**
+		 * A style name to add to the text area's text editor sub-component.
+		 * Typically used by a theme to provide different styles to different
+		 * text inputs.
+		 *
+		 * <p>In the following example, a custom text editor style name is
+		 * passed to the text area:</p>
+		 *
+		 * <listing version="3.0">
+		 * textArea.customTextEditorStyleName = "my-custom-text-area-text-editor";</listing>
+		 *
+		 * <p>In your theme, you can target this sub-component style name to
+		 * provide different styles than the default:</p>
+		 *
+		 * <listing version="3.0">
+		 * getStyleProviderForClass( TextFieldTextEditorViewPort ).setFunctionForStyleName( "my-custom-text-area-text-editor", setCustomTextAreaTextEditorStyles );</listing>
+		 *
+		 * @default null
+		 *
+		 * @see #DEFAULT_CHILD_STYLE_NAME_TEXT_EDITOR
+		 * @see feathers.core.FeathersControl#styleNameList
+		 * @see #textEditorFactory
+		 */
+		public function get customTextEditorStyleName():String
+		{
+			return this._customTextEditorStyleName;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set customTextEditorStyleName(value:String):void
+		{
+			if(this._customTextEditorStyleName == value)
+			{
+				return;
+			}
+			this._customTextEditorStyleName = value;
+			this.invalidate(INVALIDATION_FLAG_TEXT_RENDERER);
+		}
+
+		/**
+		 * @private
+		 */
 		protected var _textEditorProperties:PropertyProxy;
 
 		/**
-		 * A set of key/value pairs to be passed down to the text area's text
-		 * editor view port. The text editor view port is an <code>ITextEditorViewPort</code>
-		 * instance that is created by <code>textEditorFactory</code>.
+		 * An object that stores properties for the text area's text editor
+		 * sub-component, and the properties will be passed down to the
+		 * text editor when the text area validates. The available properties
+		 * depend on which <code>ITextEditorViewPort</code> implementation is
+		 * returned by <code>textEditorFactory</code>. Refer to
+		 * <a href="text/ITextEditorViewPort.html"><code>feathers.controls.text.ITextEditorViewPort</code></a>
+		 * for a list of available text editor implementations for text area.
 		 *
 		 * <p>If the subcomponent has its own subcomponents, their properties
 		 * can be set too, using attribute <code>&#64;</code> notation. For example,
@@ -670,7 +773,6 @@ package feathers.controls
 		 *
 		 * @see #textEditorFactory
 		 * @see feathers.controls.text.ITextEditorViewPort
-		 * @see feathers.controls.text.TextFieldTextEditorViewPort
 		 */
 		public function get textEditorProperties():Object
 		{
@@ -799,6 +901,18 @@ package feathers.controls
 		/**
 		 * @private
 		 */
+		override public function dispose():void
+		{
+			if(this._backgroundFocusedSkin && this._backgroundFocusedSkin.parent !== this)
+			{
+				this._backgroundFocusedSkin.dispose();
+			}
+			super.dispose();
+		}
+
+		/**
+		 * @private
+		 */
 		override protected function draw():void
 		{
 			var textEditorInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_TEXT_EDITOR);
@@ -867,6 +981,12 @@ package feathers.controls
 			{
 				this.textEditorViewPort = new TextFieldTextEditorViewPort();
 			}
+			var textEditorStyleName:String = this._customTextEditorStyleName != null ? this._customTextEditorStyleName : this.textEditorStyleName;
+			this.textEditorViewPort.styleNameList.add(textEditorStyleName);
+			if(this.textEditorViewPort is IStateObserver)
+			{
+				IStateObserver(this.textEditorViewPort).stateContext = this;
+			}
 			this.textEditorViewPort.addEventListener(Event.CHANGE, textEditor_changeHandler);
 			this.textEditorViewPort.addEventListener(FeathersEventType.FOCUS_IN, textEditor_focusInHandler);
 			this.textEditorViewPort.addEventListener(FeathersEventType.FOCUS_OUT, textEditor_focusOutHandler);
@@ -878,6 +998,23 @@ package feathers.controls
 				//the view port setter won't do this
 				oldViewPort.dispose();
 			}
+		}
+
+		/**
+		 * @private
+		 */
+		protected function changeState(state:String):void
+		{
+			if(this._currentState == state)
+			{
+				return;
+			}
+			if(this.stateNames.indexOf(state) < 0)
+			{
+				throw new ArgumentError("Invalid state: " + state + ".");
+			}
+			this._currentState = state;
+			this.invalidate(INVALIDATION_FLAG_STATE);
 		}
 
 		/**
@@ -932,7 +1069,7 @@ package feathers.controls
 			{
 				this.currentBackgroundSkin = this._backgroundDisabledSkin;
 			}
-			else if(this._hasFocus && this._backgroundFocusedSkin)
+			else if(this.hasFocus && this._backgroundFocusedSkin)
 			{
 				this.currentBackgroundSkin = this._backgroundFocusedSkin;
 			}
@@ -1135,14 +1272,18 @@ package feathers.controls
 		protected function textEditor_focusInHandler(event:Event):void
 		{
 			this._textEditorHasFocus = true;
-			this.currentState = STATE_FOCUSED;
+			this.changeState(STATE_FOCUSED);
 			this._touchPointID = -1;
 			this.invalidate(INVALIDATION_FLAG_STATE);
-			if(this._focusManager)
+			if(this._focusManager && this.isFocusEnabled && this._focusManager.focus !== this)
 			{
+				//if setFocus() was called manually, we need to notify the focus
+				//manager (unless isFocusEnabled is false).
+				//if the focus manager already knows that we have focus, it will
+				//simply return without doing anything.
 				this._focusManager.focus = this;
 			}
-			else
+			else if(!this._focusManager)
 			{
 				this.dispatchEventWith(FeathersEventType.FOCUS_IN);
 			}
@@ -1154,13 +1295,18 @@ package feathers.controls
 		protected function textEditor_focusOutHandler(event:Event):void
 		{
 			this._textEditorHasFocus = false;
-			this.currentState = this._isEnabled ? STATE_ENABLED : STATE_DISABLED;
+			this.changeState(this._isEnabled ? STATE_ENABLED : STATE_DISABLED);
 			this.invalidate(INVALIDATION_FLAG_STATE);
-			if(this._focusManager)
+			if(this._focusManager && this._focusManager.focus === this)
 			{
-				return;
+				//if clearFocus() was called manually, we need to notify the
+				//focus manager if it still thinks we have focus.
+				this._focusManager.focus = null;
 			}
-			this.dispatchEventWith(FeathersEventType.FOCUS_OUT);
+			else if(!this._focusManager)
+			{
+				this.dispatchEventWith(FeathersEventType.FOCUS_OUT);
+			}
 		}
 	}
 }
