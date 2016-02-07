@@ -9,7 +9,6 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.views.BagView;
 	import com.application.ocgsee.views.SearchView;
 	
-	import flash.utils.setTimeout;
 	
 	import feathers.controls.Drawers;
 	import feathers.events.FeathersEventType;
