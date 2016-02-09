@@ -5,28 +5,18 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.models.LflistPackage;
 	import com.application.ocgsee.proxys.ConfigProxy;
 	import com.application.ocgsee.proxys.FavoritesSearchProxy;
-	import com.application.ocgsee.proxys.KVDBProxy;
 	import com.application.ocgsee.proxys.LimitProxy;
 	import com.application.ocgsee.proxys.SQLProxy;
 	import com.application.ocgsee.utils.localize;
-	import com.application.ocgsee.views.SearchView;
+	import com.application.ocgsee.views.mxml.LabelPicker;
+	import com.application.ocgsee.views.mxml.SearchView;
 	
-	import flash.utils.setTimeout;
-	
-	import feathers.controls.Header;
-	import feathers.controls.List;
-	import feathers.controls.PickerList;
-	import feathers.controls.renderers.DefaultListItemRenderer;
-	import feathers.controls.renderers.IListItemRenderer;
 	import feathers.data.ListCollection;
-	
-	import framework.log.LogUtils;
 	
 	import mvclite.mediator.Mediator_Lite;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	
-	import starling.display.DisplayObject;
 	import starling.events.Event;
 	
 	public class SearchViewMediator extends Mediator_Lite
@@ -37,30 +27,16 @@ package com.application.ocgsee.mediators
 			super(viewComponent);
 		}
 		public override function onRegister():void{
-			createView();
+			eventsProxy.regist(view,Event.ADDED_TO_STAGE,viewAddedHandler);
 			
-			eventsProxy.regist(view,Event.ADDED_TO_STAGE,viewAddedHandler)
-			eventsProxy.regist(view.resetBtn,Event.TRIGGERED,resetHandler);
+			eventsProxy.regist(view,SearchView.SEARCH,fullSearchHandler);
+			eventsProxy.regist(view,SearchView.LAYOUT,layoutChangeHandler);
+			eventsProxy.regist(view,SearchView.RESET,resetHandler);
 			
-			eventsProxy.regist(view.mainType_Picker,Event.CHANGE,onSearchChange);
-			eventsProxy.regist(view.attribute_Picker,Event.CHANGE,onSearchChange);
-			eventsProxy.regist(view.ot_Picker,Event.CHANGE,onSearchChange);
-			eventsProxy.regist(view.level_Picker,Event.CHANGE,onSearchChange);
-			eventsProxy.regist(view.race_Picker,Event.CHANGE,onSearchChange);
-			eventsProxy.regist(view.child_type_Picker,Event.CHANGE,onSearchChange);
-			eventsProxy.regist(view.searchInput,Event.CHANGE,onSearchChange);
-			eventsProxy.regist(view.tokenToggle,Event.CHANGE,onSearchChange);
-			eventsProxy.regist(view.limit_Picker,Event.CHANGE,onSearchChange);
-			eventsProxy.regist(view.favorites_Picker,Event.CHANGE,onSearchChange);
-			
-			eventsProxy.regist(view.layoutStepper,Event.CHANGE,onStepChange);
-			eventsProxy.regist(view.lflist_Picker,Event.CHANGE,onLflistChange);
-			
-			onSearchChange(null);
 		}
-	
 		
-		private function onStepChange(e:Event):void
+		
+		private function layoutChangeHandler(e:Event):void
 		{
 			appFacade.sendNotification(GlobalNotifications.RESULT_LAYOUT_CHANGE,view.layoutStepper.value);
 		}
@@ -75,62 +51,14 @@ package com.application.ocgsee.mediators
 		}
 		private function viewAddedHandler(e:Event):void
 		{
+			createView();
 			eventsProxy.remove(view,Event.ADDED_TO_STAGE,viewAddedHandler);
-			
-			setTimeout(resizePicker,1);
-			setTimeout(resizeHeader,2);
+			fullSearchHandler(null);
 		}
-		private function resizePicker():void{
-			var pickList:Array=[
-				view.limit_Picker,
-				view.mainType_Picker,
-				view.attribute_Picker,
-				view.ot_Picker,
-				view.level_Picker,
-				view.race_Picker,
-				view.child_type_Picker,
-				view.favorites_Picker,
-				view.lflist_Picker
-			];
-			var maxWidth:int=0;
-			for each(var picker:PickerList in pickList){
-				if(picker.width>maxWidth){
-					maxWidth=picker.width;
-				}
-			}
-			maxWidth+=30;
-			for each(picker in pickList){
-				picker.width=maxWidth;
-			}
-		}
-		private function resizeHeader():void{
-			var maxWidth:int=0;
-			var maxHeiht:int=0;
-			for (var i:int=0;i<view.numChildren;i++){
-				var header:Header=view.getChildAt(i) as Header;
-				if(header){
-					if(header.width>maxWidth){
-						maxWidth=header.width;
-					}
-					if(header.height>maxHeiht){
-						maxHeiht=header.height;
-					}
-				}
-			}
-			maxWidth+=50;
-			for (i=0;i<view.numChildren;i++){
-				var camp:DisplayObject=view.getChildAt(i);
-				if(camp){
-					camp.width=maxWidth;
-					camp.height=maxHeiht;
-				}
-			}
-			
-		}
-		private function onSearchChange(e:Event):void
+		private function pureSearch():void
 		{
 			if(isPause)return;
-			if(isReset()){
+			if(view.isZero){
 				view.resetBtn.label=localize("info_reset");
 			}else{
 				view.resetBtn.label="●"+localize("info_reset");
@@ -141,7 +69,7 @@ package com.application.ocgsee.mediators
 		private function createSearchText():String{
 			var result:String=createSerchByLflist();
 			for(var i:int=0;i<view.pickerList.length;i++){
-				var picker:PickerList=view.pickerList[i];
+				var picker:LabelPicker=view.pickerList[i];
 				if(picker.selectedItem){
 					result+=getRealTextPart(picker.selectedItem.value);
 				}
@@ -155,7 +83,7 @@ package com.application.ocgsee.mediators
 		
 		private function createTokenToggle():String
 		{
-			var value:Boolean=view.tokenToggle.isSelected;
+			var value:Boolean=view.tokenPicker.isSelected;
 			var str:String;
 			if (value)
 			{
@@ -194,35 +122,16 @@ package com.application.ocgsee.mediators
 		}
 		
 		private var isPause:Boolean=false;//暂停开关用于复位按钮时频繁查询的优化
-
+		
 		private function resetHandler(e:Event):void
 		{
 			isPause=true;
-			view.mainType_Picker.selectedIndex=0;
-			view.attribute_Picker.selectedIndex=0;
-			view.ot_Picker.selectedIndex=0;
-			view.level_Picker.selectedIndex=0;
-			view.race_Picker.selectedIndex=0;
-			view.child_type_Picker.selectedIndex=0;
-			view.limit_Picker.selectedIndex=0;
-			view.favorites_Picker.selectedIndex=0;
-			view.searchInput.text="";
+			view.reset();
 			isPause=false;
-			onSearchChange(null);
-		}
-		private function isReset():Boolean{
-			return view.mainType_Picker.selectedIndex==0&&
-				view.attribute_Picker.selectedIndex==0&&
-				view.ot_Picker.selectedIndex==0&&
-				view.level_Picker.selectedIndex==0&&
-				view.race_Picker.selectedIndex==0&&
-				view.child_type_Picker.selectedIndex==0&&
-				view.limit_Picker.selectedIndex==0&&
-				view.favorites_Picker.selectedIndex==0&&
-				view.searchInput.text=="";
+			fullSearchHandler(null);
 		}
 		private function createFavorites():String{
-			var obj:Object=view.favorites_Picker.selectedItem;
+			var obj:Object=view.favoritesPicker.selectedItem;
 			var selectValue:int=obj["value"];
 			if(selectValue){
 				var proxy:FavoritesSearchProxy=appFacade.retrieveProxy_Lite(FavoritesSearchProxy)as FavoritesSearchProxy;
@@ -237,18 +146,17 @@ package com.application.ocgsee.mediators
 				return "";
 			}
 		}
-		private function onLflistChange(e:Event):void
+		private function fullSearchHandler(e:Event):void
 		{
-			var selectObj:String=view.lflist_Picker.selectedItem as String;
+			var selectObj:String=view.lflistPicker.selectedItem as String;
 			var proxy:LimitProxy=ApplicationFacade._.retrieveProxy_Lite(LimitProxy) as LimitProxy;
 			proxy.selectLflist=selectObj;
-			onSearchChange(null);
-			
+			pureSearch();
 		}	
 		private function createSerchByLflist():String
 		{
 			var serch:String=""
-			var obj:Object=view.limit_Picker.selectedItem;
+			var obj:Object=view.limitPicker.selectedItem;
 			var selectValue:String=obj["label"];
 			var idList:String="";
 			var proxy:LimitProxy=appFacade.retrieveProxy_Lite(LimitProxy)as LimitProxy;
@@ -284,9 +192,7 @@ package com.application.ocgsee.mediators
 			var config:XML=configProxy.sqlConfig;
 			
 			for(var i:int=0;i<view.pickerList.length;i++){
-				var picker:PickerList=view.pickerList[i];
-				var header:Header=view.headerList[i];
-				header.title=localize(config.item[i].@prompt);
+				var picker:LabelPicker=view.pickerList[i];
 				var list:Array=[];
 				for each(var item:XML in config.item[i].child){
 					var label:String=localize(item.@label);
@@ -294,12 +200,8 @@ package com.application.ocgsee.mediators
 				}
 				picker.dataProvider=new ListCollection(list);
 				picker.labelField="label";
-				picker.listFactory=listFactory;
-				
-				//				picker.selectedIndex=-1;
 			}
-			view.limitHeader.title=localize("info_lf_select");
-			view.limit_Picker.dataProvider=new ListCollection([
+			view.limitPicker.dataProvider=new ListCollection([
 				{label:localize("system_unlimit")},
 				{label:localize("info_forbidden")},
 				{label:localize("info_limit_1")},
@@ -307,22 +209,13 @@ package com.application.ocgsee.mediators
 				{label:localize("info_in_lflist")},
 				{label:localize("info_in_limit_list")}
 			]);
-			view.limit_Picker.labelField="label";
+			view.limitPicker.labelField="label";
 			
-			view.favoritesHeader.title=localize("info_favorite_title");
-			view.favorites_Picker.dataProvider=new ListCollection([
+			view.favoritesPicker.dataProvider=new ListCollection([
 				{label:localize("system_unlimit"),value:0},
 				{label:localize("info_favorite_in"),value:1}
 			]);
-			view.favorites_Picker.labelField="label";
-			
-			picker.listFactory=listFactory;
-			
-			view.toggleHeader.title=localize("card_type_16401");
-			
-			view.layoutHeader.title=localize("info_layout");
-			
-			view.lflistHeader.title=localize("header_lflist_title");
+			view.favoritesPicker.labelField="label";
 			
 			
 			updateLflist(null);
@@ -338,21 +231,11 @@ package com.application.ocgsee.mediators
 			arr=arr.sort();
 			arr.unshift(localize("system_unlimit"));
 			re.data=arr;
-			view.lflist_Picker.dataProvider=re;
+			view.lflistPicker.dataProvider=re;
 			if(proxy.selectLflist){
-				view.lflist_Picker.selectedItem=proxy.selectLflist;
+				view.lflistPicker.selectedItem=proxy.selectLflist;
 			}
 		}
-		private function listFactory():List
-		{
-			var list:List = new List();
-			list.itemRendererFactory = function():IListItemRenderer
-			{
-				var renderer:DefaultListItemRenderer = new DefaultListItemRenderer();
-				renderer.labelField = "label";
-				return renderer;
-			};
-			return list;
-		};
+
 	}
 }

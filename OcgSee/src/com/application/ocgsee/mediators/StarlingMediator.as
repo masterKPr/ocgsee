@@ -7,8 +7,7 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.proxys.LoaderProxy;
 	import com.application.ocgsee.themes.OcgseeTheme;
 	import com.application.ocgsee.views.BagView;
-	import com.application.ocgsee.views.SearchView;
-	
+	import com.application.ocgsee.views.mxml.SearchView;
 	
 	import feathers.controls.Drawers;
 	import feathers.events.FeathersEventType;
@@ -53,8 +52,8 @@ package com.application.ocgsee.mediators
 		
 		private function createView():void
 		{
-			var resultList:BagView=new BagView();
-			facade.registerMediator(new BagMediator(resultList));
+			var bagView:BagView=new BagView();
+			facade.registerMediator(new BagMediator(bagView));
 			
 			var searchView:SearchView=new SearchView();
 			facade.registerMediator(new SearchViewMediator(searchView));
@@ -71,8 +70,8 @@ package com.application.ocgsee.mediators
 //			
 			view.addChild(view.drawers);
 			view.drawers.openGesture = Drawers.OPEN_GESTURE_DRAG_CONTENT_EDGE;
-			view.drawers.content = resultList
-			view.drawers.leftDrawer=searchView;
+			view.drawers.content = bagView;
+			view.drawers.leftDrawer= searchView;
 			view.drawers.overlaySkin=image;
 			
 			eventsProxy.regist(view.drawers,FeathersEventType.BEGIN_INTERACTION,beginInteractHandler);

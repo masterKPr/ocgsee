@@ -30,7 +30,7 @@ package com.application.ocgsee.views
 
 
 		public var btnContent:ScrollContainer;
-		public var id:int;
+		public var cardID:int;
 
 		public static var globalStyleProvider:IStyleProvider;
 		override protected function get defaultStyleProvider():IStyleProvider

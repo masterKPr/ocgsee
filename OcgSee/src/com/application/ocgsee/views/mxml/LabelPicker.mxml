@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:Header xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:ns="library://ns.feathersui.com/mxml" xmlns:events="starling.events.*" >
+	<ns:rightItems>
+		<fx:Vector type="starling.display.DisplayObject">
+			<ns:PickerList id="child"  selectedIndex="{selectedIndex}" change="child_changeHandler(event)"  dataProvider="{dataProvider}" labelField="{labelField}"/>
+		</fx:Vector>
+	</ns:rightItems>
+	<fx:Metadata>
+		[Event(name="change", type="starling.events.Event")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import com.application.ocgsee.utils.localize;
+			
+			import feathers.data.ListCollection;
+			
+			import starling.events.Event;
+			
+
+			public function get childWidth():int
+			{
+				return child.width;
+			}
+
+			public function set childWidth(value:int):void
+			{
+				child.width = value;
+			}
+
+			
+			[Bindable]
+			public var dataProvider:ListCollection;
+			
+			[Bindable]
+			public var labelField:String;
+
+			public function get selectedItem():Object
+			{
+				return child.selectedItem;
+			}
+
+			public function set selectedItem(value:Object):void
+			{
+				child.selectedItem = value;
+			}
+			
+			[Bindable]
+			public var selectedIndex:int;
+			
+			public function get isZero():Boolean{
+				return selectedIndex==0;
+			}
+			public function reset():void{
+				child.selectedIndex=0;
+			}
+			
+			public override function set title(value:String):void{
+				super.title=localize(value);
+			}
+			
+			protected function child_changeHandler(event:starling.events.Event):void
+			{
+				this.dispatchEventWith(starling.events.Event.CHANGE);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+
+	</fx:Declarations>
+</ns:Header>

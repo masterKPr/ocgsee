@@ -1,7 +1,6 @@
 package com.application.ocgsee.themes
 {
 	import com.application.ocgsee.views.BagView;
-	import com.application.ocgsee.views.SearchView;
 	import com.application.ocgsee.views.ShowCard;
 	
 	import feathers.layout.AnchorLayout;
@@ -18,7 +17,6 @@ package com.application.ocgsee.themes
 		}
 		protected override function initializeStyleProviders():void{
 			super.initializeStyleProviders();
-			this.getStyleProviderForClass(SearchView).defaultStyleFunction=setSearchViewStyles;
 			this.getStyleProviderForClass(BagView).defaultStyleFunction=setResultViewStyles;
 			this.getStyleProviderForClass(ShowCard).defaultStyleFunction=setShowCardStyles;
 		}
@@ -65,14 +63,6 @@ package com.application.ocgsee.themes
 			var viewLayout:AnchorLayout=new AnchorLayout();
 			view.layout=viewLayout;
 			
-		}
-		private function setSearchViewStyles(view:SearchView):void{
-			var layout:VerticalLayout = new VerticalLayout();
-			layout.horizontalAlign = VerticalLayout.HORIZONTAL_ALIGN_CENTER;
-			layout.verticalAlign=VerticalLayout.VERTICAL_ALIGN_MIDDLE;
-			layout.gap=10;
-			layout.padding=10;
-			view.layout=layout;
 		}
 	}
 }

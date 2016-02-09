@@ -46,7 +46,7 @@ package com.application.ocgsee.proxys
 			if(!list){
 				list=[];
 			}
-			return list.length;
+			return Boolean(list.length);
 		}
 		public function getAll():Array{
 			

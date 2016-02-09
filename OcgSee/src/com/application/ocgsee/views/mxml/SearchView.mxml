@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:ScrollContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					xmlns:ns="library://ns.feathersui.com/mxml"
+					xmlns:mxml="com.application.ocgsee.views.mxml.*"
+					addedToStage="addedToStageHandler(event)"
+					creationComplete="creationCompleteHandler(event)">
+	<ns:layout>
+		<ns:VerticalLayout gap="10" horizontalAlign="center" padding="10" verticalAlign="middle"/>
+	</ns:layout>
+	<fx:Script>
+		<![CDATA[
+			import com.application.ocgsee.utils.localize;
+			
+			
+			import feathers.controls.TextInput;
+			
+			import starling.display.DisplayObject;
+			import starling.events.Event;
+			public var pickerList:Vector.<LabelPicker>;
+			public static const RESET:String="reset";
+			public static const SEARCH:String="search";
+			public static const LAYOUT:String="layout";
+			protected function addedToStageHandler(event:starling.events.Event):void
+			{
+				pickerList=Vector.<LabelPicker>([mainTypePicker,attributePicker,otPicker,levelPicker,racePicker,childTypePicker]);
+			}
+			protected function creationCompleteHandler(event:starling.events.Event):void
+			{
+				resizePicker();
+				resizeHeader();
+			}
+			/**
+			 * 是否复原
+			 */
+			public function get isZero():Boolean{
+				return lflistPicker.isZero&&
+					limitPicker.isZero&&
+					mainTypePicker.isZero&&
+					attributePicker.isZero&&
+					otPicker.isZero&&
+					levelPicker.isZero&&
+					racePicker.isZero&&
+					childTypePicker.isZero&&
+					favoritesPicker.isZero&&
+					searchInput.text=="";
+			}
+			
+			public function reset():void{
+				limitPicker.reset();
+				mainTypePicker.reset();
+				attributePicker.reset();
+				otPicker.reset();
+				levelPicker.reset();
+				racePicker.reset();
+				childTypePicker.reset();
+				favoritesPicker.reset();
+				searchInput.text="";
+			}
+			
+			private function resizePicker():void{
+				var pickList:Array=[
+					lflistPicker,
+					limitPicker,
+					mainTypePicker,
+					attributePicker,
+					otPicker,
+					levelPicker,
+					racePicker,
+					childTypePicker,
+					favoritesPicker,
+					
+				];
+				
+				var maxWidth:int=0;
+				for each(var picker:LabelPicker in pickList){
+					if(picker.width>maxWidth){
+						maxWidth=picker.childWidth;
+					}
+				}
+				maxWidth+=30;
+				for each(picker in pickList){
+					picker.childWidth=maxWidth;
+				}
+			}
+			private function resizeHeader():void{
+				var maxWidth:int=0;
+				var maxHeiht:int=0;
+				for (var i:int=0;i<numChildren;i++){
+					var childView:DisplayObject=getChildAt(i) as DisplayObject;
+					if(childView.width>maxWidth){
+						maxWidth=childView.width;
+					}
+					if(childView.height>maxHeiht){
+						maxHeiht=childView.height;
+					}
+				}
+				maxWidth+=50;
+				for (i=0;i<numChildren;i++){
+					var camp:DisplayObject=getChildAt(i);
+					if(camp){
+						camp.width=maxWidth;
+						camp.height=maxHeiht;
+					}
+				}
+				
+			}
+			
+			protected function resetBtn_triggeredHandler(event:starling.events.Event):void
+			{
+				this.dispatchEventWith(RESET);
+			}
+			
+			protected function searchChangeHandler(event:starling.events.Event):void
+			{
+				this.dispatchEventWith(SEARCH);
+			}
+			
+			protected function layoutChangeHandler(event:starling.events.Event):void
+			{
+				this.dispatchEventWith(LAYOUT);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<mxml:LabelPicker 	id="lflistPicker" 		title="header_lflist_title" 	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="limitPicker" 		title="info_lf_select" 			change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="mainTypePicker" 	title="card_type_global" 		change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="attributePicker" 	title="card_attribute_name" 	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="otPicker" 			title="card_ot_name" 			change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="levelPicker" 		title="card_level_name" 		change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="racePicker" 		title="card_race_name" 			change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="childTypePicker" 	title="card_type_name" 			change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="favoritesPicker" 	title="info_favorite_title" 	change="searchChangeHandler(event)"/>
+	<mxml:LabelToggle 	id="tokenPicker" 		title="card_type_16401" 		change="searchChangeHandler(event)"/>
+	
+	<mxml:LabelNumericStepper 	id="layoutStepper" 		title="info_layout" 
+							  maximum="8" minimum="4" step="1" value="4"  change="layoutChangeHandler(event)"/>
+	
+	<ns:TextInput id="searchInput" prompt="{localize('info_keyword')}"
+				  styleName="{TextInput.ALTERNATE_STYLE_NAME_SEARCH_TEXT_INPUT}" change="searchChangeHandler(event)"/>
+	
+	<ns:Button id="resetBtn" triggered="resetBtn_triggeredHandler(event)"/>
+</ns:ScrollContainer>

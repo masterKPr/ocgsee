@@ -119,11 +119,11 @@ package com.application.ocgsee.mediators
 		
 		private function saveCardHandler(e:Event):void{
 			var proxy:FavoritesSearchProxy=appFacade.retrieveProxy_Lite(FavoritesSearchProxy)as FavoritesSearchProxy;
-			var stats:Boolean=proxy.hasOne(view.id);
+			var stats:Boolean=proxy.hasOne(view.cardID);
 			if(stats){
-				proxy.delOne(view.id);
+				proxy.delOne(view.cardID);
 			}else{
-				proxy.addOne(view.id);
+				proxy.addOne(view.cardID);
 			}
 			view.btnContent.visible=!view.btnContent.visible;
 		}
@@ -152,7 +152,7 @@ package com.application.ocgsee.mediators
 			var touch:Touch = e.getTouch(view.imgContent, TouchPhase.ENDED);
 			if(touch){
 				var proxy:FavoritesSearchProxy=appFacade.retrieveProxy_Lite(FavoritesSearchProxy)as FavoritesSearchProxy;
-				if(proxy.hasOne(view.id)){
+				if(proxy.hasOne(view.cardID)){
 					view.saveBtn.label=localize("info_favorite_to_out");
 				}else{
 					view.saveBtn.label=localize("info_favorite_to_in");
@@ -164,7 +164,7 @@ package com.application.ocgsee.mediators
 		
 		public function set id(value:int):void{
 			var proxy:CardsTextureProxy=appFacade.retrieveProxy_Lite(CardsTextureProxy)as CardsTextureProxy;
-			view.id=value;
+			view.cardID=value;
 			var globalProxy:GlobalProxy=appFacade.retrieveProxy_Lite(GlobalProxy)as GlobalProxy;
 			var assets:AssetsProxy=appFacade.retrieveProxy_Lite(AssetsProxy)as AssetsProxy;
 			
