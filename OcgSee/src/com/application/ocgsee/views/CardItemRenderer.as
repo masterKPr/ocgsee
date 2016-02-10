@@ -226,7 +226,7 @@ package com.application.ocgsee.views
 		
 		public function set isSelected(value:Boolean):void
 		{
-			if(this._isSelected == value)
+			if(ApplicationFacade._.globalProxy.isDrawOpen||this._isSelected == value)
 			{
 				return;
 			}

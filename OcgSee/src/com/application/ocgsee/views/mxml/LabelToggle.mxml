@@ -3,7 +3,7 @@
 		   xmlns:ns="library://ns.feathersui.com/mxml">
 	<ns:rightItems>
 		<fx:Vector type="starling.display.DisplayObject">
-			<ns:ToggleSwitch id="child" isSelected="{isSelected}" change="child_changeHandler(event)"/>
+			<ns:ToggleSwitch id="child" change="child_changeHandler(event)"/>
 		</fx:Vector>
 	</ns:rightItems>
 	<fx:Metadata>
@@ -14,8 +14,18 @@
 			import com.application.ocgsee.utils.localize;
 			
 			import starling.events.Event;
-			[Bindable]
-			public var isSelected:Boolean;
+			
+
+			public function get isSelected():Boolean
+			{
+				return child.isSelected;
+			}
+
+			public function set isSelected(value:Boolean):void
+			{
+				child.isSelected = value;
+			}
+
 			
 			public override function set title(value:String):void{
 				super.title=localize(value);

@@ -26,7 +26,6 @@ package com.application
 	import com.application.ocgsee.models.DeckPackage;
 	import com.application.ocgsee.models.GlobalModel;
 	import com.application.ocgsee.models.LflistPackage;
-	import com.application.ocgsee.models.SQLText;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.CardsSearchProxy;
 	import com.application.ocgsee.proxys.CardsTextureProxy;
@@ -108,7 +107,7 @@ package com.application
 			registerProxy(_kvdbProxy);
 			registerProxy(new LoadProxy(new LoadModel));
 			registerProxy(new CardsSearchProxy(new SearchEngine));
-			registerProxy(new SQLProxy(new SQLText));
+			registerProxy(new SQLProxy());
 			registerProxy(new ConfigProxy());
 
 			

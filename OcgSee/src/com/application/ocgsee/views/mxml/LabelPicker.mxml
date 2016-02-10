@@ -3,7 +3,7 @@
 		   xmlns:ns="library://ns.feathersui.com/mxml" xmlns:events="starling.events.*" >
 	<ns:rightItems>
 		<fx:Vector type="starling.display.DisplayObject">
-			<ns:PickerList id="child"  selectedIndex="{selectedIndex}" change="child_changeHandler(event)"  dataProvider="{dataProvider}" labelField="{labelField}"/>
+			<ns:PickerList id="child"  selectedIndex="{selectedIndex}" change="child_changeHandler(event)"  dataProvider="{dataProvider}" labelField="label"/>
 		</fx:Vector>
 	</ns:rightItems>
 	<fx:Metadata>
@@ -32,8 +32,6 @@
 			[Bindable]
 			public var dataProvider:ListCollection;
 			
-			[Bindable]
-			public var labelField:String;
 
 			public function get selectedItem():Object
 			{

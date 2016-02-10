@@ -3,7 +3,7 @@
 		   xmlns:ns="library://ns.feathersui.com/mxml">
 	<ns:rightItems>
 		<fx:Vector type="starling.display.DisplayObject">
-			<ns:NumericStepper id="child" minimum="{minimum}" change="child_changeHandler(event)" maximum="{maximum}" step="{step}" value="{value}"/>
+			<ns:NumericStepper id="child" minimum="{minimum}" change="child_changeHandler(event)" maximum="{maximum}" step="{step}"/>
 		</fx:Vector>
 	</ns:rightItems>
 	<fx:Metadata>
@@ -21,8 +21,18 @@
 			public var maximum:int;
 			[Bindable]
 			public var step:int;
-			[Bindable]
-			public var value:int;
+			
+
+			public function get value():int
+			{
+				return child.value;
+			}
+
+			public function set value(value:int):void
+			{
+				child.value = value;
+			}
+
 			
 			public override function set title(value:String):void{
 				super.title=localize(value);

@@ -63,61 +63,68 @@ package com.application.ocgsee.mediators
 			}else{
 				view.resetBtn.label="●"+localize("info_reset");
 			}
-			sendNotification(GlobalNotifications.SEARCH_MULIT,createSearchText());
+			sendNotification(GlobalNotifications.SEARCH_MULIT,createSQLText());
 		}
 		
-		private function createSearchText():String{
-			var result:String=createSerchByLflist();
-			for(var i:int=0;i<view.pickerList.length;i++){
+		private function createSQLText():String
+		{
+			var term:Array=[];
+			term.push(createSerchByLflist());
+			for(var i:int=0;i<view.pickerList.length;i++)
+			{
 				var picker:LabelPicker=view.pickerList[i];
-				if(picker.selectedItem){
-					result+=getRealTextPart(picker.selectedItem.value);
+				if(picker.selectedItem)
+				{
+					term.push(getRealTextPart(picker.selectedItem.value));
 				}
 			}
-			result+=createSerchByTextInput();
-			result+=createTokenToggle();
-			result+=createFavorites();
+			term.push(createSerchByTextInput());
+			term.push(createTokenToggle());
+			term.push(createFavorites());
+			
+			
+			term=term.filter( function callback(item:*, index:int, array:Array):Boolean{
+				return item!="";
+			});
+			
+			if(term.length){
+				term.unshift("");
+			}
+			var result:String=term.join(" and ")
+			
 			var proxy:SQLProxy=appFacade.retrieveProxy_Lite(SQLProxy) as SQLProxy;
-			return proxy.createTermsSQL(result);
+			return proxy.searchMultiSQL(result);
 		}
 		
 		private function createTokenToggle():String
 		{
-			var value:Boolean=view.tokenPicker.isSelected;
-			var str:String;
-			if (value)
+			var __selected:Boolean=view.tokenPicker.isSelected;
+			var re:String="";
+			if (!__selected)
 			{
-				str="";
+				re="datas.type!=16401";
 			}
-			else
-			{
-				str=" and datas.type!=16401";
-			}
-			return str;
+			return re;
 		}
 		
 		private function createSerchByTextInput():String
 		{
 			var value:String=view.searchInput.text;
-			var str:String;
-			if (value == "")
+			var re:String="";
+			if (value != "")
 			{
-				str="";
+				re="(texts.name like '%" + value + "%' or texts.desc like '%" + value + "%' or datas.id='"+value+"')"
 			}
-			else
-			{
-				str=" and ( texts.name like '%" + value + "%' or texts.desc like '%" + value + "%' or datas.id='"+value+"')"
-			}
-			return str;
+			return re;
 		}
 		
 		private function getRealTextPart(value:String):String{
-			var re:String="";
-			if(value.indexOf(" and ")==-1&&value!=""){
-				re=" and "+value;
-			}else{
-				re=value;
-			}
+			var re:String=value;
+			//			if(value.indexOf(" and ")==-1&&value!=""){
+			//				re=" and "+value;
+			//			}else{
+			//				re=value;
+			//			}
 			return re;
 		}
 		
@@ -131,6 +138,7 @@ package com.application.ocgsee.mediators
 			fullSearchHandler(null);
 		}
 		private function createFavorites():String{
+			var re:String="";
 			var obj:Object=view.favoritesPicker.selectedItem;
 			var selectValue:int=obj["value"];
 			if(selectValue){
@@ -139,12 +147,11 @@ package com.application.ocgsee.mediators
 				var idList:String=(list).toString();
 			}
 			if(selectValue==1){
-				return " and datas.id in(" + idList + ") ";
+				re= "datas.id in(" + idList + ")";
 			}else if(selectValue==2){
-				return " and datas.id not in(" + idList + ") ";
-			}else{
-				return "";
+				re= "datas.id not in(" + idList + ")";
 			}
+			return re;
 		}
 		private function fullSearchHandler(e:Event):void
 		{
@@ -183,7 +190,7 @@ package com.application.ocgsee.mediators
 				case localize("system_unlimit"):
 					return "";
 			}
-			return " and datas.id in(" + idList + ") ";
+			return "datas.id in(" + idList + ")";
 		}
 		
 		private function createView():void
@@ -199,7 +206,6 @@ package com.application.ocgsee.mediators
 					list.push({label:label,value:item.@value});
 				}
 				picker.dataProvider=new ListCollection(list);
-				picker.labelField="label";
 			}
 			view.limitPicker.dataProvider=new ListCollection([
 				{label:localize("system_unlimit")},
@@ -209,14 +215,11 @@ package com.application.ocgsee.mediators
 				{label:localize("info_in_lflist")},
 				{label:localize("info_in_limit_list")}
 			]);
-			view.limitPicker.labelField="label";
 			
 			view.favoritesPicker.dataProvider=new ListCollection([
 				{label:localize("system_unlimit"),value:0},
 				{label:localize("info_favorite_in"),value:1}
 			]);
-			view.favoritesPicker.labelField="label";
-			
 			
 			updateLflist(null);
 		}
@@ -236,6 +239,6 @@ package com.application.ocgsee.mediators
 				view.lflistPicker.selectedItem=proxy.selectLflist;
 			}
 		}
-
+		
 	}
 }
