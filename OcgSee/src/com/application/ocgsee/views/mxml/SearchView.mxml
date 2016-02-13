@@ -67,7 +67,6 @@
 					racePicker,
 					childTypePicker,
 					favoritesPicker,
-					
 				];
 				
 				var maxWidth:int=0;
@@ -85,7 +84,7 @@
 				var maxWidth:int=0;
 				var maxHeiht:int=0;
 				for (var i:int=0;i<numChildren;i++){
-					var childView:DisplayObject=getChildAt(i) as DisplayObject;
+					var childView:starling.display.DisplayObject=getChildAt(i) as DisplayObject;
 					if(childView.width>maxWidth){
 						maxWidth=childView.width;
 					}
@@ -119,10 +118,14 @@
 				this.dispatchEventWith(LAYOUT);
 			}
 			
+
+			
+			
 		]]>
 	</fx:Script>
+
+	<mxml:LabelPicker	id="lflistPicker"  		title="header_lflist_title" 	change="searchChangeHandler(event)"/>
 	
-	<mxml:LabelPicker 	id="lflistPicker" 		title="header_lflist_title" 	change="searchChangeHandler(event)"/>
 	<mxml:LabelPicker 	id="limitPicker" 		title="info_lf_select" 			change="searchChangeHandler(event)"/>
 	<mxml:LabelPicker 	id="mainTypePicker" 	title="card_type_global" 		change="searchChangeHandler(event)"/>
 	<mxml:LabelPicker 	id="attributePicker" 	title="card_attribute_name" 	change="searchChangeHandler(event)"/>
@@ -131,7 +134,9 @@
 	<mxml:LabelPicker 	id="racePicker" 		title="card_race_name" 			change="searchChangeHandler(event)"/>
 	<mxml:LabelPicker 	id="childTypePicker" 	title="card_type_name" 			change="searchChangeHandler(event)"/>
 	<mxml:LabelPicker 	id="favoritesPicker" 	title="info_favorite_title" 	change="searchChangeHandler(event)"/>
-	<mxml:LabelToggle 	id="tokenPicker" 		title="card_type_16401" 		change="searchChangeHandler(event)"/>
+	<mxml:LabelToggle 	id="tokenController" 	title="card_type_16401" 		change="searchChangeHandler(event)"/>
+	
+	
 	
 	<mxml:LabelNumericStepper 	id="layoutStepper" 		title="info_layout" 
 							  maximum="8" minimum="4" step="1" value="4"  change="layoutChangeHandler(event)"/>

@@ -98,7 +98,7 @@ package com.application.ocgsee.mediators
 		
 		private function createTokenToggle():String
 		{
-			var __selected:Boolean=view.tokenPicker.isSelected;
+			var __selected:Boolean=view.tokenController.isSelected;
 			var re:String="";
 			if (!__selected)
 			{
@@ -120,11 +120,6 @@ package com.application.ocgsee.mediators
 		
 		private function getRealTextPart(value:String):String{
 			var re:String=value;
-			//			if(value.indexOf(" and ")==-1&&value!=""){
-			//				re=" and "+value;
-			//			}else{
-			//				re=value;
-			//			}
 			return re;
 		}
 		

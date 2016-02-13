@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ns:Header xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		   xmlns:ns="library://ns.feathersui.com/mxml" xmlns:events="starling.events.*" >
-	<ns:rightItems>
-		<fx:Vector type="starling.display.DisplayObject">
-			<ns:PickerList id="child"  selectedIndex="{selectedIndex}" change="child_changeHandler(event)"  dataProvider="{dataProvider}" labelField="label"/>
-		</fx:Vector>
-	</ns:rightItems>
+<ns:ScrollContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:ns="library://ns.feathersui.com/mxml" 
+					xmlns:events="starling.events.*"
+					scrollBarDisplayMode="none" width="{childWidth+btnWidth}"
+					creationComplete="scrollcontainer1_creationCompleteHandler(event)"
+					>
+	<ns:layout>
+		<ns:HorizontalLayout gap="10" horizontalAlign="center" padding="0" verticalAlign="middle"/>
+	</ns:layout>
+	<ns:Header id="header" >
+		<ns:leftItems>
+			<fx:Vector type="starling.display.DisplayObject">
+		<ns:Button id="resetBtn" width="210" label="{localize('info_reset')}" triggered="resetBtn_triggeredHandler(event)"/>
+			</fx:Vector>
+		</ns:leftItems>
+		<ns:rightItems>
+			<fx:Vector type="starling.display.DisplayObject">
+				<ns:PickerList id="child" width="185" selectedIndex="{selectedIndex}" change="child_changeHandler(event)"  dataProvider="{dataProvider}" labelField="label"/>
+
+			</fx:Vector>
+		</ns:rightItems>
+	</ns:Header>
 	<fx:Metadata>
 		[Event(name="change", type="starling.events.Event")]
 	</fx:Metadata>
@@ -17,27 +32,32 @@
 			
 			import starling.events.Event;
 			
-
 			public function get childWidth():int
 			{
 				return child.width;
 			}
-
+			
+			
 			public function set childWidth(value:int):void
 			{
 				child.width = value;
 			}
-
+			
+			public function get btnWidth():int{
+				return resetBtn.width;
+			}
+			public function set btnWidth(value:int):void{
+				resetBtn.width=value;
+			}
 			
 			[Bindable]
 			public var dataProvider:ListCollection;
 			
-
 			public function get selectedItem():Object
 			{
 				return child.selectedItem;
 			}
-
+			
 			public function set selectedItem(value:Object):void
 			{
 				child.selectedItem = value;
@@ -53,8 +73,8 @@
 				child.selectedIndex=0;
 			}
 			
-			public override function set title(value:String):void{
-				super.title=localize(value);
+			public function set title(value:String):void{
+				header.title="   "+localize(value)+"   ";
 			}
 			
 			protected function child_changeHandler(event:starling.events.Event):void
@@ -62,9 +82,26 @@
 				this.dispatchEventWith(starling.events.Event.CHANGE);
 			}
 			
+			protected function scrollcontainer1_creationCompleteHandler(event:starling.events.Event):void
+			{
+				setPositionMax();
+			}
+			public function setPositionMax():void{
+				this.horizontalScrollPosition=235;
+			}
+			public function setPositionZero():void{
+				this.horizontalScrollPosition=0;
+			}
+			
+			protected function resetBtn_triggeredHandler(event:starling.events.Event):void
+			{
+				setPositionMax();
+				reset();
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-
+		
 	</fx:Declarations>
-</ns:Header>
+</ns:ScrollContainer>
