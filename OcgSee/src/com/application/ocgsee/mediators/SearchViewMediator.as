@@ -114,7 +114,8 @@ package com.application.ocgsee.mediators
 			var re:String="";
 			if (value != "")
 			{
-				re="(texts.name like '%" + value + "%' or texts.desc like '%" + value + "%' or datas.id='"+value+"')"
+				
+				re=formatString("(texts.name like '%{0}%' or texts.desc like '%{0}%' or datas.id='{0}')",value);
 			}
 			return re;
 		}
@@ -186,7 +187,7 @@ package com.application.ocgsee.mediators
 				case localize("system_unlimit"):
 					return "";
 			}
-			return "datas.id in(" + idList + ")";
+			return formatString("datas.id in({0})",idList);
 		}
 		
 		private function createView():void
