@@ -9,7 +9,7 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.proxys.FavoritesSearchProxy;
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.utils.localize;
-	import com.application.ocgsee.views.ShowCard;
+	import com.application.ocgsee.views.mxml.ShowCard;
 	
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
@@ -51,7 +51,7 @@ package com.application.ocgsee.mediators
 				callOut.close(true);
 				callOut=null;
 				var globalProxy:GlobalProxy=appFacade.retrieveProxy_Lite(GlobalProxy)as GlobalProxy;
-				globalProxy.model.showCard=false;
+				globalProxy.showCard=false;
 			}
 		}
 		
@@ -162,7 +162,7 @@ package com.application.ocgsee.mediators
 		}
 		
 		
-		public function set id(value:int):void{
+		public function set cardID(value:int):void{
 			var proxy:CardsTextureProxy=appFacade.retrieveProxy_Lite(CardsTextureProxy)as CardsTextureProxy;
 			view.cardID=value;
 			var globalProxy:GlobalProxy=appFacade.retrieveProxy_Lite(GlobalProxy)as GlobalProxy;

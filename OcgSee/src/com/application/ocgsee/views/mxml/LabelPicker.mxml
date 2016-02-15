@@ -2,8 +2,12 @@
 <ns:ScrollContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					xmlns:ns="library://ns.feathersui.com/mxml" 
 					xmlns:events="starling.events.*"
-					scrollBarDisplayMode="none" width="{childWidth+btnWidth}"
+					scrollBarDisplayMode="none" 
 					creationComplete="scrollcontainer1_creationCompleteHandler(event)"
+					elasticSnapDuration="0"
+					elasticity="0"
+					minimumDragDistance="0.3"
+					scrollComplete="scrollcontainer1_scrollCompleteHandler(event)"
 					>
 	<ns:layout>
 		<ns:HorizontalLayout gap="10" horizontalAlign="center" padding="0" verticalAlign="middle"/>
@@ -23,10 +27,13 @@
 	</ns:Header>
 	<fx:Metadata>
 		[Event(name="change", type="starling.events.Event")]
+		[Event(name="showReset", type="starling.events.Event")]
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
 			import com.application.ocgsee.utils.localize;
+			
+			import com.application.ocgsee.consts.GlobalEvents;
 			
 			import feathers.data.ListCollection;
 			
@@ -84,19 +91,31 @@
 			
 			protected function scrollcontainer1_creationCompleteHandler(event:starling.events.Event):void
 			{
+				width=childWidth+btnWidth;
 				setPositionMax();
 			}
 			public function setPositionMax():void{
-				this.horizontalScrollPosition=235;
+				this.horizontalScrollPosition=MAX_POSITION;
 			}
 			public function setPositionZero():void{
-				this.horizontalScrollPosition=0;
+				this.horizontalScrollPosition=MIN_POSITION;
 			}
 			
 			protected function resetBtn_triggeredHandler(event:starling.events.Event):void
 			{
 				setPositionMax();
 				reset();
+			}
+			private const MAX_POSITION:int=235;
+			private const MIN_POSITION:int=0;
+			protected function scrollcontainer1_scrollCompleteHandler(event:starling.events.Event):void
+			{
+				if(this.horizontalScrollPosition!=MAX_POSITION){
+					this.horizontalScrollPosition=MIN_POSITION;
+				}
+				if(this.horizontalScrollPosition==MIN_POSITION){
+					this.dispatchEventWith(GlobalEvents.SHOW_RESET);
+				}
 			}
 			
 		]]>

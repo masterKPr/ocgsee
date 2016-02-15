@@ -127,7 +127,7 @@ package com.application.ocgsee.mediators
 		
 		private function onDispose(e:Event):void
 		{
-			LogUtils.log("销毁Mediator:"+this);
+			LogUtils.log(formatString("销毁Mediator:{0}",this));
 			appFacade.removeMediator(NAME);
 		}
 		private function refreshLflistMark(notification:INotification):void{

@@ -6,7 +6,7 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.LoaderProxy;
 	import com.application.ocgsee.themes.OcgseeTheme;
-	import com.application.ocgsee.views.BagView;
+	import com.application.ocgsee.views.mxml.BagView;
 	import com.application.ocgsee.views.mxml.SearchView;
 	
 	import feathers.controls.Drawers;

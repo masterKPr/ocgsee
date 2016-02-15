@@ -9,9 +9,9 @@ package com.application.ocgsee.views
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.JPEGEncoderOptions;
+	import flash.events.Event;
 	import flash.filesystem.File;
 	import flash.utils.ByteArray;
-	import flash.events.Event;
 	
 	import feathers.controls.ImageLoader;
 	
@@ -19,6 +19,7 @@ package com.application.ocgsee.views
 	
 	import starling.events.Event;
 	import starling.textures.Texture;
+	import starling.utils.formatString;
 	
 	public class SaveImageLoader extends ImageLoader
 	{
@@ -78,7 +79,7 @@ package com.application.ocgsee.views
 				};
 				
 			}else{
-				LogUtils.warn("不是string的加载类型"+this.source);
+				LogUtils.warn(formatString("不是string的加载类型:{0}",this.source));
 			}
 			super.loader_completeHandler(event);
 			if(this.source is String){//迁移SDK 底层事件机制修改后 延时刷新界面

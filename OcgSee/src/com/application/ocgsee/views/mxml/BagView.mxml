@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:LayoutGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:ns="library://ns.feathersui.com/mxml"
+					 >
+	<ns:layout>
+		<ns:AnchorLayout/>
+	</ns:layout>
+	<ns:ScrollContainer id="labelContent" horizontalScrollPolicy="on">
+		<ns:Label id="label"/>
+		
+		<ns:layoutData>
+			<ns:AnchorLayoutData top="15"  right="15">
+				<ns:left>15</ns:left>
+				<ns:horizontalCenter>0</ns:horizontalCenter>
+			</ns:AnchorLayoutData>
+		</ns:layoutData>
+		
+		<ns:layout>
+			<ns:HorizontalLayout horizontalAlign="center"/>
+		</ns:layout>
+		
+	</ns:ScrollContainer>
+	
+	<ns:List id="resultList">
+		
+		<ns:layoutData>
+			<ns:AnchorLayoutData top="50" right="10" bottom="10" left="10" horizontalCenter="0" verticalCenter="0"/>
+		</ns:layoutData>
+		
+		<ns:layout>
+			<ns:TiledRowsLayout useSquareTiles="false" tileHorizontalAlign="center" padding="0" requestedColumnCount="8" gap="4"/>
+		</ns:layout>
+		
+	</ns:List>
+	
+</ns:LayoutGroup>

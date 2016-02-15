@@ -24,7 +24,6 @@ package com.application
 	import com.application.ocgsee.consts.GlobalNotifications;
 	import com.application.ocgsee.mediators.LoginMediator;
 	import com.application.ocgsee.models.DeckPackage;
-	import com.application.ocgsee.models.GlobalModel;
 	import com.application.ocgsee.models.LflistPackage;
 	import com.application.ocgsee.proxys.AssetsProxy;
 	import com.application.ocgsee.proxys.CardsSearchProxy;
@@ -101,7 +100,7 @@ package com.application
 		protected override function initializeModel():void{
 			super.initializeModel();
 
-			_globalProxy=new GlobalProxy(new GlobalModel)
+			_globalProxy=new GlobalProxy()
 			registerProxy(_globalProxy);
 			_kvdbProxy=new KVDBProxy();
 			registerProxy(_kvdbProxy);

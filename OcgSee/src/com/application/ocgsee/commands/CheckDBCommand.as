@@ -34,7 +34,7 @@ package com.application.ocgsee.commands
 			urlLoader=new URLLoader();
 			urlLoader.addEventListener(Event.COMPLETE,onComplete);
 			
-			urlLoader.load(new URLRequest(globalProxy.SERVER_HEAD+"dbVersion.xml"));
+			urlLoader.load(new URLRequest(globalProxy.SERVER_UPDATE));
 		}
 		
 		protected function onComplete(event:Event):void

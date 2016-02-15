@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:ScrollContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:ns="library://ns.feathersui.com/mxml" xmlns:display="starling.display.*" xmlns:views="com.application.ocgsee.views.*">
+	<fx:Script>
+		<![CDATA[
+			import com.application.ocgsee.utils.localize;
+			[Bindable]
+			public var scale:Number;
+			
+			public var cardID:int;
+		]]>
+	</fx:Script>
+	<ns:layout>
+		<ns:HorizontalLayout horizontalAlign="center" verticalAlign="middle" gap="10" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>
+	</ns:layout>
+	
+	<ns:ScrollContainer id="leftContent">
+		<ns:ScrollContainer id="imgContent">
+			<views:SaveImageLoader id="image" width="{177*scale}" height="{254*scale}"/>
+		</ns:ScrollContainer>
+	</ns:ScrollContainer>
+	<ns:ScrollContainer id="rightContent">
+		<ns:ScrollContainer id="labelContent" width="{180*scale}" height="{254*scale}" verticalScrollPolicy="on" horizontalScrollPolicy="off">
+			<ns:layout>
+				<ns:HorizontalLayout horizontalAlign="center" verticalAlign="top" paddingLeft="1" paddingRight="1" paddingTop="1" paddingBottom="1"/>
+			</ns:layout>
+			
+			<ns:Label id="attributeLabel" width="{177*scale}" wordWrap="true"/>
+		</ns:ScrollContainer>
+		<ns:ScrollContainer id="btnContent" visible="false">
+			<ns:layout>
+				<ns:VerticalLayout/>
+			</ns:layout>
+			<ns:Button id="copyBtn" label="{localize('info_copy')}" width="{177*scale}" height="{254*scale/2}"/>
+			<ns:Button id="saveBtn" width="{177*scale}" height="{254*scale/2}"/>
+		</ns:ScrollContainer>
+	</ns:ScrollContainer>
+</ns:ScrollContainer>

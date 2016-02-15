@@ -1,7 +1,5 @@
 package com.application.ocgsee.proxys
 {
-	import com.application.ocgsee.models.GlobalModel;
-	
 	import flash.filesystem.File;
 	
 	import mvclite.proxys.Proxy_Lite;
@@ -10,7 +8,12 @@ package com.application.ocgsee.proxys
 	
 	public class GlobalProxy extends Proxy_Lite
 	{
-		public var model:GlobalModel;
+		
+		public const SERVER_HEAD:String="http://ocgsee.applinzi.com/";
+		public const PICS_API:String=SERVER_HEAD+"pics/{0}.jpg";
+		public const SERVER_UPDATE:String=SERVER_HEAD+"dbVersion.xml";
+		
+		public var showCard:Boolean;
 		
 		public const KEY_CURRENT_DB:String="current_DB";
 		public const KEY_LAST_DB:String="last_DB";
@@ -26,30 +29,27 @@ package com.application.ocgsee.proxys
 			}
 			return re;
 		}
-		public function get SERVER_HEAD():String{
-			return model.SERVER_HEAD
-		}
 		
 		public function GlobalProxy(data:Object=null)
 		{
 			super(data);
 		}
-		
+		private var _isDrawOpen:Boolean;
 		public function get isDrawOpen():Boolean
 		{
-			return model.drawOpen
+			return _isDrawOpen;
 		}
 		
 		public function set isDrawOpen(value:Boolean):void
 		{
-			model.drawOpen = value;
+			_isDrawOpen = value;
 		}
 		
 		public function getRemoteUri(id:int):String{
-			return formatString(model.PICS_API,id);
+			return formatString(PICS_API,id);
 		}
 		public function isRemoteUri(uri:String):Boolean{
-			return uri.indexOf(model.SERVER_HEAD)!=-1
+			return uri.indexOf(SERVER_HEAD)!=-1;
 		}
 		/**
 		 * 从Remote uri里获取到xxx.jpg
@@ -70,7 +70,7 @@ package com.application.ocgsee.proxys
 		 * 
 		 */		
 		public function get_CardJPG_ID(id:int):String{
-			return id+".jpg"
+			return formatString("{0}.jpg",id);
 		}
 		/**
 		 *根据 CardJPG获取id

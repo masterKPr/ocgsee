@@ -7,6 +7,7 @@ package com.application.ocgsee.proxys
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	import starling.utils.AssetManager;
+	import starling.utils.formatString;
 	
 	public class CardsTextureProxy extends Proxy_Lite
 	{
@@ -39,8 +40,8 @@ package com.application.ocgsee.proxys
 		public function cardTextureLocal(id:int):*
 		{
 			var index:int=id%length;
-			var atlas:TextureAtlas=model.getTextureAtlas("CardsTexture_"+index);
-			var target:Texture=atlas.getTexture(""+id);
+			var atlas:TextureAtlas=model.getTextureAtlas(formatString("CardsTexture_{0}",index));
+			var target:Texture=atlas.getTexture(String(id));
 			return target;
 		}
 		public function get globalProxy():GlobalProxy{

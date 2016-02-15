@@ -8,11 +8,10 @@ package com.application.ocgsee.mediators
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.utils.CardSortUtils;
 	import com.application.ocgsee.views.CardItemRenderer;
-	import com.application.ocgsee.views.BagView;
+	import com.application.ocgsee.views.mxml.BagView;
 	
 	import feathers.controls.renderers.IListItemRenderer;
 	import feathers.data.ListCollection;
-	import feathers.layout.TiledRowsLayout;
 	
 	import mvclite.mediator.Mediator_Lite;
 	
@@ -119,21 +118,6 @@ package com.application.ocgsee.mediators
 			view.resultList.width=	screenWidth-40;
 			view.resultList.height=	screenHeight-40;
 			view.labelContent.width=screenWidth-40;
-			
-			var listLayout:TiledRowsLayout = new TiledRowsLayout();
-			//			listLayout.paging = TiledRowsLayout.PAGING_HORIZONTAL;//滑动方向
-			listLayout.useSquareTiles = false;
-			listLayout.tileHorizontalAlign = TiledRowsLayout.TILE_HORIZONTAL_ALIGN_CENTER;
-			listLayout.horizontalAlign = TiledRowsLayout.HORIZONTAL_ALIGN_CENTER;
-			listLayout.padding = 0;
-			listLayout.requestedColumnCount=8;
-			var gap:int=4;
-			listLayout.gap = gap;
-			//			listLayout.horizontalGap=-40;
-			//			listLayout.verticalGap=10;
-			
-			//			listLayout.paddingLeft=0
-			view.resultList.layout=listLayout;
 			
 			view.resultList.itemRendererFactory=createRendererFactory(4)
 		}

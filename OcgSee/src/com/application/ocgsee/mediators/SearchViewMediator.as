@@ -18,6 +18,7 @@ package com.application.ocgsee.mediators
 	import org.puremvc.as3.interfaces.INotification;
 	
 	import starling.events.Event;
+	import starling.utils.formatString;
 	
 	public class SearchViewMediator extends Mediator_Lite
 	{
@@ -70,9 +71,9 @@ package com.application.ocgsee.mediators
 		{
 			var term:Array=[];
 			term.push(createSerchByLflist());
-			for(var i:int=0;i<view.pickerList.length;i++)
+			for(var i:int=0;i<view.sqlPickerList.length;i++)
 			{
-				var picker:LabelPicker=view.pickerList[i];
+				var picker:LabelPicker=view.sqlPickerList[i];
 				if(picker.selectedItem)
 				{
 					term.push(getRealTextPart(picker.selectedItem.value));
@@ -142,9 +143,9 @@ package com.application.ocgsee.mediators
 				var idList:String=(list).toString();
 			}
 			if(selectValue==1){
-				re= "datas.id in(" + idList + ")";
+				re = formatString("datas.id in({0})",idList);
 			}else if(selectValue==2){
-				re= "datas.id not in(" + idList + ")";
+				re = formatString("datas.id not in({0})",idList);
 			}
 			return re;
 		}
@@ -193,8 +194,8 @@ package com.application.ocgsee.mediators
 			var configProxy:ConfigProxy=appFacade.retrieveProxy_Lite(ConfigProxy) as ConfigProxy;
 			var config:XML=configProxy.sqlConfig;
 			
-			for(var i:int=0;i<view.pickerList.length;i++){
-				var picker:LabelPicker=view.pickerList[i];
+			for(var i:int=0;i<view.sqlPickerList.length;i++){
+				var picker:LabelPicker=view.sqlPickerList[i];
 				var list:Array=[];
 				for each(var item:XML in config.item[i].child){
 					var label:String=localize(item.@label);

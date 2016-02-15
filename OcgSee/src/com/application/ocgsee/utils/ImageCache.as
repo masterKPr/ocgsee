@@ -8,6 +8,7 @@ package com.application.ocgsee.utils
 	import framework.log.LogUtils;
 	
 	import starling.textures.Texture;
+	import starling.utils.formatString;
 	
 	public class ImageCache
 	{
@@ -50,7 +51,7 @@ package com.application.ocgsee.utils
 			var obj:Object={
 				id:texture.id
 			};
-			LogUtils.log("销毁材质:"+key);
+			LogUtils.log(formatString("销毁材质:{0}",key));
 			texture.dispose();
 			delete _dict[key];
 

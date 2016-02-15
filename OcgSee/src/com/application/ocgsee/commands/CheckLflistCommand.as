@@ -2,7 +2,6 @@ package com.application.ocgsee.commands
 {
 	import com.application.ApplicationFacade;
 	import com.application.ocgsee.consts.GlobalNotifications;
-	import com.application.ocgsee.consts.LimitConst;
 	import com.application.ocgsee.proxys.LimitProxy;
 	
 	import flash.filesystem.File;

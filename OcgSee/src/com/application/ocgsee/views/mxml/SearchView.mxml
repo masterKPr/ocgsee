@@ -15,13 +15,26 @@
 			
 			import starling.display.DisplayObject;
 			import starling.events.Event;
-			public var pickerList:Vector.<LabelPicker>;
+			public var sqlPickerList:Vector.<LabelPicker>;
 			public static const RESET:String="reset";
 			public static const SEARCH:String="search";
 			public static const LAYOUT:String="layout";
+
+			private var _pickList:Vector.<LabelPicker>;
 			protected function addedToStageHandler(event:starling.events.Event):void
 			{
-				pickerList=Vector.<LabelPicker>([mainTypePicker,attributePicker,otPicker,levelPicker,racePicker,childTypePicker]);
+				_pickList=Vector.<LabelPicker>([
+					lflistPicker,
+					limitPicker,
+					mainTypePicker,
+					attributePicker,
+					otPicker,
+					levelPicker,
+					racePicker,
+					childTypePicker,
+					favoritesPicker,
+				]);
+				sqlPickerList=Vector.<LabelPicker>([mainTypePicker,attributePicker,otPicker,levelPicker,racePicker,childTypePicker]);
 			}
 			protected function creationCompleteHandler(event:starling.events.Event):void
 			{
@@ -57,26 +70,16 @@
 			}
 			
 			private function resizeChildren():void{
-				var pickList:Array=[
-					lflistPicker,
-					limitPicker,
-					mainTypePicker,
-					attributePicker,
-					otPicker,
-					levelPicker,
-					racePicker,
-					childTypePicker,
-					favoritesPicker,
-				];
+
 				
 				var maxWidth:int=0;
-				for each(var picker:LabelPicker in pickList){
+				for each(var picker:LabelPicker in _pickList){
 					if(picker.width>maxWidth){
 						maxWidth=picker.childWidth;
 					}
 				}
 				maxWidth+=30;
-				for each(picker in pickList){
+				for each(picker in _pickList){
 					picker.childWidth=maxWidth;
 				}
 			}
@@ -105,6 +108,7 @@
 			
 			protected function resetBtn_triggeredHandler(event:starling.events.Event):void
 			{
+				resetBtnStatus(null);
 				this.dispatchEventWith(RESET);
 			}
 			
@@ -119,24 +123,33 @@
 			}
 			
 
+			private function resetBtnStatus(target:LabelPicker):void{
+				for each(var pick:LabelPicker in _pickList){
+					if(pick!=target){
+						pick.setPositionMax();
+					}
+				}
+			}
 			
+			protected function showResetHandler(event:starling.events.Event):void
+			{
+				resetBtnStatus(event.target as LabelPicker);
+			}
 			
 		]]>
 	</fx:Script>
 
-	<mxml:LabelPicker	id="lflistPicker"  		title="header_lflist_title" 	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker	id="lflistPicker"  		title="header_lflist_title"  showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="limitPicker" 		title="info_lf_select" 		 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="mainTypePicker" 	title="card_type_global" 	 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="attributePicker" 	title="card_attribute_name"  showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="otPicker" 			title="card_ot_name" 		 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="levelPicker" 		title="card_level_name" 	 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="racePicker" 		title="card_race_name" 		 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="childTypePicker" 	title="card_type_name" 		 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="favoritesPicker" 	title="info_favorite_title"  showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
 	
-	<mxml:LabelPicker 	id="limitPicker" 		title="info_lf_select" 			change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="mainTypePicker" 	title="card_type_global" 		change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="attributePicker" 	title="card_attribute_name" 	change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="otPicker" 			title="card_ot_name" 			change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="levelPicker" 		title="card_level_name" 		change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="racePicker" 		title="card_race_name" 			change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="childTypePicker" 	title="card_type_name" 			change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="favoritesPicker" 	title="info_favorite_title" 	change="searchChangeHandler(event)"/>
-	<mxml:LabelToggle 	id="tokenController" 	title="card_type_16401" 		change="searchChangeHandler(event)"/>
-	
-	
+	<mxml:LabelToggle 	id="tokenController" 	title="card_type_16401" 	 	change="searchChangeHandler(event)"/>
 	
 	<mxml:LabelNumericStepper 	id="layoutStepper" 		title="info_layout" 
 							  maximum="8" minimum="4" step="1" value="4"  change="layoutChangeHandler(event)"/>

@@ -4,7 +4,7 @@ package com.application.ocgsee.commands
 	import com.application.ocgsee.mediators.CallCardMediator;
 	import com.application.ocgsee.proxys.GlobalProxy;
 	import com.application.ocgsee.proxys.SQLProxy;
-	import com.application.ocgsee.views.ShowCard;
+	import com.application.ocgsee.views.mxml.ShowCard;
 	
 	import feathers.controls.Callout;
 	import feathers.controls.renderers.IListItemRenderer;
@@ -31,16 +31,17 @@ package com.application.ocgsee.commands
 			var id:int=prams["id"];
 			var screenWidth:int  = appFacade.root.stage.fullScreenWidth-20;
 			
-			var content:ShowCard=new ShowCard(screenWidth/431);
+			var content:ShowCard=new ShowCard();
+			content.scale=screenWidth/431;
 			
 			var mediator:CallCardMediator=appFacade.retrieveMediator_Lite(CallCardMediator)as CallCardMediator;
 			
 			mediator.setViewComponent(content);
-			mediator.id=id;
+			mediator.cardID=id;
 			var callOut:Callout=Callout.show(content,target as DisplayObject,"any",false);
 			mediator.callOut=callOut;
 			var globalProxy:GlobalProxy=appFacade.retrieveProxy_Lite(GlobalProxy)as GlobalProxy;
-			globalProxy.model.showCard=true;
+			globalProxy.showCard=true;
 			var proxy:SQLProxy=appFacade.retrieveProxy_Lite(SQLProxy) as SQLProxy;
 			var text:String=proxy.singleCardSQL(id);
 			sendNotification(GlobalNotifications.SEARCH_SINGLE,text);
