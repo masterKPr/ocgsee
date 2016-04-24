@@ -3,41 +3,33 @@
 					xmlns:ns="library://ns.feathersui.com/mxml" 
 					xmlns:events="starling.events.*"
 					scrollBarDisplayMode="none" 
-					creationComplete="scrollcontainer1_creationCompleteHandler(event)"
 					elasticSnapDuration="0"
 					elasticity="0"
 					minimumDragDistance="0.3"
-					scrollComplete="scrollcontainer1_scrollCompleteHandler(event)"
 					>
 	<ns:layout>
 		<ns:HorizontalLayout gap="10" horizontalAlign="center" padding="0" verticalAlign="middle"/>
 	</ns:layout>
 	<ns:Header id="header" >
-		<ns:leftItems>
-			<fx:Vector type="starling.display.DisplayObject">
-		<ns:Button id="resetBtn" width="210" label="{localize('info_reset')}" triggered="resetBtn_triggeredHandler(event)"/>
-			</fx:Vector>
-		</ns:leftItems>
 		<ns:rightItems>
 			<fx:Vector type="starling.display.DisplayObject">
-				<ns:PickerList id="child" width="185" selectedIndex="{selectedIndex}" change="child_changeHandler(event)"  dataProvider="{dataProvider}" labelField="label"/>
-
+				<ns:PickerList id="child" width="185"  change="child_changeHandler(event)"  dataProvider="{dataProvider}" labelField="label"/>
 			</fx:Vector>
 		</ns:rightItems>
 	</ns:Header>
 	<fx:Metadata>
 		[Event(name="change", type="starling.events.Event")]
-		[Event(name="showReset", type="starling.events.Event")]
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
 			import com.application.ocgsee.utils.localize;
 			
-			import com.application.ocgsee.consts.GlobalEvents;
 			
 			import feathers.data.ListCollection;
 			
 			import starling.events.Event;
+			
+			import starling.utils.formatString
 			
 			public function get childWidth():int
 			{
@@ -48,13 +40,6 @@
 			public function set childWidth(value:int):void
 			{
 				child.width = value;
-			}
-			
-			public function get btnWidth():int{
-				return resetBtn.width;
-			}
-			public function set btnWidth(value:int):void{
-				resetBtn.width=value;
 			}
 			
 			[Bindable]
@@ -70,18 +55,16 @@
 				child.selectedItem = value;
 			}
 			
-			[Bindable]
-			public var selectedIndex:int;
 			
 			public function get isZero():Boolean{
-				return selectedIndex==0;
+				return child.selectedIndex==0;
 			}
 			public function reset():void{
 				child.selectedIndex=0;
 			}
 			
 			public function set title(value:String):void{
-				header.title="   "+localize(value)+"   ";
+				header.title=formatString("   {0}   ",localize(value));
 			}
 			
 			protected function child_changeHandler(event:starling.events.Event):void
@@ -89,38 +72,8 @@
 				this.dispatchEventWith(starling.events.Event.CHANGE);
 			}
 			
-			protected function scrollcontainer1_creationCompleteHandler(event:starling.events.Event):void
-			{
-				width=childWidth+btnWidth;
-				setPositionMax();
-			}
-			public function setPositionMax():void{
-				this.horizontalScrollPosition=MAX_POSITION;
-			}
-			public function setPositionZero():void{
-				this.horizontalScrollPosition=MIN_POSITION;
-			}
-			
-			protected function resetBtn_triggeredHandler(event:starling.events.Event):void
-			{
-				setPositionMax();
-				reset();
-			}
-			private const MAX_POSITION:int=235;
-			private const MIN_POSITION:int=0;
-			protected function scrollcontainer1_scrollCompleteHandler(event:starling.events.Event):void
-			{
-				if(this.horizontalScrollPosition!=MAX_POSITION){
-					this.horizontalScrollPosition=MIN_POSITION;
-				}
-				if(this.horizontalScrollPosition==MIN_POSITION){
-					this.dispatchEventWith(GlobalEvents.SHOW_RESET);
-				}
-			}
-			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		
 	</fx:Declarations>
 </ns:ScrollContainer>

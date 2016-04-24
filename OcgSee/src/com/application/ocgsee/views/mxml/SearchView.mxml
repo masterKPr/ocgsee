@@ -11,6 +11,8 @@
 		<![CDATA[
 			import com.application.ocgsee.utils.localize;
 			
+			import flash.utils.setTimeout;
+			
 			import feathers.controls.TextInput;
 			
 			import starling.display.DisplayObject;
@@ -39,7 +41,8 @@
 			protected function creationCompleteHandler(event:starling.events.Event):void
 			{
 				resizeChildren();
-				resizeControl();
+//				resizeControl();
+				setTimeout(resizeControl,1);
 			}
 			/**
 			 * 是否复原
@@ -78,7 +81,7 @@
 						maxWidth=picker.childWidth;
 					}
 				}
-				maxWidth+=30;
+				maxWidth*=1.1;
 				for each(picker in _pickList){
 					picker.childWidth=maxWidth;
 				}
@@ -95,7 +98,8 @@
 						maxHeiht=childView.height;
 					}
 				}
-				maxWidth+=50;
+//				maxWidth*=1.1;
+				maxHeiht*=1.1;
 				for (i=0;i<numChildren;i++){
 					var camp:DisplayObject=getChildAt(i);
 					if(camp){
@@ -105,10 +109,8 @@
 				}
 				
 			}
-			
 			protected function resetBtn_triggeredHandler(event:starling.events.Event):void
 			{
-				resetBtnStatus(null);
 				this.dispatchEventWith(RESET);
 			}
 			
@@ -121,33 +123,18 @@
 			{
 				this.dispatchEventWith(LAYOUT);
 			}
-			
-
-			private function resetBtnStatus(target:LabelPicker):void{
-				for each(var pick:LabelPicker in _pickList){
-					if(pick!=target){
-						pick.setPositionMax();
-					}
-				}
-			}
-			
-			protected function showResetHandler(event:starling.events.Event):void
-			{
-				resetBtnStatus(event.target as LabelPicker);
-			}
-			
 		]]>
 	</fx:Script>
 
-	<mxml:LabelPicker	id="lflistPicker"  		title="header_lflist_title"  showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="limitPicker" 		title="info_lf_select" 		 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="mainTypePicker" 	title="card_type_global" 	 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="attributePicker" 	title="card_attribute_name"  showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="otPicker" 			title="card_ot_name" 		 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="levelPicker" 		title="card_level_name" 	 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="racePicker" 		title="card_race_name" 		 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="childTypePicker" 	title="card_type_name" 		 showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
-	<mxml:LabelPicker 	id="favoritesPicker" 	title="info_favorite_title"  showReset="showResetHandler(event)"	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker	id="lflistPicker"  		title="header_lflist_title"  	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="limitPicker" 		title="info_lf_select" 		 	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="mainTypePicker" 	title="card_type_global" 	 	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="attributePicker" 	title="card_attribute_name"  	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="otPicker" 			title="card_ot_name" 		 	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="levelPicker" 		title="card_level_name" 	 	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="racePicker" 		title="card_race_name" 		 	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="childTypePicker" 	title="card_type_name" 		 	change="searchChangeHandler(event)"/>
+	<mxml:LabelPicker 	id="favoritesPicker" 	title="info_favorite_title"  	change="searchChangeHandler(event)"/>
 	
 	<mxml:LabelToggle 	id="tokenController" 	title="card_type_16401" 	 	change="searchChangeHandler(event)"/>
 	
@@ -156,6 +143,5 @@
 	
 	<ns:TextInput id="searchInput" prompt="{localize('info_keyword')}"
 				  styleName="{TextInput.ALTERNATE_STYLE_NAME_SEARCH_TEXT_INPUT}" change="searchChangeHandler(event)"/>
-	
 	<ns:Button id="resetBtn" triggered="resetBtn_triggeredHandler(event)"/>
 </ns:ScrollContainer>

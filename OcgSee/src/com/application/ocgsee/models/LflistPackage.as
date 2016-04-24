@@ -10,16 +10,21 @@ package com.application.ocgsee.models
 		{
 		}
 		public function parse(obj:Object):void{
-			if(!obj){
-				empty();
-				return;
+			if(obj)
+			{
+				this.forbidden=obj["forbidden"]||[];
+				this.limit=obj["limit"]||[];
+				this.semiLimit=obj["semi limit"]||[];
+				this.title=obj["title"]||"";
 			}
-			this.forbidden=obj["forbidden"]||[];
-			this.limit=obj["limit"]||[];
-			this.semiLimit=obj["semi limit"]||[];
-			this.title=obj["title"]||"";
+			else
+			{
+				empty();
+			}
+			
 		}
-		private function empty():void{
+		private function empty():void
+		{
 			this.forbidden=[];
 			this.limit=[];
 			this.semiLimit=[];
