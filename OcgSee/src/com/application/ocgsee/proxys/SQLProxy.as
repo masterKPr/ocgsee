@@ -16,12 +16,14 @@ package com.application.ocgsee.proxys
 		}
 		public function searchMultiSQL(terms:String):String{
 			var re:String=SEARCH_RESULT_HEAD+terms;
-			LogUtils.log("查询语句-->"+re);
+			var template:String="查询多卡语句-->{0}";
+			LogUtils.log(formatString(template,re));
 			return re;
 		}
 		public function singleCardSQL(id:int):String{
 			var re:String=formatString(SEARCH_SINGLE_ID,id);
-			LogUtils.log("查询单卡-->"+re);
+			var template:String="查询单卡语句-->{0}";
+			LogUtils.log(formatString(template,re));
 			return re;
 		}
 		

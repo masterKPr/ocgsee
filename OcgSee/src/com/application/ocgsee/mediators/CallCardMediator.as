@@ -26,6 +26,7 @@ package com.application.ocgsee.mediators
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.textures.Texture;
+	import starling.utils.formatString;
 	
 	public class CallCardMediator extends Mediator_Lite
 	{
@@ -44,10 +45,19 @@ package com.application.ocgsee.mediators
 			notificationsProxy.regist(GlobalNotifications.SEARCH_SINGLE_COMPLETE,searchCompleteHandler);
 			notificationsProxy.regist(CallEvents.HIDE_ONE_CARD,onHideCardHandler);
 		}
-		
+		public override function setViewComponent(viewComponent:Object):void{
+			super.setViewComponent(viewComponent);
+			view.imgContent.addEventListener(TouchEvent.TOUCH,onImgTouch);
+			
+			view.copyBtn.addEventListener(Event.TRIGGERED,copyInfoHandler);
+			view.saveBtn.addEventListener(Event.TRIGGERED,saveCardHandler);
+		}
 		private function onHideCardHandler(notification:Notification):void
 		{
 			if(callOut){
+				view.imgContent.removeEventListener(TouchEvent.TOUCH,onImgTouch);
+				view.copyBtn.removeEventListener(Event.TRIGGERED,copyInfoHandler);
+				view.saveBtn.removeEventListener(Event.TRIGGERED,saveCardHandler);
 				callOut.close(true);
 				callOut=null;
 				var globalProxy:GlobalProxy=appFacade.retrieveProxy_Lite(GlobalProxy)as GlobalProxy;
@@ -70,31 +80,57 @@ package com.application.ocgsee.mediators
 		private function get configProxy():ConfigProxy{
 			return ApplicationFacade._.retrieveProxy_Lite(ConfigProxy) as ConfigProxy;
 		}
+		
+		
+		private var monsterTemplate:String=String(
+<root>
+<![CDATA[{0}  ★{1}
+
+{2}		{3}
+ATK:{4}	DEF:{5}
+
+{6}
+{7}
+]]></root>);
+		
+		private var spellTemplate:String=String(
+<root>
+<![CDATA[{0}
+			
+{1}
+
+{2}
+]]></root>);
+		
 		private function createSpellStr():String{
-			var re:String="";
-			re+=_cardVO.name;
-			re+="\n\n"+configProxy.getName("type",_cardVO.type)+"\n\n";
-			re+=_cardVO.desc;
-			return re;
+			var params:Array=[
+				_cardVO.name,
+				configProxy.getName("type",_cardVO.type),
+				_cardVO.desc
+			];
+			params.unshift(spellTemplate);
+			var str:String=formatString.apply(null,params);
+			return str;
 		}
+		
 		private function createMonsterStr():String{
-			var re:String="";
-			re+=_cardVO.name;
 			var __atkValue:String=formatValue(_cardVO.atk);
 			var __defValue:String=formatValue(_cardVO.def);
-			
-			re+="  "+"★"+_cardVO.level%16+"\n\n"
-			re+=configProxy.getName("attribute",_cardVO.attribute)+"\t\t";
-			re+=configProxy.getName("race",_cardVO.race)+"\n";
-			var atkStr:String="ATK:"+__atkValue
-			re+=addSpace(atkStr);
-			re+="\t";
-			re+="DEF:"+__defValue
-			re+="\n\n";
-			re+=configProxy.getName("type",_cardVO.type)+"\n";
-			re+=_cardVO.desc;
-			return re;
+			var params:Array=[
+			_cardVO.name,
+			_cardVO.level%16,
+			configProxy.getName("attribute",_cardVO.attribute),
+			configProxy.getName("race",_cardVO.race),
+			__atkValue,
+			__defValue,
+			configProxy.getName("type",_cardVO.type),
+			_cardVO.desc
+			];
+			params.unshift(monsterTemplate);
+			var str:String=formatString.apply(null,params);
+			return str;
 		}
+		
 		private function formatValue(value:int):String{
 			if(value==-2){
 				return "?";
@@ -102,20 +138,8 @@ package com.application.ocgsee.mediators
 				return ""+value;
 			}
 		}
-		private function addSpace(str:String):String{
-			while(str.length<8){
-				str+=" ";
-			}
-			return str;
-		}
 		
-		public override function setViewComponent(viewComponent:Object):void{
-			super.setViewComponent(viewComponent);
-			view.imgContent.addEventListener(TouchEvent.TOUCH,onImgTouch);
-			
-			view.copyBtn.addEventListener(Event.TRIGGERED,copyInfoHandler);
-			view.saveBtn.addEventListener(Event.TRIGGERED,saveCardHandler);
-		}
+
 		
 		private function saveCardHandler(e:Event):void{
 			var proxy:FavoritesSearchProxy=appFacade.retrieveProxy_Lite(FavoritesSearchProxy)as FavoritesSearchProxy;

@@ -33,10 +33,8 @@ package com.application.engine.local
 			else
 			{
 				re= key;
-				LogUtils.error("locale key null:"+key);
-			}
-			if(ApplicationFacade._.debug){
-//				re="["+re+"]"
+				var template:String="locale key null:{0}";
+				LogUtils.error(formatString(template,key));
 			}
 			
 			return re;

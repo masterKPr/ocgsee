@@ -3,7 +3,7 @@
 		   xmlns:ns="library://ns.feathersui.com/mxml">
 	<ns:rightItems>
 		<fx:Vector type="starling.display.DisplayObject">
-			<ns:NumericStepper id="child" minimum="{minimum}" change="child_changeHandler(event)" maximum="{maximum}" step="{step}"/>
+			<ns:NumericStepper id="child"  minimum="{minimum}" change="child_changeHandler(event)" maximum="{maximum}" step="{step}"/>
 		</fx:Vector>
 	</ns:rightItems>
 	<fx:Metadata>

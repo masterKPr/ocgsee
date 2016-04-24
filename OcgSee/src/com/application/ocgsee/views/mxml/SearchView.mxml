@@ -81,7 +81,7 @@
 						maxWidth=picker.childWidth;
 					}
 				}
-				maxWidth*=1.1;
+				maxWidth*=1.5;
 				for each(picker in _pickList){
 					picker.childWidth=maxWidth;
 				}
@@ -99,7 +99,7 @@
 					}
 				}
 //				maxWidth*=1.1;
-				maxHeiht*=1.1;
+//				maxHeiht*=1.1;
 				for (i=0;i<numChildren;i++){
 					var camp:DisplayObject=getChildAt(i);
 					if(camp){
@@ -138,7 +138,7 @@
 	
 	<mxml:LabelToggle 	id="tokenController" 	title="card_type_16401" 	 	change="searchChangeHandler(event)"/>
 	
-	<mxml:LabelNumericStepper 	id="layoutStepper" 		title="info_layout" 
+	<mxml:LabelNumericStepper 	id="layoutStepper"  	title="info_layout" 
 							  maximum="8" minimum="4" step="1" value="4"  change="layoutChangeHandler(event)"/>
 	
 	<ns:TextInput id="searchInput" prompt="{localize('info_keyword')}"

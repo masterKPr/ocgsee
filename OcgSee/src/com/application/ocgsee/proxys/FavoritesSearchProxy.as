@@ -7,6 +7,8 @@ package com.application.ocgsee.proxys
 	
 	import mvclite.proxys.Proxy_Lite;
 	
+	import starling.utils.formatString;
+	
 	public class FavoritesSearchProxy extends Proxy_Lite
 	{
 		public var model:SearchEngine;
@@ -29,18 +31,22 @@ package com.application.ocgsee.proxys
 
 		private var _lastAll:Array;
 		public function create():void{
-			excecute("create table if not exists "+TABLE_NAME+" (id INTEGER primary key)");
+			var template:String="create table if not exists {0} (id INTEGER primary key)";
+			excecute(formatString(template,TABLE_NAME));
 		}
 		public function addOne(id:int):void{
-			excecute("insert into "+TABLE_NAME+" values("+id+")");
+			var template:String="insert into {0} values({1})";
+			excecute(formatString(template,TABLE_NAME,id));
 			mark=true;
 		}
 		public function delOne(id:int):void{
-			excecute("delete from "+TABLE_NAME+" where id="+id);
+			var template:String="delete from {0} where id={1}";
+			excecute(formatString(template,TABLE_NAME,id));
 			mark=true;
 		}
 		public function hasOne(id:int):Boolean{
-			excecute("select id from "+TABLE_NAME+" where id="+id)
+			var template:String="select id from {0} where id={1}";
+			excecute(formatString(template,TABLE_NAME,id));
 			var result:SQLResult=model.getResult();
 			var list:Array=result.data;
 			if(!list){
@@ -52,7 +58,8 @@ package com.application.ocgsee.proxys
 			
 			if(mark)
 			{
-				excecute("select id from "+TABLE_NAME);
+				var template:String="select id from {0}";
+				excecute(formatString(template,TABLE_NAME));
 				var result:SQLResult=model.getResult();
 				var list:Array=result.data;
 				if(!list){
