@@ -58,20 +58,21 @@ package com.application.ocgsee.views
 			this.addChild(_cardImage);
 			
 			_limitMark=new ImageLoader();
-			_limitMark.width=32;
-			_limitMark.height=32;
-			_limitMark.x=3;
-			_limitMark.y=3;
+			_limitMark.width=cardWidth/3;
+			_limitMark.height=cardWidth/3;
+			_limitMark.x=cardWidth/40;
+			_limitMark.y=cardWidth/40;
 			this.addChild(_limitMark);
 			
 			_selectImg=new ImageLoader();
 			_selectImg.width=_cardWidth;
 			_selectImg.height=_cardHeight;
 			this.addChild(_selectImg);
-			
 			_newMarkImg=new ImageLoader();
-			_newMarkImg.x=5;
-			_newMarkImg.y=5;
+			_newMarkImg.x=cardWidth/40;
+			_newMarkImg.y=cardWidth/40;
+			_newMarkImg.width=cardWidth/3;
+//			_newMarkImg.height=cardWidth/3;
 			this.addChild(_newMarkImg);
 			
 			_otLabel=new TextField(_cardWidth/2,_cardHeight/5,"","Verdana",35);
@@ -79,8 +80,8 @@ package com.application.ocgsee.views
 			_otLabel.vAlign=VAlign.BOTTOM;
 			_otLabel.autoScale=true;
 			//			_label.bold=true;
-			_otLabel.y=_cardHeight-_otLabel.height-5;
-			_otLabel.x=_cardWidth-_otLabel.width-5;
+			_otLabel.y=_cardHeight-_otLabel.height-cardWidth/40;
+			_otLabel.x=_cardWidth-_otLabel.width-cardWidth/40;
 //						this.addChild(_otLabel);
 			
 			this.addEventListener(TouchEvent.TOUCH, touchHandler);

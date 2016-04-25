@@ -48,8 +48,7 @@
 			 * 是否复原
 			 */
 			public function get isZero():Boolean{
-				return lflistPicker.isZero&&
-					limitPicker.isZero&&
+				return limitPicker.isZero&&
 					mainTypePicker.isZero&&
 					attributePicker.isZero&&
 					otPicker.isZero&&

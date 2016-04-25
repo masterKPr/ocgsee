@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ns:Header xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		   xmlns:ns="library://ns.feathersui.com/mxml">
+		   xmlns:ns="library://ns.feathersui.com/mxml" titleAlign="center">
 	<ns:rightItems>
 		<fx:Vector type="starling.display.DisplayObject">
 			<ns:ToggleSwitch id="child" change="child_changeHandler(event)"/>

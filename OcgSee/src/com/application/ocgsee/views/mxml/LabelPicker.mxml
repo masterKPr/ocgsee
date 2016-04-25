@@ -1,22 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ns:ScrollContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
-					xmlns:ns="library://ns.feathersui.com/mxml" 
-					xmlns:events="starling.events.*"
-					scrollBarDisplayMode="none" 
-					elasticSnapDuration="0"
-					elasticity="0"
-					minimumDragDistance="0.3"
-					>
-	<ns:layout>
-		<ns:HorizontalLayout gap="10" horizontalAlign="center" padding="0" verticalAlign="middle"/>
-	</ns:layout>
-	<ns:Header id="header" >
-		<ns:rightItems>
-			<fx:Vector type="starling.display.DisplayObject">
-				<ns:PickerList id="child" width="185"  change="child_changeHandler(event)"  dataProvider="{dataProvider}" labelField="label"/>
-			</fx:Vector>
-		</ns:rightItems>
-	</ns:Header>
+<ns:Header
+		   xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:ns="library://ns.feathersui.com/mxml" 
+		   xmlns:events="starling.events.*">
+
 	<fx:Metadata>
 		[Event(name="change", type="starling.events.Event")]
 	</fx:Metadata>
@@ -63,8 +50,8 @@
 				child.selectedIndex=0;
 			}
 			
-			public function set title(value:String):void{
-				header.title=formatString("   {0}   ",localize(value));
+			public override function  set title(value:String):void{
+				super.title=localize(value);
 			}
 			
 			protected function child_changeHandler(event:starling.events.Event):void
@@ -76,4 +63,10 @@
 	</fx:Script>
 	<fx:Declarations>
 	</fx:Declarations>
-</ns:ScrollContainer>
+	<ns:rightItems>
+		<fx:Vector type="starling.display.DisplayObject">
+			<ns:PickerList id="child" width="185"  change="child_changeHandler(event)"  dataProvider="{dataProvider}" labelField="label"/>
+		</fx:Vector>
+	</ns:rightItems>
+</ns:Header>
+
